@@ -1,0 +1,845 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export type ProductTypes = "full_size" | "decant"
+
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
+  public: {
+    Tables: {
+      addresses: {
+        Row: {
+          address_line1: string
+          address_line2: string | null
+          city: string
+          country: string
+          created_at: string
+          full_name: string
+          id: string
+          instructions: string | null
+          is_default: boolean
+          label: string
+          phone: string
+          postal_code: string | null
+          province: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address_line1: string
+          address_line2?: string | null
+          city: string
+          country?: string
+          created_at?: string
+          full_name: string
+          id?: string
+          instructions?: string | null
+          is_default?: boolean
+          label?: string
+          phone: string
+          postal_code?: string | null
+          province: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address_line1?: string
+          address_line2?: string | null
+          city?: string
+          country?: string
+          created_at?: string
+          full_name?: string
+          id?: string
+          instructions?: string | null
+          is_default?: boolean
+          label?: string
+          phone?: string
+          postal_code?: string | null
+          province?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "addresses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brands: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          logo_url: string | null
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      cart_items: {
+        Row: {
+          created_at: string
+          id: string
+          quantity: number
+          updated_at: string
+          user_id: string
+          variant_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          quantity?: number
+          updated_at?: string
+          user_id: string
+          variant_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          quantity?: number
+          updated_at?: string
+          user_id?: string
+          variant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cart_items_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cart_items_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          parent_id: string | null
+          position: number
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          parent_id?: string | null
+          position?: number
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          parent_id?: string | null
+          position?: number
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_items: {
+        Row: {
+          brand_name: string
+          created_at: string
+          id: string
+          line_total: number
+          order_id: string
+          product_name: string
+          product_type: Database["public"]["Enums"]["product_type"]
+          quantity: number
+          size_ml: number
+          sku: string
+          unit_price: number
+          variant_id: string | null
+        }
+        Insert: {
+          brand_name: string
+          created_at?: string
+          id?: string
+          line_total: number
+          order_id: string
+          product_name: string
+          product_type: Database["public"]["Enums"]["product_type"]
+          quantity: number
+          size_ml: number
+          sku: string
+          unit_price: number
+          variant_id?: string | null
+        }
+        Update: {
+          brand_name?: string
+          created_at?: string
+          id?: string
+          line_total?: number
+          order_id?: string
+          product_name?: string
+          product_type?: Database["public"]["Enums"]["product_type"]
+          quantity?: number
+          size_ml?: number
+          sku?: string
+          unit_price?: number
+          variant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          discount: number
+          id: string
+          notes: string | null
+          order_number: number
+          shipping_address_line1: string
+          shipping_address_line2: string | null
+          shipping_city: string
+          shipping_cost: number
+          shipping_country: string
+          shipping_full_name: string
+          shipping_instructions: string | null
+          shipping_phone: string
+          shipping_postal_code: string | null
+          shipping_province: string
+          status: Database["public"]["Enums"]["order_status"]
+          subtotal: number
+          tax: number
+          total: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          discount?: number
+          id?: string
+          notes?: string | null
+          order_number?: never
+          shipping_address_line1: string
+          shipping_address_line2?: string | null
+          shipping_city: string
+          shipping_cost?: number
+          shipping_country?: string
+          shipping_full_name: string
+          shipping_instructions?: string | null
+          shipping_phone: string
+          shipping_postal_code?: string | null
+          shipping_province: string
+          status?: Database["public"]["Enums"]["order_status"]
+          subtotal: number
+          tax?: number
+          total: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          discount?: number
+          id?: string
+          notes?: string | null
+          order_number?: never
+          shipping_address_line1?: string
+          shipping_address_line2?: string | null
+          shipping_city?: string
+          shipping_cost?: number
+          shipping_country?: string
+          shipping_full_name?: string
+          shipping_instructions?: string | null
+          shipping_phone?: string
+          shipping_postal_code?: string | null
+          shipping_province?: string
+          status?: Database["public"]["Enums"]["order_status"]
+          subtotal?: number
+          tax?: number
+          total?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_categories: {
+        Row: {
+          category_id: string
+          product_id: string
+        }
+        Insert: {
+          category_id: string
+          product_id: string
+        }
+        Update: {
+          category_id?: string
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_categories_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_images: {
+        Row: {
+          alt_text: string | null
+          created_at: string
+          id: string
+          position: number
+          product_id: string
+          url: string
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string
+          id?: string
+          position?: number
+          product_id: string
+          url: string
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string
+          id?: string
+          position?: number
+          product_id?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_images_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_variants: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          is_on_offer: boolean
+          offer_price: number | null
+          position: number
+          price: number
+          product_id: string
+          product_type: ProductTypes
+          size_ml: number
+          sku: string
+          stock: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_on_offer?: boolean
+          offer_price?: number | null
+          position?: number
+          price: number
+          product_id: string
+          product_type: Database["public"]["Enums"]["product_type"]
+          size_ml: number
+          sku: string
+          stock?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_on_offer?: boolean
+          offer_price?: number | null
+          position?: number
+          price?: number
+          product_id?: string
+          product_type?: Database["public"]["Enums"]["product_type"]
+          size_ml?: number
+          sku?: string
+          stock?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_variants_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          brand_id: string
+          concentration: string | null
+          created_at: string
+          description: string | null
+          featured_variant_id: string | null
+          gender: string | null
+          id: string
+          is_active: boolean
+          name: string
+          notes_base: string | null
+          notes_middle: string | null
+          notes_top: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          brand_id: string
+          concentration?: string | null
+          created_at?: string
+          description?: string | null
+          featured_variant_id?: string | null
+          gender?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          notes_base?: string | null
+          notes_middle?: string | null
+          notes_top?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          brand_id?: string
+          concentration?: string | null
+          created_at?: string
+          description?: string | null
+          featured_variant_id?: string | null
+          gender?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          notes_base?: string | null
+          notes_middle?: string | null
+          notes_top?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_featured_variant"
+            columns: ["featured_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      stock_movements: {
+        Row: {
+          created_at: string
+          delta: number
+          id: string
+          new_stock: number
+          notes: string | null
+          performed_by: string | null
+          previous_stock: number
+          reason: Database["public"]["Enums"]["stock_movement_reason"]
+          reference_id: string | null
+          variant_id: string
+        }
+        Insert: {
+          created_at?: string
+          delta: number
+          id?: string
+          new_stock: number
+          notes?: string | null
+          performed_by?: string | null
+          previous_stock: number
+          reason: Database["public"]["Enums"]["stock_movement_reason"]
+          reference_id?: string | null
+          variant_id: string
+        }
+        Update: {
+          created_at?: string
+          delta?: number
+          id?: string
+          new_stock?: number
+          notes?: string | null
+          performed_by?: string | null
+          previous_stock?: number
+          reason?: Database["public"]["Enums"]["stock_movement_reason"]
+          reference_id?: string | null
+          variant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_movements_performed_by_fkey"
+            columns: ["performed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      analytics_best_sellers: {
+        Args: { p_limit?: number; p_since?: string }
+        Returns: {
+          brand_name: string
+          product_name: string
+          product_type: ProductTypes
+          size_ml: number
+          sku: string
+          total_revenue: number
+          total_units: number
+          variant_id: string
+        }[]
+      }
+      analytics_low_stock: {
+        Args: { p_threshold?: number }
+        Returns: {
+          product_name: string
+          product_type: ProductTypes
+          size_ml: number
+          sku: string
+          stock: number
+          variant_id: string
+        }[]
+      }
+      analytics_revenue_summary: {
+        Args: { p_since?: string }
+        Returns: {
+          avg_order_value: number
+          gross_revenue: number
+          total_orders: number
+          total_units: number
+        }[]
+      }
+      create_new_product: {
+        Args: {
+          p_brand_id: string
+          p_category_ids: string[]
+          p_concentration: string
+          p_description: string
+          p_gender: string
+          p_image_url: string
+          p_is_on_offer: boolean
+          p_name: string
+          p_notes_base: string
+          p_notes_middle: string
+          p_notes_top: string
+          p_offer_price?: number | null
+          p_price: number
+          p_product_type: ProductTypes
+          p_size_ml: number
+          p_sku: string
+          p_stock: number
+        }
+        Returns: Json
+      }
+      decrease_variant_stock: {
+        Args: { p_order_id: string; p_quantity: number; p_variant_id: string }
+        Returns: undefined
+      }
+      is_admin: { Args: never; Returns: boolean }
+      place_order: { Args: { p_address_id: string }; Returns: string }
+      search_products: {
+        Args: { p_limit?: number; p_offset?: number; p_query: string }
+        Returns: {
+          brand_name: string
+          id: string
+          name: string
+          similarity: number
+          slug: string
+        }[]
+      }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
+      unaccent: { Args: { "": string }; Returns: string }
+    }
+    Enums: {
+      order_status: "pending" | "received" | "shipped" | "denied"
+      product_type: "full_size" | "decant"
+      stock_movement_reason:
+        | "manual_adjustment"
+        | "order_placed"
+        | "order_cancelled"
+        | "restock"
+        | "correction"
+        | "return"
+      user_role: "customer" | "admin"
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+}
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {
+      order_status: ["pending", "received", "shipped", "denied"],
+      product_type: ["full_size", "decant"],
+      stock_movement_reason: [
+        "manual_adjustment",
+        "order_placed",
+        "order_cancelled",
+        "restock",
+        "correction",
+        "return",
+      ],
+      user_role: ["customer", "admin"],
+    },
+  },
+} as const
