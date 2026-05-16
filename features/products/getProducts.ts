@@ -14,11 +14,13 @@ export async function getProducts(): Promise<ProductCardData[]> {
         name
       ),
       featured_variant:product_variants!fk_featured_variant (
+        id,
         price,
         offer_price,
         is_on_offer,
         stock,
-        size_ml
+        size_ml,
+        product_type
       ),
       product_images (
         url,

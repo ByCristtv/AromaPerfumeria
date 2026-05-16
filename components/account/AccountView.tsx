@@ -13,10 +13,14 @@ export default function AccountLoginCard() {
         supabase.auth.getSession().then(({ data }) => {
             setUser(data.session?.user ?? null);
             setLoading(false);
+        }).catch(() => {
+            // Ensure loading is cleared even if getSession fails
+            setLoading(false);
         });
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             setUser(session?.user ?? null);
+            setLoading(false);
         });
 
         return () => subscription.unsubscribe();

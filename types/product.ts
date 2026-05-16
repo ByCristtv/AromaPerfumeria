@@ -1,5 +1,10 @@
 import { ProductTypes } from "./database";
 
+export interface ProductFiltersProps {
+  selectedCategory?: string;
+  onCategoryChange: (category: string) => void;
+}
+
 export type Product = {
   id: string; // uuid
 
@@ -18,28 +23,6 @@ export type Product = {
   created_at: string; // ISO date
   updated_at: string;
 };
-export type ProductWithBrand = Product & {
-  brand: {
-    id: string;
-    name: string;
-  };
-};
-
-export type ProductWithImage = ProductWithBrand & {
-  image_url: string;
-};
-
-export type ProductPreview = {
-  id: string;
-  name: string;
-  description?: string;
-  price: number;
-  image_url: string;
-  brand?: string;
-  categories?: {
-    name: string;
-  }[];
-};
 
 export interface ProductCardData {
   id: string;
@@ -50,11 +33,13 @@ export interface ProductCardData {
   brands: { name: string };
   // La variante que marcamos como principal en la DB
   featured_variant: {
+    id: string;
     price: number;
     offer_price: number | null;
     is_on_offer: boolean;
     stock: number;
     size_ml: number;
+    product_type: ProductTypes;
   } | null;
   // Array de imágenes
   product_images: {

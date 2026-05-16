@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import CartItem from "@/components/cart/CartItem";
-import { useCartStore } from "@/store/useCartStore";
+import { useCart } from "@/hooks/useCart";
 
 function formatPrice(value: number) {
 	return value.toLocaleString("es-AR", {
@@ -13,13 +13,15 @@ function formatPrice(value: number) {
 }
 
 export default function CartPage() {
-	const cart = useCartStore((state) => state.cart);
-	const incrementQuantity = useCartStore((state) => state.incrementQuantity);
-	const decrementQuantity = useCartStore((state) => state.decrementQuantity);
-	const removeFromCart = useCartStore((state) => state.removeFromCart);
-	const clearCart = useCartStore((state) => state.clearCart);
-	const totalItems = useCartStore((state) => state.getTotalItems());
-	const totalPrice = useCartStore((state) => state.getTotalPrice());
+	const {
+		cart,
+		totalItems,
+		totalPrice,
+		incrementQuantity,
+		decrementQuantity,
+		removeItem,
+		clearCart,
+	} = useCart();
 
 	return (
 		<section className="pt-28 pb-10 px-4 bg-gray-50 min-h-screen">
@@ -58,11 +60,11 @@ export default function CartPage() {
 						<div className="space-y-3 sm:space-y-4">
 							{cart.map((item) => (
 								<CartItem
-									key={item.product.id}
+									key={item.variant_id}
 									item={item}
 									onIncrease={incrementQuantity}
 									onDecrease={decrementQuantity}
-									onDelete={removeFromCart}
+									onDelete={removeItem}
 								/>
 							))}
 						</div>

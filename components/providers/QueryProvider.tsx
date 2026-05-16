@@ -13,8 +13,8 @@ export default function QueryProvider({ children }: { children: React.ReactNode 
             staleTime: 5 * 60 * 1000,
             // Cache data for 10 minutes after it's no longer used
             gcTime: 10 * 60 * 1000,
-            // Refetch when the user returns to the tab (fixes the tab-switch issue)
-            refetchOnWindowFocus: true,
+            // Always refetch when the user returns to the tab, even if data is still "fresh"
+            refetchOnWindowFocus: 'always',
             // Retry failed requests once before giving up
             retry: 1,
           },

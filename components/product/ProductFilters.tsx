@@ -1,12 +1,13 @@
 "use client";
-
-import { ProductFiltersProps } from "../../types/productFilter";
+import { ProductFiltersProps } from "@/types/product";
 import { useState } from "react";
 import { useCategories } from "@/hooks/useCategories";
 
+
+
 export default function ProductFilters({
-	selectedCategory,
-	onCategoryChange,
+  selectedCategory,
+  onCategoryChange,
 }: ProductFiltersProps) {
     const { data: categories = [] } = useCategories();
     const [category, setCategory] = useState(selectedCategory);

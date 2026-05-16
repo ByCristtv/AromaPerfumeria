@@ -41,7 +41,7 @@ export default function CartItem({
         <article className="rounded-xl border border-gray-200 bg-white p-3 sm:p-4 shadow-sm">
             <div className="flex gap-3 sm:gap-4">
                 <div className="relative h-20 w-20 sm:h-24 sm:w-24 shrink-0 rounded-lg bg-gray-50 overflow-hidden border">
-                    <Image src={image_url} alt={product_name} fill className="object-contain p-1" />
+                    <Image src={image_url} alt={product_name} fill sizes="100%" className="object-contain p-1" />
                 </div>
 
                 <div className="flex-1 min-w-0">
