@@ -1,27 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { CartStore} from "@/types/product";
 
-export type CartLineItem = {
-  variant_id: string;
-  product_name: string;
-  product_type: string;
-  size_ml: number;
-  price: number;
-  image_url: string;
-  quantity: number;
-  stock: number;
-};
-
-type CartStore = {
-  cart: CartLineItem[];
-  setCart: (cart: CartLineItem[]) => void;
-  addItem: (item: Omit<CartLineItem, "quantity">) => void;
-  removeItem: (variantId: string) => void;
-  updateQuantity: (variantId: string, quantity: number) => void;
-  clearCart: () => void;
-  getTotalItems: () => number;
-  getTotalPrice: () => number;
-};
 
 export const useCartStore = create<CartStore>()(
   persist(

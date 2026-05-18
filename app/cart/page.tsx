@@ -3,14 +3,7 @@
 import Link from "next/link";
 import CartItem from "@/components/cart/CartItem";
 import { useCart } from "@/hooks/useCart";
-
-function formatPrice(value: number) {
-	return value.toLocaleString("es-AR", {
-		style: "currency",
-		currency: "ARS",
-		maximumFractionDigits: 0,
-	});
-}
+import { formatPrice } from "@/lib/format";
 
 export default function CartPage() {
 	const {

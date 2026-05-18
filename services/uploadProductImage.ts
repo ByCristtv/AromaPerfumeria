@@ -1,22 +1,26 @@
-import { supabase } from '@/lib/supabase'
+import { supabase } from "@/lib/supabase/client";
 
-export async function uploadProductImage(file: File) {
-  const filePath = `product-images/${crypto.randomUUID()}-${file.name}`
-  console.log("Subiendo imagen a Supabase Storage con ruta:", filePath)
+const BUCKET = "product-images";
 
-  const { error } = await supabase.storage
-    .from('product-images')
-    .upload(filePath, file)
+/**
+ * Upload an image to the `product-images` Supabase Storage bucket
+ * and return the public URL. Filenames are namespaced with a UUID
+ * to avoid collisions.
+ */
+export async function uploadProductImage(file: File): Promise<string> {
+  const filePath = `${BUCKET}/${crypto.randomUUID()}-${file.name}`;
 
-  if (error) {
-    console.error("Error subiendo imagen:", error)
-    throw new Error('Error uploading image')
+  const { error: uploadError } = await supabase.storage
+    .from(BUCKET)
+    .upload(filePath, file);
+
+  if (uploadError) {
+    throw new Error(`Image upload failed: ${uploadError.message}`);
   }
 
-  const { data } = supabase.storage
-    .from('product-images')
-    .getPublicUrl(filePath)
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from(BUCKET).getPublicUrl(filePath);
 
-  console.log("URL pública de la imagen:", data.publicUrl)
-  return data.publicUrl
+  return publicUrl;
 }

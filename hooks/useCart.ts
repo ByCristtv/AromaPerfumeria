@@ -1,7 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import { useCartStore, CartLineItem } from "@/store/useCartStore";
-import { supabase } from "@/lib/supabase";
+import { useCartStore} from "@/store/useCartStore";
+import { supabase } from "@/lib/supabase/client";
 import { useCallback, useEffect, useState } from "react";
+import { CartLineItem } from "@/types/product";
 
 type CartItemPayload = Omit<CartLineItem, "quantity">;
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { CartLineItem } from "@/store/useCartStore";
+import { CartLineItem } from "@/types/product";
 
 type CartItemProps = {
     item: CartLineItem;

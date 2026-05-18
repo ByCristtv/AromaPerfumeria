@@ -1,37 +1,32 @@
-import { ProductTypes } from "./database";
+import type { ProductTypes } from "./database";
 
-export interface ProductFiltersProps {
-  selectedCategory?: string;
-  onCategoryChange: (category: string) => void;
+/**
+ * Shape returned by `features/products/getProducts` and consumed by
+ * `<ProductCard>`. This is the join of `products`, the featured variant,
+ * the brand, and the product images — i.e., everything a card needs to
+ * render without an extra round-trip.
+ */
+interface AdminProductCategory {
+  id: string;
+  name: string;
 }
 
-export type Product = {
-  id: string; // uuid
-
+export interface AdminProduct {
+  id: string;
   name: string;
-  slug: string;
-  brand_id: string; // uuid (FK)
-  description: string;
-  product_type: ProductTypes;
-  // ajusta según tu enum real en Supabase
-  size_ml: number;
+  description: string | null;
   price: number;
-  is_on_offer: boolean;
-  offer_price: number | null;
   stock: number;
-  is_active: boolean;
-  created_at: string; // ISO date
-  updated_at: string;
-};
-
+  brand: string;
+  categories: AdminProductCategory[];
+}
 export interface ProductCardData {
   id: string;
   name: string;
   slug: string;
-  gender: 'masculine' | 'feminine' | 'unisex';
+  gender: "masculine" | "feminine" | "unisex";
   concentration: string;
   brands: { name: string };
-  // La variante que marcamos como principal en la DB
   featured_variant: {
     id: string;
     price: number;
@@ -41,44 +36,65 @@ export interface ProductCardData {
     size_ml: number;
     product_type: ProductTypes;
   } | null;
-  // Array de imágenes
   product_images: {
     url: string;
     position: number;
   }[];
 }
 
-
-// INTERFACES PARA TIPADO
+/** Payload for the admin "create product + first variant" RPC. */
 export interface CreateProductDTO {
-  // Producto Base
-  name: string
-  brand_id: string
-  description: string
-  notes_top: string
-  notes_middle: string
-  notes_base: string
-  gender: string
-  concentration: string
-  category_ids: string[]
-  file: File
-  // Variante Inicial
-  sku: string
-  price: number
-  stock: number
-  size_ml: number
-  product_type: ProductTypes
-  is_on_offer: boolean
-  offer_price: number | null
+  // Base product
+  name: string;
+  brand_id: string;
+  description: string;
+  notes_top: string;
+  notes_middle: string;
+  notes_base: string;
+  gender: string;
+  concentration: string;
+  category_ids: string[];
+  file: File;
+  // Initial variant
+  sku: string;
+  price: number;
+  stock: number;
+  size_ml: number;
+  product_type: ProductTypes;
+  is_on_offer: boolean;
+  offer_price: number | null;
 }
 
+/** Payload for adding an extra variant to an existing product. */
 export interface CreateVariantDTO {
-  product_id: string
-  sku: string
-  price: number
-  stock: number
-  size_ml: number
-  product_type: ProductTypes
-  is_on_offer: boolean
-  offer_price: number | null
+  product_id: string;
+  sku: string;
+  price: number;
+  stock: number;
+  size_ml: number;
+  product_type: ProductTypes;
+  is_on_offer: boolean;
+  offer_price: number | null;
 }
+
+export type CartLineItem = {
+  variant_id: string;
+  product_name: string;
+  product_type: string;
+  size_ml: number;
+  price: number;
+  image_url: string;
+  quantity: number;
+  stock: number;
+};
+
+export type CartStore = {
+  cart: CartLineItem[];
+  setCart: (cart: CartLineItem[]) => void;
+  addItem: (item: Omit<CartLineItem, "quantity">) => void;
+  removeItem: (variantId: string) => void;
+  updateQuantity: (variantId: string, quantity: number) => void;
+  clearCart: () => void;
+  getTotalItems: () => number;
+  getTotalPrice: () => number;
+};

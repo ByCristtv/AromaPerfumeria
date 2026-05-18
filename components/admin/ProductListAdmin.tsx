@@ -1,16 +1,18 @@
 "use client";
 
 import Swal from "sweetalert2";
-import { supabase } from "@/lib/supabase";
-import { useProducts, PRODUCTS_QUERY_KEY } from "@/hooks/useProducts";
+import { supabase } from "@/lib/supabase/client";
+import { useAdminProducts } from "@/hooks/useAdminProducts";
+import { ADMIN_PRODUCTS_QUERY_KEY } from "@/features/admin/getProductsAdmin";
 import { useQueryClient } from "@tanstack/react-query";
-import { Product } from "@/types/product";
 
 export default function ProductListAdmin() {
-  const { data: products = [], isLoading: loading } = useProducts();
+  // Consumimos el nuevo hook con los datos planos y tipados para el admin
+  const { data: products = [], isLoading: loading } = useAdminProducts();
   const queryClient = useQueryClient();
 
-  const deleteProduct = async (id: number, name: string) => {
+  // Corregido: 'id' ahora es string (UUID) tal y como viene de la base de datos
+  const deleteProduct = async (id: string, name: string) => {
     const result = await Swal.fire({
       title: '¿Eliminar Producto?',
       text: `¿Estás seguro de que deseas eliminar "${name}"? Esta acción no se puede deshacer.`,
@@ -23,12 +25,23 @@ export default function ProductListAdmin() {
     });
 
     if (result.isConfirmed) {
-      await supabase.from("products").delete().eq("id", id);
-      // Invalidate the cache so the list refetches automatically
-      await queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY });
+      const { error } = await supabase.from("products").delete().eq("id", id);
+      
+      if (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: `No se pudo eliminar el producto: ${error.message}`,
+        });
+        return;
+      }
+
+      // Invalida de forma segura la caché específica del admin
+      await queryClient.invalidateQueries({ queryKey: ADMIN_PRODUCTS_QUERY_KEY });
+      
       Swal.fire({
         icon: 'success',
-        title: 'Producto Eliminado',
+        title: 'Producto Eliminar',
         text: 'El producto ha sido eliminado exitosamente.',
       });
     }
@@ -55,9 +68,11 @@ export default function ProductListAdmin() {
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-[#ececec] mb-2">{p.name}</h3>
-                  <p className="text-[#a5a5a5] mb-2">{p.description}</p>
+                  {p.description && <p className="text-[#a5a5a5] mb-2">{p.description}</p>}
+                  
                   <div className="flex flex-wrap gap-4 text-sm">
-                    <span className="text-[#c9a96e] font-medium">Precio: ₡{p.price}</span>
+                    {/* El formateo de moneda ahora es seguro gracias a que price y stock son planos */}
+                    <span className="text-[#c9a96e] font-medium">Precio: ₡{p.price.toLocaleString('es-CR')}</span>
                     <span className="text-[#c9a96e] font-medium">Stock: {p.stock}</span>
                     <span className="text-[#c9a96e] font-medium">Marca: {p.brand}</span>
                     <span className="text-[#c9a96e] font-medium">

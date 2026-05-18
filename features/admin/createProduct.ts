@@ -1,13 +1,19 @@
-import { uploadProductImage } from '@/services/uploadProductImage'
-import { CreateProductDTO, CreateVariantDTO } from '@/types/product'
-import { supabase } from '@/lib/supabase' // El cliente tipado
-import { ProductTypes } from '@/types/database'
+import { uploadProductImage } from "@/services/uploadProductImage";
+import { supabase } from "@/lib/supabase/client";
+import type { ProductTypes } from "@/types/database";
+import type { CreateProductDTO, CreateVariantDTO } from "@/types/product";
 
+/**
+ * Create a new product together with its initial commercial variant.
+ *
+ * Delegates to the `create_new_product` Postgres RPC, which inserts
+ * into `products`, `product_categories`, and `product_variants`
+ * atomically.
+ */
 export async function createProduct(formData: CreateProductDTO) {
-  const imageUrl = await uploadProductImage(formData.file)
-  console.log("URL de la imagen subida")
-  // Ahora TS validará que p_name, p_brand_id, etc., existan en los Args de 'create_new_product'
-  const { data, error } = await supabase.rpc('create_new_product', {
+  const imageUrl = await uploadProductImage(formData.file);
+
+  const { data, error } = await supabase.rpc("create_new_product", {
     p_name: formData.name,
     p_brand_id: formData.brand_id,
     p_description: formData.description,
@@ -24,35 +30,34 @@ export async function createProduct(formData: CreateProductDTO) {
     p_size_ml: formData.size_ml,
     p_product_type: formData.product_type,
     p_is_on_offer: formData.is_on_offer,
-    p_offer_price: formData.is_on_offer? Number(formData.offer_price) : null
-  })
-  console.log("Respuesta del RPC:", { data, error })
+    p_offer_price: formData.is_on_offer ? Number(formData.offer_price) : null,
+  });
 
-  if (error) throw error
-  return data
+  if (error) throw error;
+  return data;
 }
 
 /**
- * 2. CREAR VARIANT ADICIONAL
+ * Add another commercial variant (e.g. a 50ml decant) to an existing
+ * product. Most fields mirror the `product_variants` table.
  */
 export async function createVariant(variantData: CreateVariantDTO) {
-  // TS revisará que todos los campos coincidan con 'Insert' de product_variants
   const { data, error } = await supabase
-    .from('product_variants')
+    .from("product_variants")
     .insert({
       product_id: variantData.product_id,
       sku: variantData.sku,
       price: variantData.price,
       stock: variantData.stock,
       size_ml: variantData.size_ml,
-      product_type: variantData.product_type as ProductTypes, // Cast si el enum da problemas
+      product_type: variantData.product_type as ProductTypes,
       is_on_offer: variantData.is_on_offer,
       offer_price: variantData.offer_price,
-      is_active: true
+      is_active: true,
     })
     .select()
-    .single()
+    .single();
 
-  if (error) throw error
-  return data
+  if (error) throw error;
+  return data;
 }
