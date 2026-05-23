@@ -6,17 +6,19 @@ import ProductFilterOrderBy from "../product/ProductFilterOrderBy";
 import ProductList from "../product/ProductList";
 import Searchbar from "../ui/Searchbar";
 import type { ProductOrderBy } from "@/types/productFilter";
+import { useProducts } from "@/hooks/useProducts";
 
-/**
- * Homepage catalog section. Holds the locally controlled filter state
- * (category, order-by, search query). The wiring to actually filter
- * the underlying `useProducts()` query is a TODO — current pages just
- * surface the controls.
- */
 export default function CatalogSection() {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [orderBy, setOrderBy] = useState<ProductOrderBy>("price_asc");
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState<string>("");
+
+  // Extraemos también isLoading para la UI
+  const { data: products = [], isLoading } = useProducts({
+    category: selectedCategory,
+    orderBy,
+    query
+  });
 
   return (
     <section id="catalog" className="py-10 px-4 bg-white">
@@ -41,9 +43,8 @@ export default function CatalogSection() {
           </div>
         </div>
 
-        {/* TODO: thread `selectedCategory`, `orderBy`, `query` into
-            `useProducts()` once the feature query supports them. */}
-        <ProductList />
+        {/* Pasamos los datos filtrados y el estado de carga a la lista */}
+        <ProductList products={products} isLoading={isLoading} />
       </div>
     </section>
   );

@@ -1,25 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import { useCategories } from "@/hooks/useCategories";
 import type { ProductFiltersProps } from "@/types/productFilter";
 
 /**
- * Category dropdown filter. Controlled by the parent via
- * `selectedCategory` / `onCategoryChange`, but keeps its own
- * mirrored state for snappier UI.
+ * Fully controlled category dropdown. The parent owns the value via
+ * `selectedCategory` / `onCategoryChange` — no local state mirror,
+ * so a parent-side reset (e.g. "clear filters") propagates.
  */
 export default function ProductFilters({
   selectedCategory,
   onCategoryChange,
 }: ProductFiltersProps) {
   const { data: categories = [] } = useCategories();
-  const [category, setCategory] = useState(selectedCategory);
-
-  const handleChange = (next: string) => {
-    setCategory(next);
-    onCategoryChange(next);
-  };
 
   return (
     <div className="w-full max-w-sm">
@@ -32,12 +25,13 @@ export default function ProductFilters({
 
       <select
         id="product-category-filter"
-        value={category ?? ""}
-        onChange={(event) => handleChange(event.target.value)}
+        value={selectedCategory ?? ""}
+        onChange={(event) => onCategoryChange(event.target.value)}
         className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-black"
       >
+        <option value="">Todas las categorías</option>
         {categories.map((c) => (
-          <option key={c.id} value={c.name}>
+          <option key={c.id} value={c.id}>
             {c.name}
           </option>
         ))}

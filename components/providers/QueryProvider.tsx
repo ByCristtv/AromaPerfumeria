@@ -9,13 +9,14 @@ export default function QueryProvider({ children }: { children: React.ReactNode 
       new QueryClient({
         defaultOptions: {
           queries: {
-            // Keep data fresh for 5 minutes — prevents unnecessary refetches
             staleTime: 5 * 60 * 1000,
-            // Cache data for 10 minutes after it's no longer used
             gcTime: 10 * 60 * 1000,
-            // Always refetch when the user returns to the tab, even if data is still "fresh"
-            refetchOnWindowFocus: 'always',
-            // Retry failed requests once before giving up
+            // Default refetchOnWindowFocus (true) only refetches stale
+            // queries — combined with the 5min staleTime above, a tab
+            // switch within 5min refetches nothing. The previous
+            // 'always' setting caused a thundering herd on every focus
+            // event, which queued behind Supabase's auth-refresh lock
+            // and froze the UI on "Buscando fragancias...".
             retry: 1,
           },
         },

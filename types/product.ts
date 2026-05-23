@@ -1,22 +1,49 @@
-import type { ProductTypes } from "./database";
+import { Database } from "./database";
 
-/**
- * Shape returned by `features/products/getProducts` and consumed by
- * `<ProductCard>`. This is the join of `products`, the featured variant,
- * the brand, and the product images — i.e., everything a card needs to
- * render without an extra round-trip.
- */
+export type ProductTypes = "full_size" | "decant"
+
+export type BaseCartItem = Database["public"]["Tables"]["cart_items"]["Row"];
+
+export interface DbCartQueryResponse {
+  quantity: BaseCartItem["quantity"];
+  variant: {
+    id: string;
+    price: number;
+    offer_price: number | null;
+    is_on_offer: boolean;
+    stock: number;
+    size_ml: number;
+    product_type: string; // O tu enum ProductTypes si coincide
+    product: {
+      name: string;
+      product_images: { url: string }[];
+    } | null;
+  } | null;
+}
+
 interface AdminProductCategory {
   id: string;
   name: string;
 }
 
-export interface AdminProduct {
-  id: string;
-  name: string;
-  description: string | null;
+/**
+ * Admin table row. One entry per `product_variants` SKU — the unit of
+ * inventory the admin actually manages. Parent product fields (name,
+ * brand, categories) are flattened upward for rendering convenience.
+ */
+export interface AdminVariantRow {
+  variant_id: string;
+  product_id: string;
+  sku: string;
+  size_ml: number;
+  product_type: ProductTypes;
   price: number;
   stock: number;
+  is_on_offer: boolean;
+  offer_price: number | null;
+  is_active: boolean;
+  name: string;
+  description: string | null;
   brand: string;
   categories: AdminProductCategory[];
 }

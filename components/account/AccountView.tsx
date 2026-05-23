@@ -10,20 +10,46 @@ export default function AccountLoginCard() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        supabase.auth.getSession().then(({ data }) => {
-            setUser(data.session?.user ?? null);
-            setLoading(false);
-        }).catch(() => {
-            // Ensure loading is cleared even if getSession fails
-            setLoading(false);
-        });
+        let mounted = true;
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        const initializeAuth = async () => {
+            try {
+                const {
+                    data: { user },
+                    error,
+                } = await supabase.auth.getUser();
+
+                if (!mounted) return;
+
+                if (error) {
+                    console.error(error);
+                }
+
+                setUser(user ?? null);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                if (mounted) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        initializeAuth();
+
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+            if (!mounted) return;
+
             setUser(session?.user ?? null);
             setLoading(false);
         });
 
-        return () => subscription.unsubscribe();
+        return () => {
+            mounted = false;
+            subscription.unsubscribe();
+        };
     }, []);
 
     const handleLogout = async () => {

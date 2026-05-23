@@ -6,109 +6,180 @@ import { useAdminProducts } from "@/hooks/useAdminProducts";
 import { ADMIN_PRODUCTS_QUERY_KEY } from "@/features/admin/getProductsAdmin";
 import { useQueryClient } from "@tanstack/react-query";
 
+const currency = new Intl.NumberFormat("es-CR", {
+  style: "currency",
+  currency: "CRC",
+  maximumFractionDigits: 0,
+});
+
 export default function ProductListAdmin() {
-  // Consumimos el nuevo hook con los datos planos y tipados para el admin
-  const { data: products = [], isLoading: loading } = useAdminProducts();
+  const { data: variants = [], isLoading: loading } = useAdminProducts();
   const queryClient = useQueryClient();
 
-  // Corregido: 'id' ahora es string (UUID) tal y como viene de la base de datos
-  const deleteProduct = async (id: string, name: string) => {
+  const deleteVariant = async (variantId: string, label: string) => {
     const result = await Swal.fire({
-      title: '¿Eliminar Producto?',
-      text: `¿Estás seguro de que deseas eliminar "${name}"? Esta acción no se puede deshacer.`,
-      icon: 'warning',
+      title: "¿Desactivar variante?",
+      text: `Se desactivará la variante "${label}". Esta acción no se puede deshacer.`,
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#c9a96e',
-      cancelButtonColor: '#6c757d',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
+      confirmButtonColor: "#c9a96e",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Sí, desactivar",
+      cancelButtonText: "Cancelar",
     });
 
-    if (result.isConfirmed) {
-      const { error } = await supabase.from("products").delete().eq("id", id);
-      
-      if (error) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: `No se pudo eliminar el producto: ${error.message}`,
-        });
-        return;
-      }
+    if (!result.isConfirmed) return;
 
-      // Invalida de forma segura la caché específica del admin
-      await queryClient.invalidateQueries({ queryKey: ADMIN_PRODUCTS_QUERY_KEY });
-      
+    const { error } = await supabase
+      .from("product_variants")
+      .update({ is_active: false })
+      .eq("id", variantId);
+
+    if (error) {
       Swal.fire({
-        icon: 'success',
-        title: 'Producto Eliminar',
-        text: 'El producto ha sido eliminado exitosamente.',
+        icon: "error",
+        title: "Error",
+        text: `No se pudo desactivar la variante: ${error.message}`,
       });
+      return;
     }
+
+    await queryClient.invalidateQueries({ queryKey: ADMIN_PRODUCTS_QUERY_KEY });
+
+    Swal.fire({
+      icon: "success",
+      title: "Variante desactivada",
+      text: "La variante ha sido desactivada exitosamente.",
+    });
   };
 
+  if (loading) {
+    return (
+      <p className="text-[#ececec] text-center py-12">
+        Cargando variantes...
+      </p>
+    );
+  }
+
+  if (variants.length === 0) {
+    return (
+      <p className="text-[#ececec] text-center py-12">
+        No hay variantes disponibles.
+      </p>
+    );
+  }
+
   return (
-    <div className="max-w-4xl mx-auto bg-black rounded-2xl border border-[#c9a96e]/30 p-8 shadow-[0_20px_60px_rgba(0,0,0,0.3)] backdrop-blur-sm">
-      <div className="mb-8 text-center">
-        <h2 className="text-2xl font-bold text-[#ececec] tracking-wide">Gestión de Productos</h2>
-        <p className="text-[#a5a5a5] mt-2">Administra tu colección de perfumes premium</p>
-      </div>
+    <div className="overflow-x-auto rounded-2xl border border-[#c9a96e]/30 bg-black shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
+      <table className="min-w-full text-sm text-left text-[#ececec]">
+        <thead className="bg-[#1a1a1a] text-[#c9a96e] uppercase text-xs tracking-wider">
+          <tr>
+            <th className="px-4 py-3">SKU</th>
+            <th className="px-4 py-3">Producto</th>
+            <th className="px-4 py-3">Marca</th>
+            <th className="px-4 py-3">Tipo</th>
+            <th className="px-4 py-3">Tamaño</th>
+            <th className="px-4 py-3">Precio</th>
+            <th className="px-4 py-3">Stock</th>
+            <th className="px-4 py-3">Categorías</th>
+            <th className="px-4 py-3">Estado</th>
+            <th className="px-4 py-3 text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {variants.map((v) => {
+            const effectivePrice =
+              v.is_on_offer && v.offer_price != null ? v.offer_price : v.price;
 
-      <div className="space-y-4">
-        {loading ? (
-          <p className="text-[#ececec] text-center">Cargando productos...</p>
-        ) : products.length === 0 ? (
-          <p className="text-[#ececec] text-center">No hay productos disponibles.</p>
-        ) : (
-          products.map((p) => (
-            <div
-              key={p.id}
-              className="bg-[#1a1a1a] border border-[#c9a96e]/20 rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-[#ececec] mb-2">{p.name}</h3>
-                  {p.description && <p className="text-[#a5a5a5] mb-2">{p.description}</p>}
-                  
-                  <div className="flex flex-wrap gap-4 text-sm">
-                    {/* El formateo de moneda ahora es seguro gracias a que price y stock son planos */}
-                    <span className="text-[#c9a96e] font-medium">Precio: ₡{p.price.toLocaleString('es-CR')}</span>
-                    <span className="text-[#c9a96e] font-medium">Stock: {p.stock}</span>
-                    <span className="text-[#c9a96e] font-medium">Marca: {p.brand}</span>
-                    <span className="text-[#c9a96e] font-medium">
-                      Categorías:{" "}
-                      {p.categories && p.categories.length > 0
-                        ? p.categories.map((c) => c.name).join(", ")
-                        : "Sin categoría"}
+            return (
+              <tr
+                key={v.variant_id}
+                className="border-t border-[#c9a96e]/10 hover:bg-[#1a1a1a]/60 transition-colors"
+              >
+                <td className="px-4 py-3 font-mono text-xs text-[#a5a5a5]">
+                  {v.sku}
+                </td>
+                <td className="px-4 py-3 font-medium">{v.name}</td>
+                <td className="px-4 py-3 text-[#a5a5a5]">{v.brand}</td>
+                <td className="px-4 py-3 capitalize text-[#a5a5a5]">
+                  {v.product_type === "full_size" ? "Full size" : "Decant"}
+                </td>
+                <td className="px-4 py-3 text-[#a5a5a5]">{v.size_ml} ml</td>
+                <td className="px-4 py-3">
+                  {v.is_on_offer && v.offer_price != null ? (
+                    <div className="flex flex-col">
+                      <span className="line-through text-xs text-[#a5a5a5]">
+                        {currency.format(v.price)}
+                      </span>
+                      <span className="text-[#c9a96e] font-semibold">
+                        {currency.format(effectivePrice)}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="text-[#c9a96e] font-semibold">
+                      {currency.format(effectivePrice)}
                     </span>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => deleteProduct(p.id, p.name)}
-                    className="bg-red-900 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 shadow-md hover:shadow-lg"
+                  )}
+                </td>
+                <td className="px-4 py-3">
+                  <span
+                    className={
+                      v.stock <= 0
+                        ? "text-red-400"
+                        : v.stock < 5
+                        ? "text-yellow-400"
+                        : "text-[#ececec]"
+                    }
                   >
-                    Eliminar
-                  </button>
+                    {v.stock}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-[#a5a5a5]">
+                  {v.categories.length > 0
+                    ? v.categories.map((c) => c.name).join(", ")
+                    : "—"}
+                </td>
+                <td className="px-4 py-3">
+                  <span
+                    className={
+                      v.is_active
+                        ? "text-emerald-400"
+                        : "text-[#a5a5a5] italic"
+                    }
+                  >
+                    {v.is_active ? "Activa" : "Inactiva"}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-right whitespace-nowrap">
                   <button
-                    onClick={() => {
+                    onClick={() =>
                       Swal.fire({
-                        icon: 'info',
-                        title: 'Editar producto',
-                        text: 'Funcionalidad de edición en construcción.',
-                      });
-                    }}
-                    className="bg-blue-950 hover:bg-blue-800 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 shadow-md hover:shadow-lg"
+                        icon: "info",
+                        title: "Editar variante",
+                        text: "Funcionalidad de edición en construcción.",
+                      })
+                    }
+                    className="bg-blue-950 hover:bg-blue-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors mr-2"
                   >
                     Editar
                   </button>
-                </div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+                  <button
+                    onClick={() =>
+                      deleteVariant(
+                        v.variant_id,
+                        `${v.name} · ${v.size_ml}ml · ${v.sku}`
+                      )
+                    }
+                    className="bg-red-900 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import type {
   ProductFilterOrderByProps,
   ProductOrderBy,
@@ -14,21 +13,14 @@ const ORDER_OPTIONS: { value: ProductOrderBy; label: string }[] = [
 ];
 
 /**
- * Order-by dropdown. Mirrors the parent's `selectedOrder` for snappy
- * UI but emits canonical `ProductOrderBy` values through
- * `onOrderChange`.
+ * Fully controlled order-by dropdown. Parent owns `selectedOrder`,
+ * which guarantees the rendered value always matches the value used
+ * for fetching.
  */
 export default function ProductFilterOrderBy({
   selectedOrder,
   onOrderChange,
 }: ProductFilterOrderByProps) {
-  const [orderBy, setOrderBy] = useState<ProductOrderBy>(selectedOrder);
-
-  const handleChange = (next: ProductOrderBy) => {
-    setOrderBy(next);
-    onOrderChange(next);
-  };
-
   return (
     <div className="w-full max-w-45">
       <label
@@ -40,8 +32,10 @@ export default function ProductFilterOrderBy({
 
       <select
         id="product-order-filter"
-        value={orderBy}
-        onChange={(event) => handleChange(event.target.value as ProductOrderBy)}
+        value={selectedOrder}
+        onChange={(event) =>
+          onOrderChange(event.target.value as ProductOrderBy)
+        }
         className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-black"
       >
         {ORDER_OPTIONS.map((option) => (

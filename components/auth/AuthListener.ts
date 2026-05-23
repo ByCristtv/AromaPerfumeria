@@ -1,42 +1,9 @@
 "use client";
-
 import { useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase/client";
-import { useCartStore, type CartLineItem } from "@/store/useCartStore";
-
-const CART_ITEMS_SELECT = `
-  quantity,
-  variant:product_variants (
-    id,
-    price,
-    offer_price,
-    is_on_offer,
-    stock,
-    size_ml,
-    product_type,
-    product:products ( name, product_images (url) )
-  )
-` as const;
-
-async function fetchCartFromDB(userId: string): Promise<CartLineItem[]> {
-  const { data, error } = await supabase
-    .from("cart_items")
-    .select(CART_ITEMS_SELECT)
-    .eq("user_id", userId);
-
-  if (error || !data) return [];
-
-  return data.map((item: any) => ({
-    variant_id: item.variant.id,
-    product_name: item.variant.product.name,
-    product_type: item.variant.product_type,
-    size_ml: item.variant.size_ml,
-    price: item.variant.is_on_offer ? item.variant.offer_price : item.variant.price,
-    image_url: item.variant.product.product_images[0]?.url ?? "",
-    quantity: item.quantity,
-    stock: item.variant.stock,
-  }));
-}
+import { useCartStore } from "@/store/useCartStore";
+import { CartLineItem } from "@/types/product";
+import { fetchCartFromDB } from "@/services/cartService";
 
 async function mergeLocalCartIntoDB(userId: string, localCart: CartLineItem[]) {
   if (localCart.length === 0) return;
@@ -72,6 +39,9 @@ export default function AuthListener(): null {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      void handleAuthChange(event, session);
+    });
+    async function handleAuthChange(event: string, session: any) {
       if (event === "SIGNED_IN" && session?.user) {
         const userId = session.user.id;
         await mergeLocalCartIntoDB(userId, cartRef.current);
@@ -83,7 +53,7 @@ export default function AuthListener(): null {
       if (event === "SIGNED_OUT") {
         useCartStore.getState().clearCart();
       }
-    });
+    }
 
     return () => {
       subscription.unsubscribe();

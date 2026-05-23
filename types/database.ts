@@ -6,8 +6,6 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type ProductTypes = "full_size" | "decant"
-
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
@@ -415,7 +413,7 @@ export type Database = {
           position: number
           price: number
           product_id: string
-          product_type: ProductTypes
+          product_type: Database["public"]["Enums"]["product_type"]
           size_ml: number
           sku: string
           stock: number
@@ -621,7 +619,7 @@ export type Database = {
         Returns: {
           brand_name: string
           product_name: string
-          product_type: ProductTypes
+          product_type: Database["public"]["Enums"]["product_type"]
           size_ml: number
           sku: string
           total_revenue: number
@@ -633,7 +631,7 @@ export type Database = {
         Args: { p_threshold?: number }
         Returns: {
           product_name: string
-          product_type: ProductTypes
+          product_type: Database["public"]["Enums"]["product_type"]
           size_ml: number
           sku: string
           stock: number
@@ -662,9 +660,9 @@ export type Database = {
           p_notes_base: string
           p_notes_middle: string
           p_notes_top: string
-          p_offer_price?: number | null
+          p_offer_price?: number
           p_price: number
-          p_product_type: ProductTypes
+          p_product_type: Database["public"]["Enums"]["product_type"]
           p_size_ml: number
           p_sku: string
           p_stock: number

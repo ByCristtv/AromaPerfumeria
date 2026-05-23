@@ -26,3 +26,9 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+@layer components {
+  .input-field-custom {
+    @apply w-full px-4 py-3 bg-[#1a1a1a] border border-[#c9a96e]/30 rounded-lg text-[#ececec] transition-all duration-200 focus:border-[#c9a96e] focus:outline-none focus:ring-1 focus:ring-[#c9a96e];
+  }
+}

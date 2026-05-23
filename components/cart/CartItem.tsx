@@ -50,7 +50,7 @@ export default function CartItem({
                             <h3 className="text-sm sm:text-base font-semibold text-gray-900 line-clamp-1">
                                 {product_name}
                             </h3>
-                            <p className="text-xs text-indigo-600 font-medium">
+                            <p className="text-xs text-gray-500 font-medium">
                                 {size_ml}ml - {product_type === 'full_size' ? 'Frasco Original' : 'Decant'}
                             </p>
                         </div>

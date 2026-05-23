@@ -1,6 +1,6 @@
 import { uploadProductImage } from "@/services/uploadProductImage";
 import { supabase } from "@/lib/supabase/client";
-import type { ProductTypes } from "@/types/database";
+import type { ProductTypes } from "@/types/product";
 import type { CreateProductDTO, CreateVariantDTO } from "@/types/product";
 
 /**
@@ -30,7 +30,9 @@ export async function createProduct(formData: CreateProductDTO) {
     p_size_ml: formData.size_ml,
     p_product_type: formData.product_type,
     p_is_on_offer: formData.is_on_offer,
-    p_offer_price: formData.is_on_offer ? Number(formData.offer_price) : null,
+    p_offer_price: formData.is_on_offer && formData.offer_price !== null 
+      ? Number(formData.offer_price) 
+      : undefined,
   });
 
   if (error) throw error;

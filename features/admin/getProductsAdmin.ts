@@ -1,55 +1,72 @@
 import { supabase } from "@/lib/supabase/client";
-import { AdminProduct } from "@/types/product";
+import type { AdminVariantRow, ProductTypes } from "@/types/product";
 
-// 1. Definimos la interfaz exacta que necesita el Admin
+const ADMIN_VARIANT_SELECT = `
+  id,
+  sku,
+  price,
+  stock,
+  size_ml,
+  product_type,
+  is_on_offer,
+  offer_price,
+  is_active,
+  created_at,
+  products!product_variants_product_id_fkey!inner (
+    id,
+    name,
+    description,
+    brands ( name ),
+    product_categories (
+      categories ( id, name )
+    )
+  )
+` as const;
 
-
-// 2. El fetcher que hace la consulta enriquecida a Supabase
-export const getProductsAdmin = async (): Promise<AdminProduct[]> => {
-  // Ajusta los nombres de las tablas relacionales según tu DB. 
-  // Asumo una tabla intermedia 'product_categories' que conecta con 'categories'.
+/**
+ * Fetch all commercial variants for the admin table.
+ *
+ * Query is rooted at `product_variants` because price, stock, sku,
+ * size, and product_type all live there — `products` only carries the
+ * fragrance-level metadata (name, brand, categories). Parent fields
+ * are flattened in the mapper so the UI consumes a single flat row.
+ */
+export const getProductsAdmin = async (): Promise<AdminVariantRow[]> => {
   const { data, error } = await supabase
-    .from("products")
-    .select(`
-      id,
-      name,
-      description,
-      price,
-      stock,
-      brands ( name ),
-      product_categories (
-        categories (
-          id,
-          name
-        )
-      )
-    `)
+    .from("product_variants")
+    .select(ADMIN_VARIANT_SELECT)
     .order("created_at", { ascending: false });
 
   if (error) {
     throw new Error(error.message);
   }
+  console.log("Raw admin products data:", data);
 
-  // 3. Mapeamos la respuesta de Supabase a nuestra estructura limpia e intuitiva
-  return (data || []).map((p: any) => {
-    // Extraemos las categorías del anidamiento relacional
-    const flatCategories = p.product_categories
-      ? p.product_categories
+  return (data ?? []).map((v: any): AdminVariantRow => {
+    const parent = v.products ?? null;
+    const flatCategories = parent?.product_categories
+      ? parent.product_categories
           .map((pc: any) => pc.categories)
           .filter(Boolean)
       : [];
 
     return {
-      id: p.id,
-      name: p.name,
-      description: p.description,
-      price: p.price ?? 0,
-      stock: p.stock ?? 0,
-      brand: p.brands?.name || "Sin marca",
+      variant_id: v.id,
+      product_id: parent?.id ?? "",
+      sku: v.sku,
+      size_ml: v.size_ml,
+      product_type: v.product_type as ProductTypes,
+      price: v.price ?? 0,
+      stock: v.stock ?? 0,
+      is_on_offer: !!v.is_on_offer,
+      offer_price: v.offer_price ?? null,
+      is_active: !!v.is_active,
+      name: parent?.name ?? "Sin nombre",
+      description: parent?.description ?? null,
+      brand: parent?.brands?.name ?? "Sin marca",
       categories: flatCategories,
     };
   });
 };
 
-// Key única para la caché de TanStack Query del Admin
-export const ADMIN_PRODUCTS_QUERY_KEY = ["admin", "products"];
+export const ADMIN_PRODUCTS_QUERY_KEY = ["admin", "product_variants"] as const;

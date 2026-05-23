@@ -9,6 +9,12 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
   const variant = product.featured_variant;
   if (!variant) return null;
 
+  const formatter = new Intl.NumberFormat("es-CR", {
+        style: "currency",
+        currency: "CRC",
+        maximumFractionDigits: 0,
+    });
+
   const handleAddToCart = () => {
     addItem({
       variant_id: variant.id,
@@ -49,7 +55,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
         </p>
 
         <span className="text-xl font-bold">
-          ${variant.price.toFixed(2)}
+          {formatter.format(variant.price)}
         </span>
 
         <button

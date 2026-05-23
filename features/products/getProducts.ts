@@ -1,50 +1,98 @@
 import { supabase } from "@/lib/supabase/client";
 import type { ProductCardData } from "@/types/product";
 
-const PRODUCT_CARD_SELECT = `
-  id,
-  name,
-  slug,
-  gender,
-  concentration,
-  brands (
-    name
-  ),
-  featured_variant:product_variants!fk_featured_variant (
-    id,
-    price,
-    offer_price,
-    is_on_offer,
-    stock,
-    size_ml,
-    product_type
-  ),
-  product_images (
-    url,
-    position
-  )
-` as const;
-
 /**
- * Fetch the active product catalog for the storefront.
- *
- * The shape of the joined response can't be inferred precisely by
- * the Supabase client generics (deep relational selects, custom FK
- * alias), so we cast through `unknown` once at the boundary. Everything
- * downstream sees `ProductCardData[]`.
+ * Categories embed needs `!inner` when we filter by category so
+ * PostgREST actually drops parent rows that don't match. Without a
+ * category filter we left-join (no `!inner`) so products without
+ * categories still appear in the catalog.
  */
-export async function getProducts(limit = 20): Promise<ProductCardData[]> {
-  const { data, error } = await supabase
+function buildSelect(filterByCategory: boolean): string {
+  const categoriesClause = filterByCategory
+    ? `categories!inner ( id, name )`
+    : `categories ( id, name )`;
+
+  return `
+    id,
+    name,
+    slug,
+    gender,
+    concentration,
+    brands ( name ),
+    ${categoriesClause},
+    featured_variant:product_variants!fk_featured_variant (
+      id,
+      price,
+      offer_price,
+      is_on_offer,
+      stock,
+      size_ml,
+      product_type
+    ),
+    product_images ( url, position )
+  `;
+}
+
+export interface ProductFilters {
+  /** Category UUID. Empty string / undefined means "no filter". */
+  category?: string;
+  orderBy?: "price_asc" | "price_desc" | "name_asc" | "name_desc";
+  query?: string;
+}
+
+export async function getProducts(
+  limit = 20,
+  filters?: ProductFilters
+): Promise<ProductCardData[]> {
+  const filterByCategory = !!filters?.category;
+
+  let supabaseQuery = supabase
     .from("products")
-    .select(PRODUCT_CARD_SELECT)
-    .eq("is_active", true)
-    .order("created_at", { ascending: false })
-    .limit(limit);
+    .select(buildSelect(filterByCategory))
+    .eq("is_active", true);
+
+  if (filters?.query) {
+    supabaseQuery = supabaseQuery.ilike("name", `%${filters.query}%`);
+  }
+
+  if (filterByCategory) {
+    // categories!inner makes this filter prune parent rows, not just
+    // the embedded category array. We filter by id because names are
+    // not unique by contract and are display-only.
+    supabaseQuery = supabaseQuery.eq("categories.id", filters!.category!);
+  }
+
+  // PostgREST orders parent rows by an embedded column using
+  // `alias(column)` *inside* the column argument (see postgrest-js
+  // docs). `referencedTable` only reorders items inside the embed,
+  // which is a no-op for a to-one relationship.
+  switch (filters?.orderBy) {
+    case "price_asc":
+      supabaseQuery = supabaseQuery.order("featured_variant(price)", {
+        ascending: true,
+      });
+      break;
+    case "price_desc":
+      supabaseQuery = supabaseQuery.order("featured_variant(price)", {
+        ascending: false,
+      });
+      break;
+    case "name_asc":
+      supabaseQuery = supabaseQuery.order("name", { ascending: true });
+      break;
+    case "name_desc":
+      supabaseQuery = supabaseQuery.order("name", { ascending: false });
+      break;
+    default:
+      supabaseQuery = supabaseQuery.order("created_at", { ascending: false });
+  }
+
+  const { data, error } = await supabaseQuery.limit(limit);
 
   if (error) {
     console.error("getProducts failed:", error.message);
     return [];
   }
 
-  return (data as ProductCardData[]) ?? [];
+  return (data as unknown as ProductCardData[]) ?? [];
 }

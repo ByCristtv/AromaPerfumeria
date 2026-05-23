@@ -8,7 +8,13 @@ import { createProduct } from "@/features/admin/createProduct";
 import { useCategories } from "@/hooks/useCategories";
 import { useBrands } from "@/hooks/useBrands";
 import { PRODUCTS_QUERY_KEY } from "@/hooks/useProducts";
-import type { ProductTypes } from "@/types/database";
+import { ADMIN_PRODUCTS_QUERY_KEY } from "@/features/admin/getProductsAdmin";
+import type { ProductTypes } from "@/types/product";
+
+interface ProductFormProps {
+  /** Called after a successful create + cache invalidation. */
+  onSuccess?: () => void;
+}
 
 // ---------- Types & constants ----------
 
@@ -54,39 +60,9 @@ const INITIAL_FORM_STATE: ProductFormState = {
   offer_price: "",
 };
 
-// react-select theming — extracted from the JSX so the form body stays readable.
-const SELECT_STYLES = {
-  control: (base: any, state: { isFocused: boolean }) => ({
-    ...base,
-    backgroundColor: "#1a1a1a",
-    borderColor: state.isFocused ? "#c9a96e" : "rgba(201,169,110,0.3)",
-    color: "#ececec",
-  }),
-  menu: (base: any) => ({
-    ...base,
-    backgroundColor: "#1a1a1a",
-    border: "1px solid rgba(201,169,110,0.3)",
-  }),
-  option: (base: any, state: { isSelected: boolean; isFocused: boolean }) => ({
-    ...base,
-    backgroundColor: state.isSelected
-      ? "#c9a96e"
-      : state.isFocused
-      ? "#2a2a2a"
-      : "#1a1a1a",
-    color: state.isSelected ? "#000" : "#ececec",
-  }),
-  singleValue: (base: any) => ({ ...base, color: "#ececec" }),
-  multiValue: (base: any) => ({
-    ...base,
-    backgroundColor: "#c9a96e",
-    color: "#000",
-  }),
-} as const;
-
 // ---------- Component ----------
 
-export default function ProductForm() {
+export default function ProductForm({ onSuccess }: ProductFormProps = {}) {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<ProductFormState>(INITIAL_FORM_STATE);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -132,13 +108,17 @@ export default function ProductForm() {
         file,
       });
 
-      await queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: PRODUCTS_QUERY_KEY() }),
+        queryClient.invalidateQueries({ queryKey: ADMIN_PRODUCTS_QUERY_KEY }),
+      ]);
       Swal.fire({
         icon: "success",
         title: "¡Creado!",
         text: "Producto y variante creados exitosamente",
       });
       resetForm();
+      onSuccess?.();
     } catch (err) {
       Swal.fire({
         icon: "error",
@@ -180,7 +160,7 @@ export default function ProductForm() {
               <label className="text-xs font-bold text-[#c9a96e] uppercase">Marca</label>
               <Select<Option>
                 instanceId="brand-select"
-                styles={SELECT_STYLES}
+                className="input-field-custom"
                 options={brands.map((b) => ({ value: b.id, label: b.name }))}
                 onChange={(opt) => setField("brand_id", opt?.value ?? "")}
               />
@@ -225,7 +205,7 @@ export default function ProductForm() {
               <Select<Option, true>
                 instanceId="category-select"
                 isMulti
-                styles={SELECT_STYLES}
+                className="input-field-custom"
                 options={categories.map((c) => ({ value: c.id, label: c.name }))}
                 onChange={(opts) =>
                   setSelectedCategories(opts.map((o) => o.value))

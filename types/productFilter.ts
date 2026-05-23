@@ -1,8 +1,5 @@
-/**
- * Props consumed by `<ProductFilters>` and `<ProductFilterOrderBy>`.
- * Kept in a separate module so multiple components can share them
- * without circular imports against `types/product.ts`.
- */
+
+import { ProductCardData } from "./product";
 
 export interface ProductFiltersProps {
   selectedCategory?: string;
@@ -15,3 +12,9 @@ export interface ProductFilterOrderByProps {
   selectedOrder: ProductOrderBy;
   onOrderChange: (order: ProductOrderBy) => void;
 }
+
+export interface ProductListProps {
+  products: ProductCardData[];
+  isLoading: boolean;
+}
+

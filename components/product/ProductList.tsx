@@ -1,13 +1,22 @@
 "use client";
 
 import ProductCard from "@/components/product/ProductCard";
-import { useProducts } from "@/hooks/useProducts";
+import type { ProductListProps } from "@/types/productFilter";
 
-export default function ProductList() {
-  const { data: products = [], isLoading } = useProducts();
 
+
+export default function ProductList({ products, isLoading }: ProductListProps) {
   if (isLoading) {
-    return <p className="text-center text-gray-500">Cargando productos...</p>;
+    return <p className="text-center text-gray-500">Buscando fragancias...</p>;
+  }
+
+  // Agregamos un estado vacío para cuando el usuario busca algo que no existe
+  if (products.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500 text-lg">No se encontraron productos con esos filtros.</p>
+      </div>
+    );
   }
 
   return (
