@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { CartStore} from "@/types/product";
+import { CartStore } from "@/types/product";
 
 
 export const useCartStore = create<CartStore>()(
@@ -36,6 +36,7 @@ export const useCartStore = create<CartStore>()(
           set({ cart: get().cart.filter((i) => i.variant_id !== variantId) });
           return;
         }
+
         set({
           cart: get().cart.map((i) =>
             i.variant_id === variantId
@@ -53,6 +54,9 @@ export const useCartStore = create<CartStore>()(
       getTotalPrice: () =>
         get().cart.reduce((acc, item) => acc + item.price * item.quantity, 0),
     }),
-    { name: "cart-storage" }
+    {
+      name: "cart-storage"
+      
+    }
   )
 );

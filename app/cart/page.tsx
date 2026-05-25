@@ -4,8 +4,11 @@ import Link from "next/link";
 import CartItem from "@/components/cart/CartItem";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/format";
+import { useEffect, useState } from "react";
 
 export default function CartPage() {
+	const [mounted, setMounted] = useState(false);
+
 	const {
 		cart,
 		totalItems,
@@ -15,6 +18,15 @@ export default function CartPage() {
 		removeItem,
 		clearCart,
 	} = useCart();
+
+	
+	useEffect(() => {
+  	setMounted(true);
+	}, []);
+	
+	if (!mounted) {
+  	return null;
+	}
 
 	return (
 		<section className="pt-28 pb-10 px-4 bg-gray-50 min-h-screen">

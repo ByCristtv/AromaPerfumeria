@@ -126,6 +126,15 @@ export default function AccountLoginCard() {
                                 <p className="text-white/50 text-xs uppercase tracking-wider mb-1">Email</p>
                                 <p className="text-white text-base">{user.email}</p>
                             </div>
+                            <div>
+                                <p className="text-white/50 text-xs uppercase tracking-wider mb-1">Teléfono</p>
+                                <p className="text-white text-base">{user.user_metadata?.phone ?? "Sin teléfono"}</p>
+                            </div>
+                            <div>
+                                <p className="text-white/50 text-xs uppercase tracking-wider mb-1">Direccion</p>
+                                <p className="text-white text-base">{user.user_metadata?.address ?? "Sin direccion"}</p>
+                            </div>
+                            
                         </div>
 
                         <button

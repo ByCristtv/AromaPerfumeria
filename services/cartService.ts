@@ -9,17 +9,31 @@ export async function getAuthUserId(): Promise<string | null> {
 
 export async function fetchCartFromDB(userId: string): Promise<CartLineItem[]> {
   const { data, error } = await supabase
-    .from("cart_items")
-    .select(`
-      quantity,
-      variant:product_variants (
-        id, price, offer_price, is_on_offer, stock, size_ml, product_type,
-        product:products ( name, product_images (url) )
+  .from("cart_items")
+  .select(`
+    quantity,
+    variant:product_variants (
+      id,
+      price,
+      offer_price,
+      is_on_offer,
+      stock,
+      size_ml,
+      product_type,
+      product:products!product_variants_product_id_fkey (
+        name,
+        product_images (url)
       )
-    `)
-    .eq("user_id", userId);
+    )
+  `)
+  .eq("user_id", userId);
 
-  if (error || !data) return [];
+  if (error) {
+  console.error("Error fetching cart:", error);
+  throw error;
+  }
+
+  if (!data) return [];
 
   const dbItems = data as unknown as DbCartQueryResponse[];
 

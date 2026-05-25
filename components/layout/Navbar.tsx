@@ -9,8 +9,8 @@ import { useIsMounted } from "@/hooks/useIsMounted";
 const NAV_LINKS = [
   { label: "Inicio", href: "/" },
   { label: "Contactanos", href: "/contact" },
-  { label: "Como Comprar", href: "/como-comprar" },
-  { label: "Sobre Nosotros", href: "/sobre-nosotros" },
+  { label: "Como Comprar", href: "/howtobuy" },
+  { label: "Sobre Nosotros", href: "/about" },
 ] as const;
 
 const SERIF = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
