@@ -3,11 +3,11 @@
 import Link from "next/link";
 import CartItem from "@/components/cart/CartItem";
 import { useCart } from "@/hooks/useCart";
+import { useIsMounted } from "@/hooks/useIsMounted";
 import { formatPrice } from "@/lib/format";
-import { useEffect, useState } from "react";
 
 export default function CartPage() {
-	const [mounted, setMounted] = useState(false);
+	const mounted = useIsMounted();
 
 	const {
 		cart,
@@ -19,11 +19,6 @@ export default function CartPage() {
 		clearCart,
 	} = useCart();
 
-	
-	useEffect(() => {
-  	setMounted(true);
-	}, []);
-	
 	if (!mounted) {
   	return null;
 	}
@@ -87,9 +82,12 @@ export default function CartPage() {
 								</div>
 							</div>
 
-							<button className="mt-5 w-full rounded-lg bg-black text-white py-3 text-sm font-medium hover:opacity-90 transition">
+							<Link
+								href="/checkout"
+								className="mt-5 block w-full text-center rounded-lg bg-black text-white py-3 text-sm font-medium hover:opacity-90 transition"
+							>
 								Finalizar compra
-							</button>
+							</Link>
 						</aside>
 					</div>
 				)}

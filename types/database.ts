@@ -261,74 +261,99 @@ export type Database = {
       orders: {
         Row: {
           created_at: string
+          created_by_admin_id: string | null
+          customer_email: string | null
+          customer_name: string
+          customer_phone: string
           discount: number
           id: string
           notes: string | null
           order_number: number
-          shipping_address_line1: string
-          shipping_address_line2: string | null
-          shipping_city: string
+          order_status: Database["public"]["Enums"]["order_status"]
+          paid_at: string | null
+          payment_provider: string | null
+          payment_reference: string | null
+          payment_status: Database["public"]["Enums"]["payment_status"]
+          shipping_address: string
+          shipping_canton: string
           shipping_cost: number
-          shipping_country: string
-          shipping_full_name: string
-          shipping_instructions: string | null
-          shipping_phone: string
-          shipping_postal_code: string | null
+          shipping_district: string | null
+          shipping_method: string | null
           shipping_province: string
-          status: Database["public"]["Enums"]["order_status"]
+          shipping_reference: string | null
+          source: string
           subtotal: number
           tax: number
           total: number
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
+          created_by_admin_id?: string | null
+          customer_email?: string | null
+          customer_name: string
+          customer_phone: string
           discount?: number
           id?: string
           notes?: string | null
           order_number?: never
-          shipping_address_line1: string
-          shipping_address_line2?: string | null
-          shipping_city: string
+          order_status?: Database["public"]["Enums"]["order_status"]
+          paid_at?: string | null
+          payment_provider?: string | null
+          payment_reference?: string | null
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          shipping_address: string
+          shipping_canton: string
           shipping_cost?: number
-          shipping_country?: string
-          shipping_full_name: string
-          shipping_instructions?: string | null
-          shipping_phone: string
-          shipping_postal_code?: string | null
+          shipping_district?: string | null
+          shipping_method?: string | null
           shipping_province: string
-          status?: Database["public"]["Enums"]["order_status"]
+          shipping_reference?: string | null
+          source?: string
           subtotal: number
           tax?: number
           total: number
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
+          created_by_admin_id?: string | null
+          customer_email?: string | null
+          customer_name?: string
+          customer_phone?: string
           discount?: number
           id?: string
           notes?: string | null
           order_number?: never
-          shipping_address_line1?: string
-          shipping_address_line2?: string | null
-          shipping_city?: string
+          order_status?: Database["public"]["Enums"]["order_status"]
+          paid_at?: string | null
+          payment_provider?: string | null
+          payment_reference?: string | null
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          shipping_address?: string
+          shipping_canton?: string
           shipping_cost?: number
-          shipping_country?: string
-          shipping_full_name?: string
-          shipping_instructions?: string | null
-          shipping_phone?: string
-          shipping_postal_code?: string | null
+          shipping_district?: string | null
+          shipping_method?: string | null
           shipping_province?: string
-          status?: Database["public"]["Enums"]["order_status"]
+          shipping_reference?: string | null
+          source?: string
           subtotal?: number
           tax?: number
           total?: number
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "orders_created_by_admin_id_fkey"
+            columns: ["created_by_admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "orders_user_id_fkey"
             columns: ["user_id"]
@@ -337,6 +362,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      processed_webhooks: {
+        Row: {
+          event_id: string
+          id: string
+          payload_hash: string | null
+          processed_at: string
+          provider: string
+        }
+        Insert: {
+          event_id: string
+          id?: string
+          payload_hash?: string | null
+          processed_at?: string
+          provider: string
+        }
+        Update: {
+          event_id?: string
+          id?: string
+          payload_hash?: string | null
+          processed_at?: string
+          provider?: string
+        }
+        Relationships: []
       }
       product_categories: {
         Row: {
@@ -555,6 +604,71 @@ export type Database = {
         }
         Relationships: []
       }
+      shipping_zone_cantons: {
+        Row: {
+          canton_code: string
+          canton_name: string
+          province_code: string
+          province_name: string
+          zone_id: string
+        }
+        Insert: {
+          canton_code: string
+          canton_name: string
+          province_code: string
+          province_name: string
+          zone_id: string
+        }
+        Update: {
+          canton_code?: string
+          canton_name?: string
+          province_code?: string
+          province_name?: string
+          zone_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shipping_zone_cantons_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "shipping_zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shipping_zones: {
+        Row: {
+          base_cost: number
+          code: string
+          created_at: string
+          free_shipping_threshold: number | null
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          base_cost: number
+          code: string
+          created_at?: string
+          free_shipping_threshold?: number | null
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          base_cost?: number
+          code?: string
+          created_at?: string
+          free_shipping_threshold?: number | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       stock_movements: {
         Row: {
           created_at: string
@@ -614,6 +728,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      advance_order_status: {
+        Args: { p_new_status: string; p_order_id: string }
+        Returns: Json
+      }
       analytics_best_sellers: {
         Args: { p_limit?: number; p_since?: string }
         Returns: {
@@ -647,6 +765,14 @@ export type Database = {
           total_units: number
         }[]
       }
+      calculate_shipping_cost: {
+        Args: { p_canton_code: string; p_subtotal: number }
+        Returns: Json
+      }
+      claim_guest_orders: {
+        Args: { p_email: string; p_user_id: string }
+        Returns: number
+      }
       create_new_product: {
         Args: {
           p_brand_id: string
@@ -673,8 +799,14 @@ export type Database = {
         Args: { p_order_id: string; p_quantity: number; p_variant_id: string }
         Returns: undefined
       }
+      deny_order_admin: {
+        Args: { p_order_id: string; p_reason: string }
+        Returns: Json
+      }
       is_admin: { Args: never; Returns: boolean }
-      place_order: { Args: { p_address_id: string }; Returns: string }
+      mark_order_paid: { Args: { p_order_id: string }; Returns: Json }
+      place_order: { Args: { p_payload: Json }; Returns: Json }
+      restore_variant_stock: { Args: { p_order_id: string }; Returns: Json }
       search_products: {
         Args: { p_limit?: number; p_offset?: number; p_query: string }
         Returns: {
@@ -687,10 +819,12 @@ export type Database = {
       }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
+      sweep_abandoned_orders: { Args: never; Returns: number }
       unaccent: { Args: { "": string }; Returns: string }
     }
     Enums: {
       order_status: "pending" | "received" | "shipped" | "denied"
+      payment_status: "pending" | "paid" | "failed" | "refunded"
       product_type: "full_size" | "decant"
       stock_movement_reason:
         | "manual_adjustment"
@@ -828,6 +962,7 @@ export const Constants = {
   public: {
     Enums: {
       order_status: ["pending", "received", "shipped", "denied"],
+      payment_status: ["pending", "paid", "failed", "refunded"],
       product_type: ["full_size", "decant"],
       stock_movement_reason: [
         "manual_adjustment",
