@@ -160,7 +160,7 @@ export default function AdminOrderDetail({ order }: Props) {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] pt-20 pb-12">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-6 mt-3">
         {/* ──────── Header ──────── */}
         <header className="mb-6">
           <Link

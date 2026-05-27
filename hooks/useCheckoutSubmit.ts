@@ -61,7 +61,9 @@ async function postCheckoutSession(
       hint: body.hint,
       status: res.status,
     };
+    console.error("Checkout submission error:", err);
     throw err;
+    
   }
 
   return (await res.json()) as CheckoutSubmitResponse;

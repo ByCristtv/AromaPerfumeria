@@ -1,13 +1,17 @@
+import type { Metadata } from "next";
+import AnalyticsDashboard from "./AnalyticsDashboard";
 
+export const metadata: Metadata = {
+  title: "Dashboard — Admin · Aroma Perfumería",
+  description: "Métricas de ventas e inventario.",
+};
 
+/**
+ * Admin → Dashboard.
+ *
+ * Auth enforced by proxy.ts; this is a thin shell. All state lives in
+ * <AnalyticsDashboard /> so it can be a Client Component using hooks.
+ */
 export default function AdminDashboardPage() {
-    return (
-        <main className="mt-12">
-            <h1 className="mt-12">Dashboard</h1>
-            <section>
-                <p>Observa todas tus ganancias y ventas totales. Analiza el rendimiento de tu tienda y toma decisiones informadas.</p>
-            </section>
-        </main>       
-        
-    )
+  return <AnalyticsDashboard />;
 }
