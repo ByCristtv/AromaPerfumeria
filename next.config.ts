@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: [
+    "https://pavement-exuberant-harness.ngrok-free.dev",
+  ],
   images: {
     remotePatterns: [
       {
@@ -12,6 +15,7 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
       },
+      
     ],
   },
 };

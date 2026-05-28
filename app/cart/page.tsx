@@ -26,7 +26,7 @@ export default function CartPage() {
 	return (
 		<section className="pt-28 pb-10 px-4 bg-gray-50 min-h-screen">
 			<div className="max-w-5xl mx-auto">
-				<div className="mb-6 sm:mb-8 flex flex-wrap items-end justify-between gap-3">
+				<div className="mb-6 sm:mb-8 flex flex-wrap items-end justify-between gap-3 opacity-0 animate-fadeUp" style={{ animationDelay: '0ms' }}>
 					<div>
 						<h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">Carrito</h1>
 						<p className="text-sm text-gray-600 mt-1">
@@ -37,7 +37,8 @@ export default function CartPage() {
 					{cart.length > 0 && (
 						<button
 							onClick={clearCart}
-							className="text-sm text-red-600 hover:text-red-700 font-medium"
+							className="text-sm text-red-600 hover:text-red-700 font-medium opacity-0 animate-fadeUp"
+							style={{ animationDelay: '80ms' }}
 						>
 							Vaciar carrito
 						</button>
@@ -45,7 +46,7 @@ export default function CartPage() {
 				</div>
 
 				{cart.length === 0 ? (
-					<div className="rounded-2xl bg-white border border-gray-200 p-8 sm:p-12 text-center">
+					<div className="rounded-2xl bg-white border border-gray-200 p-8 sm:p-12 text-center animate-bounce opacity-0 animate-fadeUp" style={{ animationDelay: '90ms' }}>
 						<h2 className="text-xl font-medium text-gray-900">Tu carrito esta vacio</h2>
 						<p className="text-gray-600 mt-2">Agrega perfumes para verlos aqui.</p>
 						<Link
@@ -58,18 +59,19 @@ export default function CartPage() {
 				) : (
 					<div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-5 lg:gap-6">
 						<div className="space-y-3 sm:space-y-4">
-							{cart.map((item) => (
-								<CartItem
-									key={item.variant_id}
-									item={item}
-									onIncrease={incrementQuantity}
-									onDecrease={decrementQuantity}
-									onDelete={removeItem}
-								/>
+							{cart.map((item, i) => (
+								<div key={item.variant_id} className="opacity-0 animate-fadeUp" style={{ animationDelay: `${i * 70}ms` }}>
+									<CartItem
+										item={item}
+										onIncrease={incrementQuantity}
+										onDecrease={decrementQuantity}
+										onDelete={removeItem}
+									/>
+								</div>
 							))}
 						</div>
 
-						<aside className="rounded-2xl border border-gray-200 bg-white p-5 h-fit lg:sticky lg:top-28">
+						<aside className="rounded-2xl border border-gray-200 bg-white p-5 h-fit lg:sticky lg:top-28 opacity-0 animate-fadeUp" style={{ animationDelay: `${Math.max(200, cart.length * 70)}ms` }}>
 							<h2 className="text-lg font-semibold text-gray-900">Resumen</h2>
 							<div className="mt-4 space-y-3 text-sm">
 								<div className="flex items-center justify-between text-gray-600">

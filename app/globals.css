@@ -32,3 +32,21 @@ html {
     @apply w-full px-4 py-3 bg-[#1a1a1a] border border-[#c9a96e]/30 rounded-lg text-[#ececec] transition-all duration-200 focus:border-[#c9a96e] focus:outline-none focus:ring-1 focus:ring-[#c9a96e];
   }
 }
+
+@layer utilities {
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fadeUp {
+    animation: fadeUp 500ms cubic-bezier(.22,1,.36,1) forwards;
+    will-change: transform, opacity;
+  }
+}

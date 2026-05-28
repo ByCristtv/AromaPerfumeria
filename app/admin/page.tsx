@@ -17,11 +17,8 @@ export default function AdminPage() {
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           <Link href="/admin/products" className="group">
-            <motion.article
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-             className="h-full rounded-2xl border border-[#c9a96e]/30 bg-[#1a1a1a] p-8 text-center shadow-[0_18px_64px_rgba(82,63,47,0.08)] transition-all duration-300 hover:border-[#c9a96e] hover:shadow-[0_0_20px_rgba(201,169,110,0.2)] hover:-translate-y-2">
+            <article       
+             className="h-full rounded-2xl border border-[#c9a96e]/30 bg-[#1a1a1a] p-8 text-center shadow-[0_18px_64px_rgba(82,63,47,0.08)] transition-all duration-300 hover:border-[#c9a96e] hover:shadow-[0_0_20px_rgba(201,169,110,0.2)] hover:-translate-y-2 animate-bounce opacity-0 animate-fadeUp" style={{ animationDelay: '0ms' }}>
               <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#c9a96e]/20 to-[#b8a060]/20 text-3xl text-[#c9a96e] shadow-inner shadow-[#c9a96e]/10">
                 📦
               </div>
@@ -31,15 +28,12 @@ export default function AdminPage() {
               <p className="text-sm leading-relaxed text-[#a5a5a5]">
                 Agrega, elimina y edita todos tus productos aquí. Mantén tu catálogo actualizado con las últimas fragancias.
               </p>
-            </motion.article>
+            </article>
           </Link>
 
           <Link href="/admin/dashboard" className="group">
-            <motion.article
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="h-full rounded-2xl border border-[#c9a96e]/30 bg-[#1a1a1a] p-8 text-center shadow-[0_18px_64px_rgba(82,63,47,0.08)] transition-all duration-300 hover:border-[#c9a96e] hover:shadow-[0_0_20px_rgba(201,169,110,0.2)] hover:-translate-y-2">
+            <article
+              className="h-full rounded-2xl border border-[#c9a96e]/30 bg-[#1a1a1a] p-8 text-center shadow-[0_18px_64px_rgba(82,63,47,0.08)] transition-all duration-300 hover:border-[#c9a96e] hover:shadow-[0_0_20px_rgba(201,169,110,0.2)] hover:-translate-y-2 animate-bounce opacity-0 animate-fadeUp" style={{ animationDelay: '150ms' }}>
               <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#c9a96e]/20 to-[#b8a060]/20 text-3xl text-[#c9a96e] shadow-inner shadow-[#c9a96e]/10">
                 📊
               </div>
@@ -49,15 +43,13 @@ export default function AdminPage() {
               <p className="text-sm leading-relaxed text-[#a5a5a5]">
                 Observa todas tus ganancias y ventas totales. Analiza el rendimiento de tu tienda y toma decisiones informadas.
               </p>
-            </motion.article>
+            </article>
           </Link>
 
           <Link href="/admin/orders" className="group md:col-span-2 lg:col-span-1">
-            <motion.article
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              className="h-full rounded-2xl border border-[#c9a96e]/30 bg-[#1a1a1a] p-8 text-center shadow-[0_18px_64px_rgba(82,63,47,0.08)] transition-all duration-300 hover:border-[#c9a96e] hover:shadow-[0_0_20px_rgba(201,169,110,0.2)] hover:-translate-y-2">
+            <article
+              
+              className="h-full rounded-2xl border border-[#c9a96e]/30 bg-[#1a1a1a] p-8 text-center shadow-[0_18px_64px_rgba(82,63,47,0.08)] transition-all duration-300 hover:border-[#c9a96e] hover:shadow-[0_0_20px_rgba(201,169,110,0.2)] hover:-translate-y-2 animate-bounce opacity-0 animate-fadeUp" style={{ animationDelay: '300ms' }}>
               <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#c9a96e]/20 to-[#b8a060]/20 text-3xl text-[#c9a96e] shadow-inner shadow-[#c9a96e]/10">
                 📋
               </div>
@@ -67,7 +59,7 @@ export default function AdminPage() {
               <p className="text-sm leading-relaxed text-[#a5a5a5]">
                 Aquí puedes administrar tus órdenes pendientes. Gestiona envíos, actualizaciones y soporte al cliente.
               </p>
-            </motion.article>
+            </article>
           </Link>
         </div>
       </div>

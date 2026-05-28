@@ -8,36 +8,48 @@ const testimonials = [
 
 export default function AboutPage() {
 	return (
-		<main style={styles.container}>
-			<h1 style={styles.heading}>Sobre Nosotros</h1>
-			<p style={styles.lead}>Apasionados por la perfumería: calidad, originalidad y atención al cliente.</p>
+		<main className="max-w-[1100px] mx-auto my-10 px-4">
+			<h1 className="text-[32px] font-semibold mb-2">Sobre Nosotros</h1>
+			<p className="mb-6 text-gray-600">Apasionados por la perfumería: calidad, originalidad y atención al cliente.</p>
 
-			<section aria-labelledby="experiencia-title" style={styles.section}>
-				<h2 id="experiencia-title" style={styles.sectionTitle}>Experiencia en el mercado</h2>
-				<p style={styles.paragraph}>Llevamos años en el sector seleccionando fragancias que destacan por su calidad y longevidad. Nuestro equipo trabaja directamente con proveedores verificados para garantizar autenticidad y buen servicio.</p>
+			<section
+				aria-labelledby="experiencia-title"
+				className="mb-6 p-4 rounded-lg border border-gray-200 bg-white opacity-0 animate-fadeUp"
+				style={{ animationDelay: '0ms' }}
+			>
+				<h2 id="experiencia-title" className="text-lg font-medium mb-2">Experiencia en el mercado</h2>
+				<p className="text-sm text-gray-600">Llevamos años en el sector seleccionando fragancias que destacan por su calidad y longevidad. Nuestro equipo trabaja directamente con proveedores verificados para garantizar autenticidad y buen servicio.</p>
 			</section>
 
-			<section aria-labelledby="perfumeria-title" style={styles.section}>
-				<h2 id="perfumeria-title" style={styles.sectionTitle}>Perfumería Original</h2>
-				<p style={styles.paragraph}>Nos especializamos en perfumería original: cada producto se revisa antes del envío y se almacena adecuadamente para conservar sus notas olfativas.</p>
-				<ul style={styles.benefits}>
-					<li>Proveedores confiables</li>
-					<li>Control de calidad en cada lote</li>
-					<li>Envíos seguros y seguimiento</li>
+			<section
+				aria-labelledby="perfumeria-title"
+				className="mb-6 p-4 rounded-lg border border-gray-200 bg-white opacity-0 animate-fadeUp"
+				style={{ animationDelay: '150ms' }}
+			>
+				<h2 id="perfumeria-title" className="text-lg font-medium mb-2">Perfumería Original</h2>
+				<p className="text-sm text-gray-600">Nos especializamos en perfumería original: cada producto se revisa antes del envío y se almacena adecuadamente para conservar sus notas olfativas.</p>
+				<ul className="mt-3 pl-5 list-disc">
+					<li className="text-sm text-gray-700">Proveedores confiables</li>
+					<li className="text-sm text-gray-700">Control de calidad en cada lote</li>
+					<li className="text-sm text-gray-700">Envíos seguros y seguimiento</li>
 				</ul>
 			</section>
 
-			<section aria-labelledby="opiniones-title" style={styles.section}>
-				<h2 id="opiniones-title" style={styles.sectionTitle}>Opiniones</h2>
-				<ul style={styles.testimonials}>
+			<section
+				aria-labelledby="opiniones-title"
+				className="mb-6 p-4 rounded-lg border border-gray-200 bg-white opacity-0 animate-fadeUp"
+				style={{ animationDelay: '300ms' }}
+			>
+				<h2 id="opiniones-title" className="text-lg font-medium mb-2">Opiniones</h2>
+				<ul className="mt-3 grid gap-3 list-none p-0 m-0">
 					{testimonials.map((t) => (
-						<li key={t.id} style={styles.testimonialItem}>
-							<div style={styles.avatar} aria-hidden>
-								<span style={styles.avatarLetter}>{t.name.charAt(0)}</span>
+						<li key={t.id} className="flex gap-3 items-start">
+							<div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center font-bold text-gray-700 flex-none" aria-hidden="true">
+								<span className="text-lg">{t.name.charAt(0)}</span>
 							</div>
-							<div style={styles.testimonialContent}>
-								<p style={styles.testimonialText}>&ldquo;{t.quote}&rdquo;</p>
-								<p style={styles.testimonialName}>— {t.name}</p>
+							<div className="flex-1">
+								<p className="text-sm text-gray-800">&ldquo;{t.quote}&rdquo;</p>
+								<p className="mt-1 text-xs text-gray-500">— {t.name}</p>
 							</div>
 						</li>
 					))}
@@ -46,81 +58,4 @@ export default function AboutPage() {
 		</main>
 	);
 }
-
-const styles: { [k: string]: React.CSSProperties } = {
-	container: {
-		maxWidth: 1100,
-		margin: '40px auto',
-		padding: '0 16px',
-	},
-	heading: {
-		fontSize: 32,
-		margin: '0 0 8px',
-	},
-	lead: {
-		margin: '0 0 24px',
-		color: '#444',
-	},
-	section: {
-		marginBottom: 24,
-		padding: 16,
-		borderRadius: 8,
-		border: '1px solid #eee',
-		background: '#fff',
-	},
-	sectionTitle: {
-		fontSize: 20,
-		margin: '0 0 8px',
-	},
-	paragraph: {
-		margin: 0,
-		color: '#555',
-		fontSize: 15,
-		lineHeight: 1.5,
-	},
-	benefits: {
-		marginTop: 12,
-		paddingLeft: 20,
-	},
-	testimonials: {
-		listStyle: 'none',
-		padding: 0,
-		margin: '12px 0 0',
-		display: 'grid',
-		gap: 12,
-	},
-	testimonialItem: {
-		display: 'flex',
-		gap: 12,
-		alignItems: 'flex-start',
-	},
-	avatar: {
-		width: 56,
-		height: 56,
-		borderRadius: 9999,
-		background: '#f3f3f3',
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-		fontWeight: 700,
-		color: '#333',
-		flex: '0 0 56px',
-	},
-	avatarLetter: {
-		fontSize: 18,
-	},
-	testimonialContent: {
-		flex: 1,
-	},
-	testimonialText: {
-		margin: 0,
-		color: '#333',
-		fontSize: 14,
-	},
-	testimonialName: {
-		margin: '6px 0 0',
-		color: '#666',
-		fontSize: 13,
-	},
-};
 

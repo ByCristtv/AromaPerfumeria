@@ -11,20 +11,26 @@ const steps = [
 
 export default function HowToBuyPage() {
 	return (
-		<main style={styles.container}>
-			<h1 style={styles.heading}>Cómo comprar</h1>
-			<p style={styles.lead}>Sigue estos pasos sencillos para completar tu compra.</p>
+		<main className="max-w-[1100px] mx-auto my-10 px-4">
+			<h1 className="text-2xl font-semibold mb-2">Cómo comprar</h1>
+			<p className="mb-6 text-gray-600">Sigue estos pasos sencillos para completar tu compra.</p>
 
-			<div style={styles.grid}>
-				{steps.map((s) => (
-					<article key={s.id} style={styles.card} aria-labelledby={`step-${s.id}-title`}>
-						<div style={styles.placeholder} role="img" aria-label={`Imagen: ${s.title}`}>
-							<div style={styles.number}>{s.id}</div>
-							<div style={styles.placeholderText}>Imagen</div>
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+				{steps.map((s, i) => (
+					<article
+						key={s.id}
+						aria-labelledby={`step-${s.id}-title`}
+						className="flex flex-col gap-3 p-4 rounded-lg border border-gray-200 bg-white opacity-0 animate-fadeUp"
+						style={{ animationDelay: `${i * 80}ms` }}
+					>
+						<div className="h-40 rounded-lg bg-gray-100 flex items-center justify-center relative overflow-hidden" role="img" aria-label={`Imagen: ${s.title}`}>
+							<div className="absolute top-2 left-2 bg-black text-white w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm">{s.id}</div>
+							<div className="text-gray-500 text-sm">Imagen</div>
 						</div>
-						<div style={styles.cardContent}>
-							<h2 id={`step-${s.id}-title`} style={styles.title}>{s.title}</h2>
-							<p style={styles.description}>{s.description}</p>
+
+						<div className="flex flex-col gap-2">
+							<h2 id={`step-${s.id}-title`} className="m-0 text-base font-medium">{s.title}</h2>
+							<p className="m-0 text-sm text-gray-600">{s.description}</p>
 						</div>
 					</article>
 				))}
@@ -32,76 +38,4 @@ export default function HowToBuyPage() {
 		</main>
 	);
 }
-
-const styles: { [k: string]: React.CSSProperties } = {
-	container: {
-		maxWidth: 1100,
-		margin: '40px auto',
-		padding: '0 16px',
-	},
-	heading: {
-		fontSize: 28,
-		margin: '0 0 8px',
-	},
-	lead: {
-		margin: '0 0 24px',
-		color: '#444',
-	},
-	grid: {
-		display: 'grid',
-		gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-		gap: 20,
-	},
-	card: {
-		display: 'flex',
-		flexDirection: 'column',
-		gap: 12,
-		padding: 16,
-		borderRadius: 8,
-		border: '1px solid #e6e6e6',
-		background: '#fff',
-	},
-	placeholder: {
-		height: 160,
-		borderRadius: 8,
-		background: '#f5f5f5',
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-		position: 'relative',
-		overflow: 'hidden',
-	},
-	number: {
-		position: 'absolute',
-		top: 8,
-		left: 8,
-		background: '#111',
-		color: '#fff',
-		width: 28,
-		height: 28,
-		borderRadius: 20,
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-		fontWeight: 700,
-	},
-	placeholderText: {
-		color: '#888',
-		fontSize: 14,
-	},
-	cardContent: {
-		display: 'flex',
-		flexDirection: 'column',
-		gap: 8,
-	},
-	title: {
-		margin: 0,
-		fontSize: 18,
-	},
-	description: {
-		margin: 0,
-		color: '#555',
-		fontSize: 14,
-	},
-};
 

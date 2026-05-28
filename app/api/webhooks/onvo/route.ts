@@ -28,23 +28,36 @@ import { createAdminClient } from "@/lib/supabase/admin";
  *     See lib/onvo/verifyWebhook.ts for the full caveat.
  */
 export async function POST(request: NextRequest) {
+
+  console.log("========== WEBHOOK HIT ==========");
+
   // ────────── 1. Authenticate the webhook ──────────
   const env = getOnvoEnv();
   const headerSecret = request.headers.get("x-webhook-secret");
 
+  console.log("HEADER SECRET:", headerSecret);
+  console.log("ENV SECRET:", env.webhookSecret);
+
   if (!verifyOnvoWebhookSecret(headerSecret, env.webhookSecret)) {
-    // 401 — discourage casual probing. Log the attempt with no header value.
     console.warn("[onvo-webhook] rejected: invalid or missing X-Webhook-Secret");
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
+  console.log("WEBHOOK AUTH PASSED");
+
   // ────────── 2. Parse the event ──────────
   let event: OnvoWebhookEvent;
+
   try {
     event = (await request.json()) as OnvoWebhookEvent;
+
+    console.log("EVENT TYPE:", event?.type);
+    console.log("EVENT ID:", event?.data?.id);
+    console.log("ORDER ID:", event?.data?.metadata?.orderId);
+    console.log("AMOUNT:", event?.data?.amount);
+
   } catch (err) {
     console.error("[onvo-webhook] body not JSON-parseable", err);
-    // Acknowledge so Onvo doesn't retry a permanently bad payload.
     return NextResponse.json({ received: true, ignored: "invalid_json" });
   }
 
@@ -55,69 +68,66 @@ export async function POST(request: NextRequest) {
 
   // ────────── 3. Idempotency ──────────
   const admin = createAdminClient();
+
+  console.log("TRYING INSERT INTO processed_webhooks");
+
   const { error: dedupErr } = await admin.from("processed_webhooks").insert({
     provider: "onvo",
     event_id: event.data.id,
   });
 
   if (dedupErr) {
-    // PostgreSQL unique-violation code = '23505'
+
+    console.error("DEDUP ERROR:", dedupErr);
+
     if (dedupErr.code === "23505") {
-      // Already processed — acknowledge silently.
       return NextResponse.json({ received: true, already_processed: true });
     }
-    // Real DB error. Log + acknowledge anyway; the underlying problem isn't
-    // something Onvo retries can fix.
-    console.error("[onvo-webhook] dedup INSERT failed", { event, dedupErr });
+
     return NextResponse.json({ received: true, ignored: "dedup_db_error" });
   }
 
+  console.log("WEBHOOK INSERTED SUCCESSFULLY");
+
   // ────────── 4. Route by event type ──────────
   try {
+
+    console.log("ROUTING EVENT:", event.type);
+
     switch (event.type) {
+
       case "payment-intent.succeeded":
+        console.log("CALLING handleSucceeded()");
         await handleSucceeded(admin, event);
         break;
 
       case "payment-intent.failed":
+        console.log("CALLING handleFailed()");
         await handleFailed(admin, event);
         break;
 
       case "payment-intent.deferred":
-        // SINPE Móvil pending — customer hasn't approved in their bank app yet.
-        // Do nothing; wait for succeeded/failed.
-        console.info("[onvo-webhook] payment-intent.deferred ignored", {
-          intentId: event.data.id,
-          metadata: event.data.metadata,
-        });
+        console.log("DEFERRED EVENT");
         break;
 
       case "checkout-session.succeeded":
-        // We listen to payment-intent.succeeded for the actual money-captured
-        // signal. checkout-session.succeeded is the UI-flow signal — useful
-        // to log, but not the trigger for status changes.
-        console.info("[onvo-webhook] checkout-session.succeeded noted", {
-          sessionId: event.data.id,
-          metadata: event.data.metadata,
-        });
+        console.log("CHECKOUT SESSION SUCCEEDED");
         break;
 
       default:
-        // Unknown event type. Log so we know Onvo added something new; ack.
-        console.info("[onvo-webhook] unhandled event type", {
-          type: event.type,
-          eventId: event.data.id,
-        });
+        console.log("UNHANDLED EVENT TYPE:", event.type);
     }
+
   } catch (err) {
-    // Per response policy, we still return 200 — but log loudly. An exception
-    // here means our handler logic broke, not that Onvo did anything wrong.
+
     console.error("[onvo-webhook] handler threw", {
       type: event.type,
       eventId: event.data.id,
       err,
     });
   }
+
+  console.log("========== WEBHOOK END ==========");
 
   return NextResponse.json({ received: true });
 }

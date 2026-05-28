@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useTransition } from "react";
+import { useTransition, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import {
   advanceOrderStatusAction,
@@ -69,6 +69,17 @@ interface Props {
  */
 export default function AdminOrderDetail({ order }: Props) {
   const [isPending, startTransition] = useTransition();
+  const [pageMounted, setPageMounted] = useState(false);
+
+  useEffect(() => {
+    // Trigger visibility after mount so transitions run on initial render
+    const t = setTimeout(() => setPageMounted(true), 10);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Sequential index generator for staggered panels
+  let panelIndex = 0;
+  const nextIndex = () => panelIndex++;
 
   // ──────── Action handlers ────────
 
@@ -184,7 +195,7 @@ export default function AdminOrderDetail({ order }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5">
           {/* ──────── Left column: details ──────── */}
           <div className="space-y-5">
-            <Panel title="Productos">
+            <Panel title="Productos" index={nextIndex()} visible={pageMounted}>
               <ul className="divide-y divide-[#c9a96e]/10">
                 {(order.order_items ?? []).map((item) => (
                   <li
@@ -209,7 +220,7 @@ export default function AdminOrderDetail({ order }: Props) {
               </ul>
             </Panel>
 
-            <Panel title="Cliente">
+            <Panel title="Cliente" index={nextIndex()} visible={pageMounted}>
               <dl className="text-sm text-[#ececec] space-y-1.5">
                 <Row label="Nombre" value={order.customer_name} />
                 <Row label="Teléfono" value={order.customer_phone} />
@@ -217,7 +228,7 @@ export default function AdminOrderDetail({ order }: Props) {
               </dl>
             </Panel>
 
-            <Panel title="Entrega">
+            <Panel title="Entrega" index={nextIndex()} visible={pageMounted}>
               <dl className="text-sm text-[#ececec] space-y-1.5">
                 <Row
                   label="Provincia / Cantón"
@@ -236,7 +247,7 @@ export default function AdminOrderDetail({ order }: Props) {
               </dl>
             </Panel>
 
-            <Panel title="Pago">
+            <Panel title="Pago" index={nextIndex()} visible={pageMounted}>
               <dl className="text-sm text-[#ececec] space-y-1.5">
                 <Row label="Estado" value={paymentStatusLabel(order.payment_status)} />
                 <Row label="Proveedor" value={order.payment_provider ?? "—"} />
@@ -260,7 +271,7 @@ export default function AdminOrderDetail({ order }: Props) {
             </Panel>
 
             {order.notes && (
-              <Panel title="Notas">
+              <Panel title="Notas" index={nextIndex()} visible={pageMounted}>
                 <p className="text-sm text-[#ececec] whitespace-pre-wrap">
                   {order.notes}
                 </p>
@@ -270,7 +281,7 @@ export default function AdminOrderDetail({ order }: Props) {
 
           {/* ──────── Right column: totals + actions ──────── */}
           <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
-            <Panel title="Total">
+            <Panel title="Total" index={nextIndex()} visible={pageMounted}>
               <dl className="text-sm space-y-2">
                 <div className="flex justify-between text-[#a5a5a5]">
                   <dt>Subtotal</dt>
@@ -303,7 +314,7 @@ export default function AdminOrderDetail({ order }: Props) {
               </dl>
             </Panel>
 
-            <Panel title="Acciones">
+            <Panel title="Acciones" index={nextIndex()} visible={pageMounted}>
               <div className="space-y-2">
                 {canMarkPaid && (
                   <ActionButton
@@ -345,7 +356,7 @@ export default function AdminOrderDetail({ order }: Props) {
               </div>
             </Panel>
 
-            <Panel title="Origen">
+            <Panel title="Origen" index={nextIndex()} visible={pageMounted}>
               <p className="text-xs text-[#a5a5a5]">
                 <span className="text-[#ececec]">{order.source}</span>
                 <br />
@@ -368,12 +379,24 @@ export default function AdminOrderDetail({ order }: Props) {
 function Panel({
   title,
   children,
+  index,
+  visible,
 }: {
   title: string;
   children: React.ReactNode;
+  index?: number;
+  visible?: boolean;
 }) {
+  const delay = `${(index ?? 0) * 80}ms`;
+  const style = {
+    opacity: visible ? 1 : 0,
+    transform: visible ? "translateY(0)" : "translateY(-8px)",
+    transition: `opacity 300ms ease ${delay}, transform 300ms ease ${delay}`,
+    willChange: "opacity, transform",
+  };
+
   return (
-    <section className="rounded-2xl border border-[#c9a96e]/20 bg-[#1a1a1a] p-4 sm:p-5">
+    <section style={style} className="rounded-2xl border border-[#c9a96e]/20 bg-[#1a1a1a] p-4 sm:p-5">
       <h2 className="text-xs uppercase tracking-wider text-[#a5a5a5] mb-3">
         {title}
       </h2>

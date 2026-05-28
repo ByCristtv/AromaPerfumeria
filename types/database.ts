@@ -16,53 +16,35 @@ export type Database = {
     Tables: {
       addresses: {
         Row: {
-          address_line1: string
-          address_line2: string | null
-          city: string
-          country: string
+          canton: string
           created_at: string
-          full_name: string
+          district: string
+          exact_address: string
           id: string
-          instructions: string | null
-          is_default: boolean
-          label: string
-          phone: string
-          postal_code: string | null
           province: string
+          references: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
-          address_line1: string
-          address_line2?: string | null
-          city: string
-          country?: string
+          canton?: string
           created_at?: string
-          full_name: string
+          district?: string
+          exact_address?: string
           id?: string
-          instructions?: string | null
-          is_default?: boolean
-          label?: string
-          phone: string
-          postal_code?: string | null
           province: string
+          references?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
-          address_line1?: string
-          address_line2?: string | null
-          city?: string
-          country?: string
+          canton?: string
           created_at?: string
-          full_name?: string
+          district?: string
+          exact_address?: string
           id?: string
-          instructions?: string | null
-          is_default?: boolean
-          label?: string
-          phone?: string
-          postal_code?: string | null
           province?: string
+          references?: string | null
           updated_at?: string
           user_id?: string
         }
