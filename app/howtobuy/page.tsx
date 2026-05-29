@@ -11,7 +11,7 @@ const steps = [
 
 export default function HowToBuyPage() {
 	return (
-		<main className="max-w-[1100px] mx-auto my-10 px-4">
+		<main className="max-w-275 mx-auto my-10 px-4">
 			<h1 className="text-2xl font-semibold mb-2">Cómo comprar</h1>
 			<p className="mb-6 text-gray-600">Sigue estos pasos sencillos para completar tu compra.</p>
 

@@ -12,19 +12,40 @@ const currency = new Intl.NumberFormat("es-CR", {
   maximumFractionDigits: 0,
 });
 
-export default function ProductListAdmin() {
-  const { data: variants = [], isLoading: loading } = useAdminProducts();
+interface ProductListAdminProps {
+  searchQuery?: string;
+  onEdit?: (productId: string, variantId: string) => void;
+}
+
+export default function ProductListAdmin({ searchQuery, onEdit }: ProductListAdminProps) {
+  const { data: allVariants = [], isLoading: loading } = useAdminProducts();
+
+  // Client-side filter: match product name or brand name (case-insensitive).
+  const variants = searchQuery
+    ? allVariants.filter((v) => {
+        const q = searchQuery.toLowerCase();
+        return (
+          v.name.toLowerCase().includes(q) ||
+          v.brand.toLowerCase().includes(q)
+        );
+      })
+    : allVariants;
   const queryClient = useQueryClient();
 
-  const deleteVariant = async (variantId: string, label: string) => {
+  const toggleActive = async (
+    variantId: string,
+    currentlyActive: boolean,
+    label: string
+  ) => {
+    const action = currentlyActive ? "desactivar" : "reactivar";
     const result = await Swal.fire({
-      title: "¿Desactivar variante?",
-      text: `Se desactivará la variante "${label}". Esta acción no se puede deshacer.`,
+      title: `¿${currentlyActive ? "Desactivar" : "Reactivar"} variante?`,
+      text: `Se va a ${action} la variante "${label}".`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#c9a96e",
       cancelButtonColor: "#6c757d",
-      confirmButtonText: "Sí, desactivar",
+      confirmButtonText: `Sí, ${action}`,
       cancelButtonText: "Cancelar",
     });
 
@@ -32,14 +53,14 @@ export default function ProductListAdmin() {
 
     const { error } = await supabase
       .from("product_variants")
-      .update({ is_active: false })
+      .update({ is_active: !currentlyActive })
       .eq("id", variantId);
 
     if (error) {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: `No se pudo desactivar la variante: ${error.message}`,
+        text: `No se pudo ${action} la variante: ${error.message}`,
       });
       return;
     }
@@ -48,8 +69,8 @@ export default function ProductListAdmin() {
 
     Swal.fire({
       icon: "success",
-      title: "Variante desactivada",
-      text: "La variante ha sido desactivada exitosamente.",
+      title: currentlyActive ? "Variante desactivada" : "Variante reactivada",
+      text: `La variante ha sido ${currentlyActive ? "desactivada" : "reactivada"} exitosamente.`,
     });
   };
 
@@ -152,27 +173,26 @@ export default function ProductListAdmin() {
                 </td>
                 <td className="px-4 py-3 text-right whitespace-nowrap">
                   <button
-                    onClick={() =>
-                      Swal.fire({
-                        icon: "info",
-                        title: "Editar variante",
-                        text: "Funcionalidad de edición en construcción.",
-                      })
-                    }
+                    onClick={() => onEdit?.(v.product_id, v.variant_id)}
                     className="bg-blue-950 hover:bg-blue-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors mr-2"
                   >
                     Editar
                   </button>
                   <button
                     onClick={() =>
-                      deleteVariant(
+                      toggleActive(
                         v.variant_id,
+                        v.is_active,
                         `${v.name} · ${v.size_ml}ml · ${v.sku}`
                       )
                     }
-                    className="bg-red-900 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                    className={`${
+                      v.is_active
+                        ? "bg-red-900 hover:bg-red-700"
+                        : "bg-emerald-900 hover:bg-emerald-700"
+                    } text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors`}
                   >
-                    Eliminar
+                    {v.is_active ? "Desactivar" : "Reactivar"}
                   </button>
                 </td>
               </tr>

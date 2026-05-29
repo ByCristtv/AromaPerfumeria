@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import {
   findCanton,
@@ -42,6 +42,15 @@ export default function CheckoutForm({
     return canton?.provinceCode ?? "";
   });
 
+  // Sync province when canton_code is set programmatically (e.g. form.reset() prefill).
+  useEffect(() => {
+    const canton = findCanton(watchedCantonCode);
+    if (canton && canton.provinceCode !== selectedProvince) {
+      setSelectedProvince(canton.provinceCode);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchedCantonCode]);
+
   const provinces = getProvinces();
   const cantonesForProvince = getCantones(selectedProvince);
 
@@ -59,7 +68,7 @@ export default function CheckoutForm({
       className="space-y-6"
     >
       {/* ──────── Contacto ──────── */}
-      <Section title="Contacto" description="Para enviarte la confirmación y noticias de tu pedido.">
+      <Section title="Contacto" description="Para enviarte la confirmación y noticias de tu pedido." appearDelay={0}>
         <Field
           label="Nombre completo"
           required
@@ -111,6 +120,7 @@ export default function CheckoutForm({
       <Section
         title="Dirección de entrega"
         description="Escribe señas claras — en Costa Rica las referencias son lo más importante."
+        appearDelay={80}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Provincia" required>
@@ -157,7 +167,7 @@ export default function CheckoutForm({
         <Field
           label="Distrito"
           error={errors.shipping?.district?.message}
-          hint="Opcional"
+          required
         >
           <input
             type="text"
@@ -172,7 +182,7 @@ export default function CheckoutForm({
           label="Señas exactas"
           required
           error={errors.shipping?.address?.message}
-          hint="Dirección descriptiva con puntos de referencia"
+          hint="Dirección descriptiva con puntos de referencia o sucursal de correos cercana"
         >
           <textarea
             rows={3}
@@ -201,6 +211,7 @@ export default function CheckoutForm({
       <Section
         title="Notas para el pedido"
         description="¿Es un regalo? ¿Horario preferido para entrega? Cuéntanos."
+        appearDelay={160}
       >
         <Field label="Notas" error={errors.notes?.message} hint="Opcional">
           <textarea
@@ -233,13 +244,27 @@ function Section({
   title,
   description,
   children,
+  appearDelay = 0,
 }: {
   title: string;
   description?: string;
   children: React.ReactNode;
+  appearDelay?: number;
 }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), appearDelay);
+    return () => clearTimeout(t);
+  }, [appearDelay]);
+
   return (
-    <section className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6">
+    <section
+      className={`rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 transform transition-opacity transition-transform duration-300 ease-out ${
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+      }`}
+      style={{ transitionDelay: `${appearDelay}ms` }}
+    >
       <header className="mb-4">
         <h3 className="text-base font-semibold text-gray-900">{title}</h3>
         {description && (

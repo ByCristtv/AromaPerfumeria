@@ -16,6 +16,8 @@ import {
   checkoutFormSchema,
   type CheckoutFormValues,
 } from "@/schemas/checkout";
+import { supabase } from "@/lib/supabase/client";
+import { getAccountData } from "@/features/account/getAccountData";
 
 /**
  * Orchestrates the /checkout page:
@@ -40,6 +42,33 @@ export default function CheckoutClient() {
   });
 
   const watchedCantonCode = form.watch("shipping.canton_code");
+
+  // Prefill form with logged-in user's saved data.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || cancelled) return;
+      const { profile, address } = await getAccountData(user.id);
+      if (cancelled) return;
+      form.reset({
+        customer: {
+          name: user.user_metadata?.full_name ?? "",
+          email: user.email ?? "",
+          phone: profile?.phone ?? "",
+        },
+        shipping: {
+          canton_code: address?.canton ?? "",
+          district: address?.district ?? "",
+          address: address?.exact_address ?? "",
+          reference: address?.references ?? "",
+        },
+        notes: "",
+      });
+    })();
+    return () => { cancelled = true; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // If the cart is empty after hydration (e.g., user opened /checkout in a
   // stale tab), bounce them back to /cart instead of letting them fill out

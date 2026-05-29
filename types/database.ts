@@ -259,7 +259,7 @@ export type Database = {
           shipping_address: string
           shipping_canton: string
           shipping_cost: number
-          shipping_district: string | null
+          shipping_district: string
           shipping_method: string | null
           shipping_province: string
           shipping_reference: string | null
@@ -288,7 +288,7 @@ export type Database = {
           shipping_address: string
           shipping_canton: string
           shipping_cost?: number
-          shipping_district?: string | null
+          shipping_district: string
           shipping_method?: string | null
           shipping_province: string
           shipping_reference?: string | null
@@ -317,7 +317,7 @@ export type Database = {
           shipping_address?: string
           shipping_canton?: string
           shipping_cost?: number
-          shipping_district?: string | null
+          shipping_district?: string
           shipping_method?: string | null
           shipping_province?: string
           shipping_reference?: string | null

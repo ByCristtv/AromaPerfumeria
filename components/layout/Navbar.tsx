@@ -74,6 +74,7 @@ export default function Navbar() {
   const cartBadge = mounted ? totalItems : 0;
 
   return (
+    <>
     <nav
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ease-out ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-3"
@@ -211,5 +212,35 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
+
+    {/* Floating mobile cart button — bottom-right, visible only on small screens */}
+    {mounted && (
+      <Link
+        href="/cart"
+        aria-label="Carrito"
+        className="fixed bottom-6 right-6 z-50 md:hidden flex items-center justify-center w-14 h-14 rounded-full bg-[#c9a96e] shadow-[0_4px_20px_rgba(0,0,0,0.4)] active:scale-95 transition-transform duration-150"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-6 h-6 text-black"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={1.8}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"
+          />
+        </svg>
+        {cartBadge > 0 && (
+          <span className="absolute -top-1 -right-1 bg-black text-[#c9a96e] text-[10px] font-bold min-w-[20px] h-5 px-1 rounded-full flex items-center justify-center">
+            {cartBadge}
+          </span>
+        )}
+      </Link>
+    )}
+    </>
   );
 }

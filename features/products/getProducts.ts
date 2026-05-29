@@ -52,7 +52,18 @@ export async function getProducts(
     .eq("is_active", true);
 
   if (filters?.query) {
-    supabaseQuery = supabaseQuery.ilike("name", `%${filters.query}%`);
+    // Use the search_products RPC which matches against both product
+    // name and brand name using trigram similarity + ILIKE. The RPC
+    // returns a lightweight result set (id, name, slug, brand_name,
+    // similarity). We collect matching IDs and filter the main query
+    // with `.in()` to get full ProductCardData with images/variants.
+    const { data: searchHits } = await supabase.rpc("search_products", {
+      p_query: filters.query,
+      p_limit: limit,
+    });
+    const matchingIds = (searchHits ?? []).map((h: { id: string }) => h.id);
+    if (matchingIds.length === 0) return [];
+    supabaseQuery = supabaseQuery.in("id", matchingIds);
   }
 
   if (filterByCategory) {

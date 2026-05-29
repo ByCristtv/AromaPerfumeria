@@ -52,13 +52,15 @@ const shippingSchema = z.object({
   // submit strings (possibly empty). Empty strings are allowed here; they get
   // stripped to undefined in buildCheckoutPayload.
   district: z
-    .string()
-    .trim()
-    .max(100, { message: "Distrito demasiado largo" }),
+  .string()
+  .trim()
+  .min(1, { message: "El distrito es requerido" })
+  .max(100, { message: "Distrito demasiado largo" }),
   reference: z
-    .string()
-    .trim()
-    .max(200, { message: "Referencia demasiado larga" }),
+  .string()
+  .trim()
+  .max(200, { message: "Referencia demasiado larga" })
+  .optional(),
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -198,8 +200,7 @@ export function buildCheckoutPayload(
     );
   }
 
-  const optional = (v: string): string | undefined =>
-    v.trim() === "" ? undefined : v.trim();
+  const optional = (v?: string): string | undefined => !v || v.trim() === "" ? undefined : v.trim();
 
   return {
     customer: {
@@ -212,7 +213,7 @@ export function buildCheckoutPayload(
       canton_code: canton.code,
       canton_name: canton.name,
       province_name: province.name,
-      district: optional(formValues.shipping.district),
+      district: formValues.shipping.district.trim(),
       reference: optional(formValues.shipping.reference),
     },
     items: cartItems.map((item) => ({
