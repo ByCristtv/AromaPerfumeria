@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import ProductForm from "./ProductForm";
+import VariantForm from "./VariantForm";
 import ProductEditForm from "./ProductEditForm";
 import ProductListAdmin from "./ProductListAdmin";
 import Searchbar from "../ui/Searchbar";
@@ -15,12 +16,13 @@ import Searchbar from "../ui/Searchbar";
 export default function AdminProductsView() {
   const [searchQuery, setSearchQuery] = useState("");
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [variantModalOpen, setVariantModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<{
     productId: string;
     variantId: string;
   } | null>(null);
 
-  const anyModalOpen = createModalOpen || editTarget !== null;
+  const anyModalOpen = createModalOpen || variantModalOpen || editTarget !== null;
 
   useEffect(() => {
     if (!anyModalOpen) return;
@@ -28,6 +30,7 @@ export default function AdminProductsView() {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setCreateModalOpen(false);
+        setVariantModalOpen(false);
         setEditTarget(null);
       }
     };
@@ -44,6 +47,7 @@ export default function AdminProductsView() {
 
   const closeModal = () => {
     setCreateModalOpen(false);
+    setVariantModalOpen(false);
     setEditTarget(null);
   };
 
@@ -59,13 +63,22 @@ export default function AdminProductsView() {
               Administra tu colección de perfumes premium
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => setCreateModalOpen(true)}
-            className="bg-[#c9a96e] hover:bg-[#b8a060] text-black font-bold px-5 py-3 rounded-lg uppercase text-sm tracking-wider transition-colors shadow-lg self-start sm:self-auto"
-          >
-            + Nuevo Producto
-          </button>
+          <div className="flex gap-3 self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={() => setCreateModalOpen(true)}
+              className="bg-[#c9a96e] hover:bg-[#b8a060] text-black font-bold px-5 py-3 rounded-lg uppercase text-sm tracking-wider transition-colors shadow-lg"
+            >
+              + Nuevo Producto
+            </button>
+            <button
+              type="button"
+              onClick={() => setVariantModalOpen(true)}
+              className="bg-transparent hover:bg-[#c9a96e]/10 text-[#c9a96e] border border-[#c9a96e]/50 hover:border-[#c9a96e] font-bold px-5 py-3 rounded-lg uppercase text-sm tracking-wider transition-colors shadow-lg"
+            >
+              + Nueva Variante
+            </button>
+          </div>
         </div>
 
         <div className="mb-6 max-w-md">
@@ -87,6 +100,13 @@ export default function AdminProductsView() {
       {createModalOpen && (
         <ModalOverlay onClose={closeModal} label="Crear nuevo producto">
           <ProductForm onSuccess={closeModal} />
+        </ModalOverlay>
+      )}
+
+      {/* Variant modal */}
+      {variantModalOpen && (
+        <ModalOverlay onClose={closeModal} label="Crear nueva variante">
+          <VariantForm onSuccess={closeModal} />
         </ModalOverlay>
       )}
 

@@ -260,7 +260,7 @@ function Section({
 
   return (
     <section
-      className={`rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 transform transition-opacity transition-transform duration-300 ease-out ${
+      className={`rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 transform transition-opacity duration-300 ease-out ${
         visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
       }`}
       style={{ transitionDelay: `${appearDelay}ms` }}
