@@ -47,6 +47,38 @@ export interface AdminVariantRow {
   brand: string;
   categories: AdminProductCategory[];
 }
+export interface ProductVariant {
+  id: string;
+  price: number;
+  offer_price: number | null;
+  is_on_offer: boolean;
+  stock: number;
+  size_ml: number;
+  product_type: ProductTypes;
+  position: number;
+}
+
+export interface ProductDetailData {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  gender: "masculine" | "feminine" | "unisex";
+  concentration: string;
+  notes_top: string | null;
+  notes_middle: string | null;
+  notes_base: string | null;
+  featured_variant_id: string | null;
+  brands: { name: string } | null;
+  categories: { id: string; name: string }[];
+  product_variants: ProductVariant[];
+  product_images: {
+    url: string;
+    position: number;
+    alt_text: string | null;
+  }[];
+}
+
 export interface ProductCardData {
   id: string;
   name: string;

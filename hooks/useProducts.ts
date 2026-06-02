@@ -7,6 +7,6 @@ export const PRODUCTS_QUERY_KEY = (filters?: ProductFilters) => filters ? ["prod
 export function useProducts( filters?: ProductFilters ) {
   return useQuery<ProductCardData[]>({
     queryKey: PRODUCTS_QUERY_KEY(filters),
-    queryFn: () => getProducts(20, filters),
+    queryFn: () => getProducts(16, filters),
   });
 }

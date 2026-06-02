@@ -41,7 +41,7 @@ export interface ProductFilters {
 }
 
 export async function getProducts(
-  limit = 20,
+  limit = 16,
   filters?: ProductFilters
 ): Promise<ProductCardData[]> {
   const filterByCategory = !!filters?.category;
