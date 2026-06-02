@@ -4,11 +4,15 @@ import { supabase } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
+import { formatPrice } from "@/lib/format";
 import {
   getAccountData,
+  getAccountOrders,
   updatePhone,
   upsertAddress,
   type AccountData,
+  type AccountOrderRow,
 } from "@/features/account/getAccountData";
 import {
   getProvinces,
@@ -20,7 +24,10 @@ export default function AccountLoginCard() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [accountData, setAccountData] = useState<AccountData | null>(null);
-
+  const [orders, setOrders] = useState<AccountOrderRow[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [ordersError, setOrdersError] = useState("");
+  const [showAllOrders, setShowAllOrders] = useState(false);
   const [editingPhone, setEditingPhone] = useState(false);
   const [phoneValue, setPhoneValue] = useState("");
   const [phoneSaving, setPhoneSaving] = useState(false);
@@ -34,24 +41,46 @@ export default function AccountLoginCard() {
   const [district, setDistrict] = useState("");
   const [exactAddress, setExactAddress] = useState("");
   const [reference, setReference] = useState("");
-
   const provinces = getProvinces();
   const cantonesForProvince = getCantones(selectedProvince);
 
   const loadAccountData = useCallback(async (userId: string) => {
-    const data = await getAccountData(userId);
-    setAccountData(data);
-    if (data.profile?.phone) setPhoneValue(data.profile.phone);
-    if (data.address) {
-      setDistrict(data.address.district);
-      setExactAddress(data.address.exact_address);
-      setReference(data.address.references ?? "");
-      const canton = findCanton(data.address.canton);
-      if (canton) {
-        setSelectedProvince(canton.provinceCode);
-        setCantonCode(canton.code);
+    setOrdersLoading(true);
+    setOrdersError("");
+
+    const [accountResult, ordersResult] = await Promise.allSettled([
+      getAccountData(userId),
+      getAccountOrders(userId),
+    ]);
+
+    if (accountResult.status === "fulfilled") {
+      const data = accountResult.value;
+      setAccountData(data);
+      if (data.profile?.phone) setPhoneValue(data.profile.phone);
+      if (data.address) {
+        setDistrict(data.address.district);
+        setExactAddress(data.address.exact_address);
+        setReference(data.address.references ?? "");
+        const canton = findCanton(data.address.canton);
+        if (canton) {
+          setSelectedProvince(canton.provinceCode);
+          setCantonCode(canton.code);
+        }
       }
+    } else {
+      console.error(accountResult.reason);
     }
+
+    if (ordersResult.status === "fulfilled") {
+      setOrders(ordersResult.value);
+    } else {
+      console.error(ordersResult.reason);
+      setOrders([]);
+      setOrdersError("No pudimos cargar tus pedidos.");
+    }
+
+    setShowAllOrders(false);
+    setOrdersLoading(false);
   }, []);
 
   useEffect(() => {
@@ -65,7 +94,10 @@ export default function AccountLoginCard() {
         } = await supabase.auth.getUser();
 
         if (!mounted) return;
-        if (error) console.error(error);
+        if (error) {
+        setUser(null);
+        return;
+        }
 
         setUser(user ?? null);
         if (user) loadAccountData(user.id);
@@ -83,7 +115,13 @@ export default function AccountLoginCard() {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!mounted) return;
       setUser(session?.user ?? null);
-      if (session?.user) loadAccountData(session.user.id);
+      if (session?.user) {
+        loadAccountData(session.user.id);
+      } else {
+        setAccountData(null);
+        setOrders([]);
+        setShowAllOrders(false);
+      }
       setLoading(false);
     });
 
@@ -97,6 +135,8 @@ export default function AccountLoginCard() {
     await supabase.auth.signOut();
     setUser(null);
     setAccountData(null);
+    setOrders([]);
+    setShowAllOrders(false);
   };
 
   const handleGoogleLogin = async () => {
@@ -212,7 +252,7 @@ export default function AccountLoginCard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
-          className="max-w-md mx-auto"
+          className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 items-start"
         >
           <div className="rounded-2xl border border-[#c9a96e]/35 bg-black/65 backdrop-blur-md shadow-[0_16px_60px_rgba(0,0,0,0.45)] p-6 sm:p-8">
             <div className="text-center mb-8">
@@ -362,7 +402,7 @@ export default function AccountLoginCard() {
                             </option>
                           ))}
                         </select>
-                      </div>
+                    </div>
                     </div>
                     <div>
                       <label className="text-white/50 text-xs mb-1 block">Distrito</label>
@@ -394,7 +434,7 @@ export default function AccountLoginCard() {
                         className="w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#c9a96e]/50"
                       />
                     </div>
-                    {addressError && <p className="text-xs text-red-400">{addressError}</p>}
+                {addressError && <p className="text-xs text-red-400">{addressError}</p>}
                     <button
                       type="button"
                       onClick={handleSaveAddress}
@@ -418,6 +458,13 @@ export default function AccountLoginCard() {
               Cerrar sesión
             </button>
           </div>
+          <AccountOrdersSection
+            orders={orders}
+            isLoading={ordersLoading}
+            error={ordersError}
+            showAll={showAllOrders}
+            onToggleShowAll={() => setShowAllOrders((value) => !value)}
+          />
         </motion.div>
       </section>
     );
@@ -485,4 +532,128 @@ export default function AccountLoginCard() {
       </div>
     </section>
   );
+}
+
+function AccountOrdersSection({
+  orders,
+  isLoading,
+  error,
+  showAll,
+  onToggleShowAll,
+}: {
+  orders: AccountOrderRow[];
+  isLoading: boolean;
+  error: string;
+  showAll: boolean;
+  onToggleShowAll: () => void;
+}) {
+  const visibleOrders = showAll ? orders : orders.slice(0, 2);
+
+  return (
+    <section className="mt-5 rounded-2xl border border-[#c9a96e]/35 bg-black/65 backdrop-blur-md shadow-[0_16px_60px_rgba(0,0,0,0.35)] p-5 sm:p-6">
+      <div className="flex items-center justify-between gap-3 mb-4">
+        <div>
+          <h2 className="text-white text-lg font-semibold">Pedidos anteriores</h2>
+          <p className="text-white/50 text-xs uppercase tracking-wider">
+            Historial de compra
+          </p>
+        </div>
+        {orders.length > 0 && (
+          <span className="rounded-full border border-[#c9a96e]/30 px-3 py-1 text-xs text-[#c9a96e]">
+            {orders.length}
+          </span>
+        )}
+      </div>
+
+      {isLoading ? (
+        <p className="text-sm text-white/60">Cargando pedidos...</p>
+      ) : error ? (
+        <p className="text-sm text-red-300">{error}</p>
+      ) : orders.length === 0 ? (
+        <p className="text-sm text-white/60">
+          Aun no tienes pedidos registrados.
+        </p>
+      ) : (
+        <>
+          <div className="space-y-3">
+            {visibleOrders.map((order) => (
+              <article
+                key={order.id}
+                className="rounded-xl border border-white/10 bg-white/4 p-4"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-mono text-sm text-[#c9a96e]">
+                      #{order.order_number}
+                    </p>
+                    <p className="text-xs text-white/50 mt-1">
+                      {formatOrderDate(order.created_at)}
+                    </p>
+                  </div>
+                  <p className="shrink-0 text-sm font-semibold tabular-nums text-white">
+                    {formatPrice(order.total)}
+                  </p>
+                </div>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <OrderBadge label={orderStatusLabel(order.order_status)} />
+                  <OrderBadge label={paymentStatusLabel(order.payment_status)} />
+                </div>
+                <Link
+                  href={`/orders/${order.id}`}
+                  className="mt-4 inline-flex w-full items-center justify-center rounded-lg border border-[#c9a96e]/35 px-3 py-2 text-sm font-medium text-[#c9a96e] transition hover:bg-[#c9a96e]/10"
+                >
+                  Ver detalle
+                </Link>
+              </article>
+            ))}
+          </div>
+
+          {orders.length > 2 && (
+            <button
+              type="button"
+              onClick={onToggleShowAll}
+              className="mt-4 w-full rounded-xl bg-[#c9a96e] px-4 py-3 text-sm font-medium text-black transition hover:bg-[#c9a96e]/90"
+            >
+              {showAll ? "Mostrar menos pedidos" : "Ver todos los pedidos"}
+            </button>
+          )}
+        </>
+      )}
+    </section>
+  );
+}
+function OrderBadge({ label }: { label: string }) {
+  return (
+    <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/75">
+      {label}
+    </span>
+  );
+}
+
+function orderStatusLabel(status: AccountOrderRow["order_status"]): string {
+  const labels: Record<AccountOrderRow["order_status"], string> = {
+    pending: "Pendiente",
+    received: "Recibido",
+    shipped: "Enviado",
+    denied: "Cancelado",
+  };
+  return labels[status] ?? status;
+}
+
+function paymentStatusLabel(status: AccountOrderRow["payment_status"]): string {
+  const labels: Record<AccountOrderRow["payment_status"], string> = {
+    pending: "Pago pendiente",
+    paid: "Pagado",
+    failed: "Pago fallido",
+    refunded: "Reembolsado",
+  };
+  return labels[status] ?? status;
+}
+
+function formatOrderDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("es-CR", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 }

@@ -3,6 +3,15 @@ import type { Tables } from "@/types/database";
 
 export type ProfileRow = Tables<"profiles">;
 export type AddressRow = Tables<"addresses">;
+export type AccountOrderRow = Pick<
+  Tables<"orders">,
+  | "id"
+  | "order_number"
+  | "total"
+  | "order_status"
+  | "payment_status"
+  | "created_at"
+>;
 
 export interface AccountData {
   profile: ProfileRow | null;
@@ -25,6 +34,19 @@ export async function getAccountData(userId: string): Promise<AccountData> {
     profile: profileRes.data,
     address: addressRes.data,
   };
+}
+
+export async function getAccountOrders(
+  userId: string
+): Promise<AccountOrderRow[]> {
+  const { data, error } = await supabase
+    .from("orders")
+    .select("id, order_number, total, order_status, payment_status, created_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data ?? [];
 }
 
 export async function updatePhone(userId: string, phone: string) {
