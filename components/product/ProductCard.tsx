@@ -19,6 +19,8 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
 
   const [showToast, setShowToast] = useState(false);
   const toastTimeoutRef = useRef<number | null>(null);
+  const [showGlow, setShowGlow] = useState(false);
+  const glowTimeoutRef = useRef<number | null>(null);
 
   const handleAddToCart = () => {
     addItem({
@@ -33,6 +35,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
 
     // show toast
     setShowToast(true);
+    setShowGlow(true);
     if (toastTimeoutRef.current) {
       clearTimeout(toastTimeoutRef.current);
     }
@@ -40,16 +43,31 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
       setShowToast(false);
       toastTimeoutRef.current = null;
     }, 2000);
+
+    if (glowTimeoutRef.current) {
+      clearTimeout(glowTimeoutRef.current);
+    }
+    glowTimeoutRef.current = window.setTimeout(() => {
+      setShowGlow(false);
+      glowTimeoutRef.current = null;
+    }, 800);
   };
 
   useEffect(() => {
     return () => {
       if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+      if (glowTimeoutRef.current) clearTimeout(glowTimeoutRef.current);
     };
   }, []);
 
   return (
-    <div className="relative bg-white rounded-xl border border-gray-200 shadow-md overflow-hidden hover:shadow-xl hover:scale-101 transition duration-300 max-w-xs mx-auto w-full">
+    <div
+      className={`relative bg-white rounded-xl overflow-hidden max-w-xs mx-auto w-full transition-all duration-300 border ${
+        showGlow
+          ? "border-[#c9a96e] ring-4 ring-[#c9a96e]/20 shadow-[0_0_24px_#c9a96e]"
+          : "border-gray-200 shadow-md hover:shadow-xl hover:scale-101"
+      }`}
+    >
       <Link href={`/products/${product.slug}`} className="block">
         <div className="relative w-full h-48 bg-white flex items-center justify-center">
           <Image
