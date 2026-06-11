@@ -180,6 +180,58 @@ export type Database = {
           },
         ]
       }
+      decant_transformations: {
+        Row: {
+          created_at: string
+          id: string
+          ml_generated: number
+          performed_by: string
+          product_id: string
+          quantity_used: number
+          source_variant_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ml_generated: number
+          performed_by: string
+          product_id: string
+          quantity_used: number
+          source_variant_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ml_generated?: number
+          performed_by?: string
+          product_id?: string
+          quantity_used?: number
+          source_variant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dt_performed_by_fkey"
+            columns: ["performed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dt_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dt_source_variant_fkey"
+            columns: ["product_id", "source_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["product_id", "id"]
+          },
+        ]
+      }
       order_items: {
         Row: {
           brand_name: string
@@ -407,6 +459,7 @@ export type Database = {
           position: number
           product_id: string
           url: string
+          variant_id: string | null
         }
         Insert: {
           alt_text?: string | null
@@ -415,6 +468,7 @@ export type Database = {
           position?: number
           product_id: string
           url: string
+          variant_id?: string | null
         }
         Update: {
           alt_text?: string | null
@@ -423,6 +477,7 @@ export type Database = {
           position?: number
           product_id?: string
           url?: string
+          variant_id?: string | null
         }
         Relationships: [
           {
@@ -431,6 +486,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_images_variant_fkey"
+            columns: ["product_id", "variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["product_id", "id"]
           },
         ]
       }
@@ -495,6 +557,7 @@ export type Database = {
           brand_id: string
           concentration: string | null
           created_at: string
+          decant_stock_ml: number
           description: string | null
           featured_variant_id: string | null
           gender: string | null
@@ -511,6 +574,7 @@ export type Database = {
           brand_id: string
           concentration?: string | null
           created_at?: string
+          decant_stock_ml?: number
           description?: string | null
           featured_variant_id?: string | null
           gender?: string | null
@@ -527,6 +591,7 @@ export type Database = {
           brand_id?: string
           concentration?: string | null
           created_at?: string
+          decant_stock_ml?: number
           description?: string | null
           featured_variant_id?: string | null
           gender?: string | null
@@ -654,39 +719,51 @@ export type Database = {
       stock_movements: {
         Row: {
           created_at: string
-          delta: number
+          delta: number | null
           id: string
-          new_stock: number
+          ml_delta: number | null
+          new_ml: number | null
+          new_stock: number | null
           notes: string | null
           performed_by: string | null
-          previous_stock: number
+          previous_ml: number | null
+          previous_stock: number | null
+          product_id: string | null
           reason: Database["public"]["Enums"]["stock_movement_reason"]
           reference_id: string | null
-          variant_id: string
+          variant_id: string | null
         }
         Insert: {
           created_at?: string
-          delta: number
+          delta?: number | null
           id?: string
-          new_stock: number
+          ml_delta?: number | null
+          new_ml?: number | null
+          new_stock?: number | null
           notes?: string | null
           performed_by?: string | null
-          previous_stock: number
+          previous_ml?: number | null
+          previous_stock?: number | null
+          product_id?: string | null
           reason: Database["public"]["Enums"]["stock_movement_reason"]
           reference_id?: string | null
-          variant_id: string
+          variant_id?: string | null
         }
         Update: {
           created_at?: string
-          delta?: number
+          delta?: number | null
           id?: string
-          new_stock?: number
+          ml_delta?: number | null
+          new_ml?: number | null
+          new_stock?: number | null
           notes?: string | null
           performed_by?: string | null
-          previous_stock?: number
+          previous_ml?: number | null
+          previous_stock?: number | null
+          product_id?: string | null
           reason?: Database["public"]["Enums"]["stock_movement_reason"]
           reference_id?: string | null
-          variant_id?: string
+          variant_id?: string | null
         }
         Relationships: [
           {
@@ -694,6 +771,13 @@ export type Database = {
             columns: ["performed_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
             referencedColumns: ["id"]
           },
           {
@@ -777,6 +861,10 @@ export type Database = {
         }
         Returns: Json
       }
+      decrease_decant_pool: {
+        Args: { p_ml: number; p_order_id: string; p_product_id: string }
+        Returns: undefined
+      }
       decrease_variant_stock: {
         Args: { p_order_id: string; p_quantity: number; p_variant_id: string }
         Returns: undefined
@@ -784,6 +872,15 @@ export type Database = {
       deny_order_admin: {
         Args: { p_order_id: string; p_reason: string }
         Returns: Json
+      }
+      increase_decant_pool: {
+        Args: {
+          p_ml: number
+          p_order_id: string
+          p_product_id: string
+          p_reason: Database["public"]["Enums"]["stock_movement_reason"]
+        }
+        Returns: undefined
       }
       is_admin: { Args: never; Returns: boolean }
       mark_order_paid: { Args: { p_order_id: string }; Returns: Json }
@@ -802,12 +899,20 @@ export type Database = {
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
       sweep_abandoned_orders: { Args: never; Returns: number }
+      transform_to_decant: {
+        Args: {
+          p_notes?: string
+          p_quantity: number
+          p_source_variant_id: string
+        }
+        Returns: Json
+      }
       unaccent: { Args: { "": string }; Returns: string }
     }
     Enums: {
       order_status: "pending" | "received" | "shipped" | "denied"
       payment_status: "pending" | "paid" | "failed" | "refunded"
-      product_type: "full_size" | "decant"
+      product_type: "full_size" | "decant" | "set"
       stock_movement_reason:
         | "manual_adjustment"
         | "order_placed"
@@ -815,6 +920,7 @@ export type Database = {
         | "restock"
         | "correction"
         | "return"
+        | "transformed_to_decant"
       user_role: "customer" | "admin"
     }
     CompositeTypes: {
@@ -945,7 +1051,7 @@ export const Constants = {
     Enums: {
       order_status: ["pending", "received", "shipped", "denied"],
       payment_status: ["pending", "paid", "failed", "refunded"],
-      product_type: ["full_size", "decant"],
+      product_type: ["full_size", "decant", "set"],
       stock_movement_reason: [
         "manual_adjustment",
         "order_placed",
@@ -953,6 +1059,7 @@ export const Constants = {
         "restock",
         "correction",
         "return",
+        "transformed_to_decant",
       ],
       user_role: ["customer", "admin"],
     },

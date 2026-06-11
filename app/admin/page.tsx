@@ -46,8 +46,8 @@ export default function AdminPage() {
             </article>
           </Link>
 
-          <Link href="/admin/orders" className="group md:col-span-2 lg:col-span-1">
-            <article       
+          <Link href="/admin/orders" className="group">
+            <article
               className="h-full rounded-2xl border border-[#c9a96e]/30 bg-[#1a1a1a] p-8 text-center shadow-[0_18px_64px_rgba(82,63,47,0.08)] transition-all duration-300 hover:border-[#c9a96e] hover:shadow-[0_0_20px_rgba(201,169,110,0.2)] hover:-translate-y-2 animate-bounce opacity-0 animate-fadeUp" style={{ animationDelay: '300ms' }}>
               <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-[#c9a96e]/20 to-[#b8a060]/20 text-3xl text-[#c9a96e] shadow-inner shadow-[#c9a96e]/10">
                 📋
@@ -57,6 +57,21 @@ export default function AdminPage() {
               </h3>
               <p className="text-sm leading-relaxed text-[#a5a5a5]">
                 Aquí puedes administrar tus órdenes pendientes. Gestiona envíos, actualizaciones y soporte al cliente.
+              </p>
+            </article>
+          </Link>
+
+          <Link href="/admin/decant-stock" className="group md:col-span-2 lg:col-span-1">
+            <article
+              className="h-full rounded-2xl border border-[#c9a96e]/30 bg-[#1a1a1a] p-8 text-center shadow-[0_18px_64px_rgba(82,63,47,0.08)] transition-all duration-300 hover:border-[#c9a96e] hover:shadow-[0_0_20px_rgba(201,169,110,0.2)] hover:-translate-y-2 animate-bounce opacity-0 animate-fadeUp" style={{ animationDelay: '450ms' }}>
+              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-[#c9a96e]/20 to-[#b8a060]/20 text-3xl text-[#c9a96e] shadow-inner shadow-[#c9a96e]/10">
+                🧪
+              </div>
+              <h3 className="mb-4 text-2xl font-bold text-[#ececec] group-hover:text-[#c9a96e] transition-colors">
+                Stock para Decants
+              </h3>
+              <p className="text-sm leading-relaxed text-[#a5a5a5]">
+                Administra el pool de mililitros de tus decants. Transforma botellas full size en stock de decant compartido.
               </p>
             </article>
           </Link>

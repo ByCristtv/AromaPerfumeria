@@ -133,7 +133,10 @@ export default function ProductEditForm({
         variant_id: variantId,
         ...form,
         price: Number(form.price),
-        stock: Number(form.stock),
+        // Decant variants hold no manual stock — their inventory is the shared
+        // ml pool (products.decant_stock_ml). The DB enforces this with
+        // chk_decant_zero_stock, so always send 0 for decants.
+        stock: form.product_type === "decant" ? 0 : Number(form.stock),
         size_ml: Number(form.size_ml),
         offer_price: form.is_on_offer ? Number(form.offer_price) : null,
         category_ids: selectedCategories,
@@ -345,13 +348,19 @@ export default function ProductEditForm({
               <label className="text-xs font-bold text-[#c9a96e] uppercase">
                 Stock
               </label>
-              <input
-                type="number"
-                value={form.stock}
-                onChange={(e) => setField("stock", e.target.value)}
-                className="input-field-custom"
-                required
-              />
+              {form.product_type === "decant" ? (
+                <div className="input-field-custom flex items-center text-xs text-[#a5a5a5]">
+                  Pool de decants
+                </div>
+              ) : (
+                <input
+                  type="number"
+                  value={form.stock}
+                  onChange={(e) => setField("stock", e.target.value)}
+                  className="input-field-custom"
+                  required
+                />
+              )}
             </div>
             <div className="space-y-2">
               <label className="text-xs font-bold text-[#c9a96e] uppercase">

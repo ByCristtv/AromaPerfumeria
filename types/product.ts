@@ -124,6 +124,36 @@ export interface CreateProductDTO {
   offer_price: number | null;
 }
 
+/**
+ * One row of the "Stock para Decants" admin table. Each entry is a
+ * `product_type='decant'` variant, paired with the SHARED liquid pool that
+ * lives on its parent product (`products.decant_stock_ml`). Several decant
+ * sizes of the same product therefore report the same `pool_ml`.
+ */
+export interface DecantStockRow {
+  variant_id: string;
+  product_id: string;
+  sku: string;
+  size_ml: number;
+  name: string;
+  brand: string;
+  /** Shared liquid pool of the parent product, in ml. */
+  pool_ml: number;
+  /** How many units of THIS decant size the current pool can fill. */
+  possible_units: number;
+  is_active: boolean;
+}
+
+/**
+ * Payload for the `transform_to_decant` RPC: sacrifice `quantity` full-size
+ * bottles of `source_variant_id` and pour their ml into the product's pool.
+ */
+export interface TransformToDecantDTO {
+  source_variant_id: string;
+  quantity: number;
+  notes?: string | null;
+}
+
 /** Payload for adding an extra variant to an existing product. */
 export interface CreateVariantDTO {
   product_id: string;
