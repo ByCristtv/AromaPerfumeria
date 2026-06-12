@@ -1,6 +1,6 @@
 import { Database } from "./database";
 
-export type ProductTypes = "full_size" | "decant"
+export type ProductTypes = "full_size" | "decant" | "set"
 
 export type BaseCartItem = Database["public"]["Tables"]["cart_items"]["Row"];
 
@@ -76,6 +76,8 @@ export interface ProductDetailData {
     url: string;
     position: number;
     alt_text: string | null;
+    /** When set, this image represents a specific variant; null = product-level. */
+    variant_id: string | null;
   }[];
 }
 
@@ -99,6 +101,27 @@ export interface ProductCardData {
     url: string;
     position: number;
   }[];
+}
+
+/**
+ * Catalog card data, flattened to a SINGLE variant. The catalog now renders
+ * one card per active variant (not one per product), so each card carries its
+ * own price/stock/size and its representative image (the variant's own image
+ * when present, otherwise the product-level fallback).
+ */
+export interface VariantCardData {
+  variantId: string;
+  productId: string;
+  name: string;
+  slug: string;
+  brand: string | null;
+  price: number;
+  offer_price: number | null;
+  is_on_offer: boolean;
+  stock: number;
+  size_ml: number;
+  product_type: ProductTypes;
+  imageUrl: string | null;
 }
 
 /** Payload for the admin "create product + first variant" RPC. */
@@ -164,6 +187,8 @@ export interface CreateVariantDTO {
   product_type: ProductTypes;
   is_on_offer: boolean;
   offer_price: number | null;
+  /** Representative image for this variant. Required from the admin form. */
+  file: File;
 }
 
 export type CartLineItem = {

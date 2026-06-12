@@ -34,7 +34,7 @@ export async function getProductBySlug(
         product_type,
         position
       ),
-      product_images ( url, position, alt_text )
+      product_images ( url, position, alt_text, variant_id )
     `
     )
     .eq("slug", slug)

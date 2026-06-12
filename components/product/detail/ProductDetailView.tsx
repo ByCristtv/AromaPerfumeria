@@ -18,24 +18,46 @@ import Reveal from "./Reveal";
 interface ProductDetailViewProps {
   product: ProductDetailData;
   related: ProductCardData[];
+  /** Variant preselected via the catalog link's `?variant=` search param. */
+  initialVariantId?: string;
 }
 
 const TYPE_LABEL: Record<string, string> = {
   full_size: "Full size",
   decant: "Decant",
+  set: "Set",
 };
+
+/**
+ * Image that represents a variant: its own image when present, else the
+ * product's lowest-position (base) image, else the placeholder.
+ */
+function imageForVariant(
+  product: ProductDetailData,
+  variantId: string
+): string {
+  const own = product.product_images.find(
+    (img) => img.variant_id === variantId
+  );
+  if (own) return own.url;
+  const base = [...product.product_images].sort(
+    (a, b) => a.position - b.position
+  )[0];
+  return base?.url || "/placeholder.png";
+}
 
 export default function ProductDetailView({
   product,
   related,
+  initialVariantId,
 }: ProductDetailViewProps) {
   const { addItem } = useCart();
-  const sel = useProductSelection(product);
+  const sel = useProductSelection(product, initialVariantId);
 
   const handleAdd = useCallback(() => {
     if (sel.outOfStock) return;
     const v = sel.selectedVariant;
-    const img = product.product_images[0]?.url || "/placeholder.png";
+    const img = imageForVariant(product, v.id);
     for (let i = 0; i < sel.quantity; i++) {
       addItem({
         variant_id: v.id,
@@ -79,6 +101,7 @@ export default function ProductDetailView({
             <ProductGallery
               images={product.product_images}
               productName={product.name}
+              activeVariantId={sel.selectedVariant.id}
             />
             <PurchasePanel
               product={product}

@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase/client";
-import type { ProductCardData } from "@/types/product";
+import type { VariantCardData } from "@/types/product";
 import {
   PRODUCTS_PAGE_SIZE,
   type ProductFilters,
@@ -17,46 +17,71 @@ const SEARCH_CANDIDATE_CAP = 200;
 type CatalogQuery = ReturnType<typeof buildBaseQuery>;
 
 /**
- * Categories embed needs `!inner` when we filter by category so
- * PostgREST actually drops parent rows that don't match. Without a
- * category filter we left-join (no `!inner`) so products without
- * categories still appear in the catalog.
+ * Shape of a single `product_variants` row as fetched for the catalog,
+ * with its parent product (and that product's images) embedded.
  */
-function buildSelect(filterByCategory: boolean): string {
-  const categoriesClause = filterByCategory
-    ? `categories!inner ( id, name )`
-    : `categories ( id, name )`;
-
-  return `
-    id,
-    name,
-    slug,
-    gender,
-    concentration,
-    brands ( name ),
-    ${categoriesClause},
-    featured_variant:product_variants!fk_featured_variant (
-      id,
-      price,
-      offer_price,
-      is_on_offer,
-      stock,
-      size_ml,
-      product_type
-    ),
-    product_images ( url, position )
-  `;
+interface VariantRow {
+  id: string;
+  price: number;
+  offer_price: number | null;
+  is_on_offer: boolean;
+  stock: number;
+  size_ml: number;
+  product_type: VariantCardData["product_type"];
+  product: {
+    id: string;
+    name: string;
+    slug: string;
+    brands: { name: string } | null;
+    product_images: { url: string; position: number; variant_id: string | null }[];
+  } | null;
 }
 
 /**
- * Base active-products query with an exact count, so the caller can
- * derive `hasNextPage` precisely instead of guessing from page size.
+ * The catalog is now VARIANT-centric: one card per active variant, not
+ * per product. We therefore query `product_variants` directly and embed
+ * the parent product, which makes price/stock/`product_type` native
+ * columns (trivial to order and filter on).
+ *
+ * Categories embed needs `!inner` when we filter by category so PostgREST
+ * actually prunes variants whose product doesn't match. Without a category
+ * filter we left-join so variants of uncategorised products still appear.
+ */
+function buildSelect(filterByCategory: boolean): string {
+  const categoriesClause = filterByCategory
+    ? `categories!inner ( id )`
+    : `categories ( id )`;
+
+ return `
+  id,
+  price,
+  offer_price,
+  is_on_offer,
+  stock,
+  size_ml,
+  product_type,
+  product:products!product_variants_product_id_fkey!inner (
+    id,
+    name,
+    slug,
+    brands ( name ),
+    ${categoriesClause},
+    product_images ( url, position, variant_id )
+  )
+`;
+}
+
+/**
+ * Base query over active variants of active products, with an exact count
+ * so the caller can derive `hasNextPage` precisely. `products!inner` is
+ * what lets the embedded `product.is_active` filter prune variant rows.
  */
 function buildBaseQuery(filterByCategory: boolean) {
   return supabase
-    .from("products")
+    .from("product_variants")
     .select(buildSelect(filterByCategory), { count: "exact" })
-    .eq("is_active", true);
+    .eq("is_active", true)
+    .eq("product.is_active", true);
 }
 
 /**
@@ -75,7 +100,7 @@ async function resolveSearchIds(query?: string): Promise<string[] | null> {
   return ((data ?? []) as { id: string }[]).map((hit) => hit.id);
 }
 
-/** Apply the active filters (search IDs + category) to the query. */
+/** Apply the active filters (search IDs + category + product_type). */
 function applyFilters(
   query: CatalogQuery,
   filters: ProductFilters | undefined,
@@ -84,13 +109,20 @@ function applyFilters(
   let next = query;
 
   if (searchIds) {
-    next = next.in("id", searchIds);
+    // Search resolves to product IDs; narrow by the variant's parent.
+    next = next.in("product_id", searchIds);
   }
 
   if (filters?.category) {
-    // categories!inner makes this prune parent rows, not just the
+    // product.categories!inner makes this prune variant rows, not just the
     // embedded array. We filter by id because names are display-only.
-    next = next.eq("categories.id", filters.category);
+    next = next.eq("product.categories.id", filters.category);
+  }
+
+  if (filters?.productType) {
+    // Native column on product_variants — the fix for "decant"/"set", which
+    // are NOT categories but values of product_type.
+    next = next.eq("product_type", filters.productType);
   }
 
   return next;
@@ -100,31 +132,62 @@ function applyFilters(
 function applyOrder(query: CatalogQuery, orderBy: ProductFilters["orderBy"]): CatalogQuery {
   switch (orderBy) {
     case "price_asc":
-      // PostgREST orders parent rows by an embedded column using
-      // `alias(column)` inside the column argument; `referencedTable`
-      // would only reorder inside the to-one embed (a no-op here).
-      return query.order("featured_variant(price)", { ascending: true });
+      // price is now a native column on the variant row.
+      return query.order("price", { ascending: true });
     case "price_desc":
-      return query.order("featured_variant(price)", { ascending: false });
+      return query.order("price", { ascending: false });
     case "name_asc":
-      return query.order("name", { ascending: true });
+      // Order variant rows by the embedded to-one product's name via the
+      // `alias(column)` form PostgREST accepts in the column argument.
+      return query.order("product(name)", { ascending: true });
     case "name_desc":
-      return query.order("name", { ascending: false });
+      return query.order("product(name)", { ascending: false });
     default:
       return query.order("created_at", { ascending: false });
   }
 }
 
 /**
- * Fetch a single page of catalog products (offset-based pagination).
+ * Pick the image that represents a variant: its own image when one exists,
+ * otherwise the product's lowest-position (base) image, otherwise null.
+ */
+function resolveVariantImage(row: VariantRow): string | null {
+  const images = row.product?.product_images ?? [];
+  const own = images.find((img) => img.variant_id === row.id);
+  if (own) return own.url;
+  const base = [...images].sort((a, b) => a.position - b.position)[0];
+  return base?.url ?? null;
+}
+
+/** Flatten a fetched variant row into the catalog card shape. */
+function toVariantCard(row: VariantRow): VariantCardData {
+  return {
+    variantId: row.id,
+    productId: row.product?.id ?? "",
+    name: row.product?.name ?? "",
+    slug: row.product?.slug ?? "",
+    brand: row.product?.brands?.name ?? null,
+    price: row.price,
+    offer_price: row.offer_price,
+    is_on_offer: row.is_on_offer,
+    stock: row.stock,
+    size_ml: row.size_ml,
+    product_type: row.product_type,
+    imageUrl: resolveVariantImage(row),
+  };
+}
+
+/**
+ * Fetch a single page of catalog variants (offset-based pagination).
  *
  * @param page  Zero-based page index.
- * @param pageSize  Items per page.
- * @param filters  Optional category / order / search filters.
+ * @param pageSize  Items (variants) per page.
+ * @param filters  Optional category / product_type / order / search filters.
  *
- * Edge cases handled: an empty search resolves to zero results without
- * a round-trip; a page past the end returns `[]` with `nextPage: null`;
- * any PostgREST error degrades to an empty terminal page.
+ * Note: pagination now counts VARIANTS, not products — a product with three
+ * sizes contributes three cards. Edge cases handled: an empty search resolves
+ * to zero results without a round-trip; a page past the end returns `[]` with
+ * `nextPage: null`; any PostgREST error degrades to an empty terminal page.
  */
 export async function getProductsPage(
   page: number,
@@ -152,7 +215,8 @@ export async function getProductsPage(
     return { items: [], nextPage: null, total: 0 };
   }
 
-  const items = (data as unknown as ProductCardData[]) ?? [];
+  const rows = (data as unknown as VariantRow[]) ?? [];
+  const items = rows.map(toVariantCard);
   const total = count ?? 0;
   const hasNextPage = from + items.length < total;
 

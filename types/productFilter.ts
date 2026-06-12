@@ -1,5 +1,5 @@
 
-import { ProductCardData } from "./product";
+import { ProductTypes, VariantCardData } from "./product";
 
 /** Items fetched per catalog page (offset-based pagination). */
 export const PRODUCTS_PAGE_SIZE = 12;
@@ -7,6 +7,11 @@ export const PRODUCTS_PAGE_SIZE = 12;
 export interface ProductFiltersProps {
   selectedCategory?: string;
   onCategoryChange: (category: string) => void;
+}
+
+export interface ProductTypeFilterProps {
+  selectedType?: ProductTypes | "";
+  onTypeChange: (type: ProductTypes | "") => void;
 }
 
 export type ProductOrderBy = "price_asc" | "price_desc" | "name_asc" | "name_desc";
@@ -19,6 +24,8 @@ export type ProductOrderBy = "price_asc" | "price_desc" | "name_asc" | "name_des
 export interface ProductFilters {
   /** Category UUID. */
   category?: string;
+  /** Variant `product_type` (`full_size` | `decant` | `set`). */
+  productType?: ProductTypes | "";
   orderBy?: ProductOrderBy;
   query?: string;
 }
@@ -28,7 +35,7 @@ export interface ProductFilters {
  * fetch, or `null` when the inventory has been fully traversed.
  */
 export interface ProductPage {
-  items: ProductCardData[];
+  items: VariantCardData[];
   nextPage: number | null;
   total: number;
 }
@@ -39,7 +46,7 @@ export interface ProductFilterOrderByProps {
 }
 
 export interface ProductListProps {
-  products: ProductCardData[];
+  products: VariantCardData[];
   isLoading: boolean;
 }
 

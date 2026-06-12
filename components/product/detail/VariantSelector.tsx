@@ -12,6 +12,7 @@ interface VariantSelectorProps {
 const TYPE_LABEL: Record<string, string> = {
   full_size: "Full size",
   decant: "Decant",
+  set: "Set",
 };
 
 export default function VariantSelector({

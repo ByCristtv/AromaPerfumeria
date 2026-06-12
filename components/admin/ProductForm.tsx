@@ -314,6 +314,7 @@ export default function ProductForm({ onSuccess }: ProductFormProps = {}) {
             >
               <option value="full_size">Full Size</option>
               <option value="decant">Decant</option>
+              <option value="set">Set</option>
             </select>
 
             <label className="flex items-center gap-2 text-[#ececec] cursor-pointer">

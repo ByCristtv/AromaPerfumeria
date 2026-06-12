@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       addresses: {
@@ -621,10 +646,50 @@ export type Database = {
           },
         ]
       }
+      profile_experience_events: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          user_id: string
+          xp_earned: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          user_id?: string
+          xp_earned?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_experience_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_experience_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           created_at: string
+          experience_points: number
           full_name: string | null
           id: string
           phone: string | null
@@ -634,6 +699,7 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          experience_points?: number
           full_name?: string | null
           id: string
           phone?: string | null
@@ -643,6 +709,7 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           created_at?: string
+          experience_points?: number
           full_name?: string | null
           id?: string
           phone?: string | null
@@ -873,6 +940,7 @@ export type Database = {
         Args: { p_order_id: string; p_reason: string }
         Returns: Json
       }
+      grant_order_xp: { Args: { p_order_id: string }; Returns: Json }
       increase_decant_pool: {
         Args: {
           p_ml: number
@@ -1047,6 +1115,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       order_status: ["pending", "received", "shipped", "denied"],

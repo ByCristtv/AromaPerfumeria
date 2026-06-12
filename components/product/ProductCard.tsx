@@ -2,20 +2,25 @@
 import { useCart } from "@/hooks/useCart";
 import Image from "next/image";
 import Link from "next/link";
-import { ProductCardData } from "@/types/product";
+import { VariantCardData } from "@/types/product";
 import { useState, useEffect, useRef } from "react";
 
-export default function ProductCard({ product }: { product: ProductCardData }) {
+export default function ProductCard({ item }: { item: VariantCardData }) {
   const { addItem } = useCart();
-
-  const variant = product.featured_variant;
-  if (!variant) return null;
 
   const formatter = new Intl.NumberFormat("es-CR", {
     style: "currency",
     currency: "CRC",
     maximumFractionDigits: 0,
   });
+
+  const imageUrl = item.imageUrl || "/placeholder.png";
+  const effectivePrice =
+    item.is_on_offer && item.offer_price ? item.offer_price : item.price;
+
+  // Clicking a specific variant card lands on the detail page with that
+  // variant preselected (read from the `variant` search param there).
+  const href = `/products/${item.slug}?variant=${item.variantId}`;
 
   const [showToast, setShowToast] = useState(false);
   const toastTimeoutRef = useRef<number | null>(null);
@@ -24,13 +29,13 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
 
   const handleAddToCart = () => {
     addItem({
-      variant_id: variant.id,
-      product_name: product.name,
-      product_type: variant.product_type,
-      size_ml: variant.size_ml,
-      price: variant.is_on_offer && variant.offer_price ? variant.offer_price : variant.price,
-      image_url: product.product_images[0]?.url || "/placeholder.png",
-      stock: variant.stock,
+      variant_id: item.variantId,
+      product_name: item.name,
+      product_type: item.product_type,
+      size_ml: item.size_ml,
+      price: effectivePrice,
+      image_url: imageUrl,
+      stock: item.stock,
     });
 
     // show toast
@@ -68,11 +73,11 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
           : "border-gray-200 shadow-md hover:shadow-xl hover:scale-101"
       }`}
     >
-      <Link href={`/products/${product.slug}`} className="block">
+      <Link href={href} className="block">
         <div className="relative w-full h-48 bg-white flex items-center justify-center">
           <Image
-            src={product.product_images[0]?.url || "/placeholder.png"}
-            alt={product.name}
+            src={imageUrl}
+            alt={item.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             className="object-contain"
@@ -80,23 +85,25 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
         </div>
 
         <div className="px-4 pt-4 flex flex-col gap-2">
-          <h3 className="font-semibold text-lg line-clamp-1">{product.name}</h3>
+          <h3 className="font-semibold text-lg line-clamp-1">{item.name}</h3>
 
-          <p className="text-sm text-gray-500 line-clamp-2">{product.brands?.name}</p>
+          <p className="text-sm text-gray-500 line-clamp-2">{item.brand}</p>
 
-          <p className="text-sm text-gray-500">{variant.size_ml} ml</p>
+          <p className="text-sm text-gray-500">{item.size_ml} ml</p>
 
-          <span className="text-xl font-bold">{formatter.format(variant.price)}</span>
+          <span className="text-xl font-bold">
+            {formatter.format(effectivePrice)}
+          </span>
         </div>
       </Link>
 
       <div className="px-4 pb-4 pt-2">
         <button
           onClick={handleAddToCart}
-          disabled={variant.stock <= 0}
+          disabled={item.stock <= 0}
           className="w-full bg-black text-white py-2 rounded-lg hover:opacity-80 transition disabled:opacity-40"
         >
-          {variant.stock > 0 ? "Agregar al carrito" : "Sin stock"}
+          {item.stock > 0 ? "Agregar al carrito" : "Sin stock"}
         </button>
       </div>
 

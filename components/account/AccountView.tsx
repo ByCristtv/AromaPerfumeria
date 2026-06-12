@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { formatPrice } from "@/lib/format";
+import RankProgress from "@/components/account/RankProgress";
 import {
   getAccountData,
   getAccountOrders,
@@ -279,6 +280,13 @@ export default function AccountLoginCard() {
                 src={user.user_metadata?.avatar_url || "/default-avatar.png"}
                 alt="Avatar"
                 className="w-24 h-24 rounded-full mx-auto mt-4 object-cover border-2 border-[#c9a96e]/40"
+              />
+            </div>
+
+            {/* ── Rango y Experiencia (XP) ── */}
+            <div className="mb-6">
+              <RankProgress
+                experiencePoints={accountData?.profile?.experience_points ?? 0}
               />
             </div>
 

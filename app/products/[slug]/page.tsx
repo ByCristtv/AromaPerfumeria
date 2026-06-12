@@ -7,6 +7,7 @@ import ProductDetailView from "@/components/product/detail/ProductDetailView";
 interface ProductPageProps {
   // Next.js 16: params/searchParams are async.
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ variant?: string }>;
 }
 
 export async function generateMetadata({
@@ -34,8 +35,12 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
+export default async function ProductPage({
+  params,
+  searchParams,
+}: ProductPageProps) {
   const { slug } = await params;
+  const { variant: initialVariantId } = await searchParams;
   const product = await getProductBySlug(slug);
 
   if (!product || product.product_variants.length === 0) {
@@ -48,5 +53,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
     4
   );
 
-  return <ProductDetailView product={product} related={related} />;
+  return (
+    <ProductDetailView
+      product={product}
+      related={related}
+      initialVariantId={initialVariantId}
+    />
+  );
 }

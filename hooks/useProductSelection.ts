@@ -21,7 +21,8 @@ export interface UseProductSelectionReturn {
  * Keeps the rendering layer dumb — components only read derived values.
  */
 export function useProductSelection(
-  product: ProductDetailData
+  product: ProductDetailData,
+  initialVariantId?: string
 ): UseProductSelectionReturn {
   const sortedVariants = useMemo(
     () =>
@@ -29,7 +30,10 @@ export function useProductSelection(
     [product.product_variants]
   );
 
+  // Priority: variant from the catalog link (`?variant=`) → the product's
+  // featured variant → the first available variant.
   const initial =
+    sortedVariants.find((v) => v.id === initialVariantId) ??
     sortedVariants.find((v) => v.id === product.featured_variant_id) ??
     sortedVariants[0];
 
