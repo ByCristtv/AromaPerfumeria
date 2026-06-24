@@ -2,50 +2,40 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 export interface GalleryImage {
   url: string;
   position: number;
   alt_text: string | null;
-  variant_id?: string | null;
 }
 
 interface ProductGalleryProps {
   images: GalleryImage[];
   productName: string;
-  /** Currently selected variant; the main image follows it when it changes. */
-  activeVariantId?: string;
 }
 
 const PLACEHOLDER = "/placeholder.png";
 
+/**
+ * Parent-product gallery: a main image plus a thumbnail strip, switched on
+ * click. Images belong to the parent product — variant selection does NOT
+ * change them.
+ */
 export default function ProductGallery({
   images,
   productName,
-  activeVariantId,
 }: ProductGalleryProps) {
   const safeImages = useMemo<GalleryImage[]>(() => {
     const sorted = [...images].sort((a, b) => a.position - b.position);
     return sorted.length > 0
       ? sorted
-      : [{ url: PLACEHOLDER, position: 0, alt_text: productName, variant_id: null }];
+      : [{ url: PLACEHOLDER, position: 0, alt_text: productName }];
   }, [images, productName]);
 
   const [activeIdx, setActiveIdx] = useState(0);
   const [zoom, setZoom] = useState({ on: false, x: 50, y: 50 });
   const frameRef = useRef<HTMLDivElement>(null);
-
-  // When the selected variant changes, jump the main image to that variant's
-  // own image (if it has one). Manual thumbnail clicks still override until the
-  // next variant change. Falls back to leaving the current image in place.
-  useEffect(() => {
-    if (!activeVariantId) return;
-    const idx = safeImages.findIndex(
-      (img) => img.variant_id === activeVariantId
-    );
-    if (idx >= 0) setActiveIdx(idx);
-  }, [activeVariantId, safeImages]);
 
   const active = safeImages[activeIdx] ?? safeImages[0];
 

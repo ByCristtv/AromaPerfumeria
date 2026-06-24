@@ -86,19 +86,30 @@ export default function AdminOrderDetail({ order }: Props) {
   function runMarkPaid() {
     startTransition(async () => {
       const confirm = await Swal.fire({
-        title: "¿Marcar como pagado?",
-        text: "Usa esto solo si el cliente pagó vía SINPE Móvil o en efectivo. Esta acción no contacta al proveedor de pago.",
-        icon: "question",
+        title: "Verificar pago",
+        html:
+          '<p style="font-size:0.85rem;color:#666;margin-bottom:0.75rem">Úsalo cuando el cliente ya pagó por SINPE Móvil, transferencia o efectivo.</p>' +
+          '<input id="swal-ref" class="swal2-input" placeholder="Referencia (SINPE/transferencia)">' +
+          '<input id="swal-note" class="swal2-input" placeholder="Nota de pago (opcional)">',
+        focusConfirm: false,
         showCancelButton: true,
-        confirmButtonText: "Sí, marcar pagado",
-        cancelButtonText: "No",
+        confirmButtonText: "Marcar pagado",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#c9a96e",
+        preConfirm: () => ({
+          reference:
+            (document.getElementById("swal-ref") as HTMLInputElement | null)?.value ?? "",
+          note:
+            (document.getElementById("swal-note") as HTMLInputElement | null)?.value ?? "",
+        }),
       });
       if (!confirm.isConfirmed) return;
 
-      const result = await markOrderPaidAction(order.id);
+      const { reference, note } = confirm.value as { reference: string; note: string };
+      const result = await markOrderPaidAction(order.id, reference, note);
       await Swal.fire({
         icon: result.ok ? "success" : "error",
-        title: result.ok ? "Pedido marcado" : "No se pudo",
+        title: result.ok ? "Pago registrado" : "No se pudo",
         text: result.message,
       });
     });

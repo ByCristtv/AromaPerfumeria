@@ -69,6 +69,8 @@ export interface ProductDetailData {
   notes_middle: string | null;
   notes_base: string | null;
   featured_variant_id: string | null;
+  /** Shared decant ml pool — drives dynamic decant stock (see lib/stock.ts). */
+  decant_stock_ml: number;
   brands: { name: string } | null;
   categories: { id: string; name: string }[];
   product_variants: ProductVariant[];
@@ -81,13 +83,19 @@ export interface ProductDetailData {
   }[];
 }
 
+/**
+ * Catalog card data — ONE card per parent product. The card represents the
+ * product through its primary (featured) variant and the parent's first image.
+ */
 export interface ProductCardData {
   id: string;
   name: string;
   slug: string;
   gender: "masculine" | "feminine" | "unisex";
   concentration: string;
-  brands: { name: string };
+  brands: { name: string } | null;
+  /** Parent decant pool — only needed when the featured variant is a decant. */
+  decant_stock_ml: number;
   featured_variant: {
     id: string;
     price: number;
@@ -101,27 +109,6 @@ export interface ProductCardData {
     url: string;
     position: number;
   }[];
-}
-
-/**
- * Catalog card data, flattened to a SINGLE variant. The catalog now renders
- * one card per active variant (not one per product), so each card carries its
- * own price/stock/size and its representative image (the variant's own image
- * when present, otherwise the product-level fallback).
- */
-export interface VariantCardData {
-  variantId: string;
-  productId: string;
-  name: string;
-  slug: string;
-  brand: string | null;
-  price: number;
-  offer_price: number | null;
-  is_on_offer: boolean;
-  stock: number;
-  size_ml: number;
-  product_type: ProductTypes;
-  imageUrl: string | null;
 }
 
 /** Payload for the admin "create product + first variant" RPC. */
@@ -187,8 +174,6 @@ export interface CreateVariantDTO {
   product_type: ProductTypes;
   is_on_offer: boolean;
   offer_price: number | null;
-  /** Representative image for this variant. Required from the admin form. */
-  file: File;
 }
 
 export type CartLineItem = {

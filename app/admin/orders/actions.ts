@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import type { PostgrestError } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+import type { Json } from "@/types/database";
+import type { AdminOrderInput, AdminOrderResult } from "@/types/adminOrder";
 
 /**
  * Server actions for admin order management UI (Phase 7).
@@ -135,7 +137,9 @@ export async function denyOrderAction(
 // works if order is fresh-pending (payment_status=pending AND order_status=pending).
 
 export async function markOrderPaidAction(
-  orderId: string
+  orderId: string,
+  reference?: string,
+  note?: string
 ): Promise<ActionResult> {
   if (!isUuid(orderId)) {
     return { ok: false, message: "ID de pedido inválido." };
@@ -144,6 +148,8 @@ export async function markOrderPaidAction(
   const supabase = await createClient();
   const { error } = await supabase.rpc("mark_order_paid", {
     p_order_id: orderId,
+    p_reference: reference?.trim() || undefined,
+    p_note: note?.trim() || undefined,
   });
 
   if (error) {
@@ -161,6 +167,51 @@ export async function markOrderPaidAction(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// createAdminOrderAction
+// ─────────────────────────────────────────────────────────────────────────────
+// Manual order on behalf of a customer who contacted the store off-site.
+// Delegates to the place_admin_order RPC (admin-guarded, atomic, deducts stock,
+// always payment_status='pending'). Reuses the website's order machinery.
+
+export async function createAdminOrderAction(
+  input: AdminOrderInput
+): Promise<ActionResult<AdminOrderResult>> {
+  // Light pre-flight validation; the RPC is the authoritative gatekeeper.
+  if (!input?.customer?.name?.trim()) {
+    return { ok: false, message: "El nombre del cliente es obligatorio." };
+  }
+  if (!input?.customer?.phone?.trim()) {
+    return { ok: false, message: "El teléfono del cliente es obligatorio." };
+  }
+  if (!input?.shipping?.canton_code) {
+    return { ok: false, message: "Selecciona un cantón válido." };
+  }
+  if (!input?.shipping?.address?.trim()) {
+    return { ok: false, message: "Las señas de entrega son obligatorias." };
+  }
+  if (!Array.isArray(input.items) || input.items.length === 0) {
+    return { ok: false, message: "Agrega al menos un producto al pedido." };
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("place_admin_order", {
+    p_payload: input as unknown as Json,
+  });
+
+  if (error) {
+    return rpcError(error, fallbackMessages.create);
+  }
+
+  revalidatePath("/admin/orders");
+
+  return {
+    ok: true,
+    message: "Pedido creado. Pendiente de pago.",
+    data: data as unknown as AdminOrderResult,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -174,6 +225,7 @@ const fallbackMessages = {
   advance: "No pudimos avanzar el estado del pedido.",
   deny: "No pudimos cancelar el pedido.",
   markPaid: "No pudimos marcar el pedido como pagado.",
+  create: "No pudimos crear el pedido.",
 } as const;
 
 /**
@@ -225,6 +277,23 @@ function rpcError<TData>(
       ok: false,
       message: "Por favor proporciona una razón para cancelar el pedido.",
     };
+  }
+  if (/Insufficient stock|insufficient_stock|stock/i.test(msg)) {
+    return {
+      ok: false,
+      message:
+        "No hay stock suficiente para uno de los productos. Ajusta las cantidades e inténtalo de nuevo.",
+    };
+  }
+  if (/no longer exists|no longer available/i.test(msg)) {
+    return {
+      ok: false,
+      message:
+        "Uno de los productos ya no está disponible. Quítalo del pedido e inténtalo de nuevo.",
+    };
+  }
+  if (/discount cannot/i.test(msg)) {
+    return { ok: false, message: "El descuento no es válido para este pedido." };
   }
 
   // Unknown error — log it so we can investigate.

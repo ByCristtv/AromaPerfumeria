@@ -55,280 +55,247 @@ END $$;
 
 -- 2.1  PROFILES (extends auth.users)
 -- ────────────────────────────────────────────────────────────────────────────
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
 
-CREATE TABLE IF NOT EXISTS public.profiles (
-  id            UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  full_name     TEXT,
-  phone         TEXT,
-  avatar_url    TEXT,
-  role          public.user_role NOT NULL DEFAULT 'customer',
-  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+CREATE TABLE public.profiles (
+  id uuid NOT NULL,
+  full_name text,
+  phone text,
+  avatar_url text,
+  role USER-DEFINED NOT NULL DEFAULT 'customer'::user_role,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  experience_points integer NOT NULL DEFAULT 0 CHECK (experience_points >= 0),
+  CONSTRAINT profiles_pkey PRIMARY KEY (id),
+  CONSTRAINT profiles_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id)
 );
-
-COMMENT ON TABLE public.profiles IS 'Extended user profile linked 1-to-1 with auth.users.';
-
-
--- 2.2  BRANDS
--- ────────────────────────────────────────────────────────────────────────────
-
-CREATE TABLE IF NOT EXISTS public.brands (
-  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name          TEXT NOT NULL UNIQUE,
-  slug          TEXT NOT NULL UNIQUE,
-  logo_url      TEXT,
-  description   TEXT,
-  is_active     BOOLEAN NOT NULL DEFAULT TRUE,
-  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+CREATE TABLE public.brands (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  name text NOT NULL UNIQUE,
+  slug text NOT NULL UNIQUE,
+  logo_url text,
+  description text,
+  is_active boolean NOT NULL DEFAULT true,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT brands_pkey PRIMARY KEY (id)
 );
-
-CREATE INDEX IF NOT EXISTS idx_brands_slug ON public.brands (slug);
-
-
--- 2.3  CATEGORIES
--- ────────────────────────────────────────────────────────────────────────────
-
-CREATE TABLE IF NOT EXISTS public.categories (
-  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name          TEXT NOT NULL UNIQUE,
-  slug          TEXT NOT NULL UNIQUE,
-  description   TEXT,
-  image_url     TEXT,
-  parent_id     UUID REFERENCES public.categories(id) ON DELETE SET NULL,
-  position      INT NOT NULL DEFAULT 0,
-  is_active     BOOLEAN NOT NULL DEFAULT TRUE,
-  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+CREATE TABLE public.categories (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  name text NOT NULL UNIQUE,
+  slug text NOT NULL UNIQUE,
+  description text,
+  image_url text,
+  parent_id uuid,
+  position integer NOT NULL DEFAULT 0,
+  is_active boolean NOT NULL DEFAULT true,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT categories_pkey PRIMARY KEY (id),
+  CONSTRAINT categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES public.categories(id)
 );
-
-CREATE INDEX IF NOT EXISTS idx_categories_slug      ON public.categories (slug);
-CREATE INDEX IF NOT EXISTS idx_categories_parent_id  ON public.categories (parent_id);
-
-COMMENT ON COLUMN public.categories.parent_id IS 'Self-referencing FK to support nested category trees.';
-
-
--- 2.4  PRODUCTS
--- ────────────────────────────────────────────────────────────────────────────
-
-CREATE TABLE IF NOT EXISTS public.products (
-  id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name                TEXT NOT NULL,
-  slug                TEXT NOT NULL UNIQUE,
-  brand_id            UUID NOT NULL REFERENCES public.brands(id) ON DELETE RESTRICT,
-  description         TEXT,
-  notes_top           TEXT,
-  notes_middle        TEXT,
-  notes_base          TEXT,
-  gender              TEXT CHECK (gender IN ('masculine', 'feminine', 'unisex')),
-  concentration       TEXT CHECK (concentration IN ('EDT', 'EDP', 'Parfum', 'Cologne', 'Other')),
-  featured_variant_id UUID,  -- FK added after product_variants table exists
-  is_active           BOOLEAN NOT NULL DEFAULT TRUE,
-  created_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at          TIMESTAMPTZ NOT NULL DEFAULT now()
+CREATE TABLE public.products (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  slug text NOT NULL UNIQUE,
+  brand_id uuid NOT NULL,
+  description text,
+  notes_top text,
+  notes_middle text,
+  notes_base text,
+  gender text CHECK (gender = ANY (ARRAY['masculine'::text, 'feminine'::text, 'unisex'::text])),
+  concentration text CHECK (concentration = ANY (ARRAY['EDT'::text, 'EDP'::text, 'Parfum'::text, 'Cologne'::text, 'Other'::text])),
+  featured_variant_id uuid,
+  is_active boolean NOT NULL DEFAULT true,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  decant_stock_ml numeric NOT NULL DEFAULT 0 CHECK (decant_stock_ml >= 0::numeric),
+  CONSTRAINT products_pkey PRIMARY KEY (id),
+  CONSTRAINT products_brand_id_fkey FOREIGN KEY (brand_id) REFERENCES public.brands(id),
+  CONSTRAINT fk_featured_variant FOREIGN KEY (featured_variant_id) REFERENCES public.product_variants(id)
 );
-
-CREATE INDEX IF NOT EXISTS idx_products_slug      ON public.products (slug);
-CREATE INDEX IF NOT EXISTS idx_products_brand_id  ON public.products (brand_id);
-CREATE INDEX IF NOT EXISTS idx_products_active    ON public.products (is_active) WHERE is_active = TRUE;
-
--- Trigram index for fuzzy search
-CREATE INDEX IF NOT EXISTS idx_products_name_trgm
-  ON public.products USING gin (name gin_trgm_ops);
-
-COMMENT ON COLUMN public.products.featured_variant_id IS 'The default variant shown on catalog cards (cheapest, most popular, etc).';
-
-
--- 2.5  PRODUCT ↔ CATEGORY (many-to-many)
--- ────────────────────────────────────────────────────────────────────────────
-
-CREATE TABLE IF NOT EXISTS public.product_categories (
-  product_id    UUID NOT NULL REFERENCES public.products(id)    ON DELETE CASCADE,
-  category_id   UUID NOT NULL REFERENCES public.categories(id)  ON DELETE CASCADE,
-  PRIMARY KEY (product_id, category_id)
+CREATE TABLE public.product_categories (
+  product_id uuid NOT NULL,
+  category_id uuid NOT NULL,
+  CONSTRAINT product_categories_pkey PRIMARY KEY (product_id, category_id),
+  CONSTRAINT product_categories_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id),
+  CONSTRAINT product_categories_category_id_fkey FOREIGN KEY (category_id) REFERENCES public.categories(id)
 );
-
-CREATE INDEX IF NOT EXISTS idx_pc_category ON public.product_categories (category_id);
-
-
--- 2.6  PRODUCT VARIANTS (the actual purchasable units)
--- ────────────────────────────────────────────────────────────────────────────
-
-CREATE TABLE IF NOT EXISTS public.product_variants (
-  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  product_id    UUID NOT NULL REFERENCES public.products(id) ON DELETE CASCADE,
-  product_type  public.product_type NOT NULL,
-  size_ml       NUMERIC(8,2) NOT NULL CHECK (size_ml > 0),
-  price         NUMERIC(12,2) NOT NULL CHECK (price > 0),
-  offer_price   NUMERIC(12,2) CHECK (offer_price IS NULL OR offer_price > 0),
-  is_on_offer   BOOLEAN NOT NULL DEFAULT FALSE,
-  stock         INT NOT NULL DEFAULT 0 CHECK (stock >= 0),
-  sku           TEXT NOT NULL UNIQUE,
-  is_active     BOOLEAN NOT NULL DEFAULT TRUE,
-  position      INT NOT NULL DEFAULT 0,
-  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
-
-  -- Business rule: offer price must be lower than regular price
-  CONSTRAINT chk_offer_price_lower
-    CHECK (
-      (is_on_offer = FALSE)
-      OR (offer_price IS NOT NULL AND offer_price < price)
-    ),
-
-  -- Each product can only have one variant per type+size combination
-  CONSTRAINT uq_variant_per_product
-    UNIQUE (product_id, product_type, size_ml)
+CREATE TABLE public.product_variants (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  product_id uuid NOT NULL,
+  product_type USER-DEFINED NOT NULL,
+  size_ml numeric NOT NULL CHECK (size_ml > 0::numeric),
+  price numeric NOT NULL CHECK (price > 0::numeric),
+  offer_price numeric CHECK (offer_price IS NULL OR offer_price > 0::numeric),
+  is_on_offer boolean NOT NULL DEFAULT false,
+  stock integer NOT NULL DEFAULT 0 CHECK (stock >= 0),
+  sku text NOT NULL UNIQUE,
+  is_active boolean NOT NULL DEFAULT true,
+  position integer NOT NULL DEFAULT 0,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT product_variants_pkey PRIMARY KEY (id),
+  CONSTRAINT product_variants_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id)
 );
-
-CREATE INDEX IF NOT EXISTS idx_variants_product_id  ON public.product_variants (product_id);
-CREATE INDEX IF NOT EXISTS idx_variants_sku         ON public.product_variants (sku);
-CREATE INDEX IF NOT EXISTS idx_variants_stock       ON public.product_variants (stock);
-CREATE INDEX IF NOT EXISTS idx_variants_active      ON public.product_variants (is_active) WHERE is_active = TRUE;
-CREATE INDEX IF NOT EXISTS idx_variants_offer       ON public.product_variants (is_on_offer) WHERE is_on_offer = TRUE;
-
--- Now add the deferred FK from products.featured_variant_id
-ALTER TABLE public.products
-  DROP CONSTRAINT IF EXISTS fk_featured_variant;
-ALTER TABLE public.products
-  ADD CONSTRAINT fk_featured_variant
-  FOREIGN KEY (featured_variant_id) REFERENCES public.product_variants(id)
-  ON DELETE SET NULL;
-
-
--- 2.7  PRODUCT IMAGES
--- ────────────────────────────────────────────────────────────────────────────
-
-CREATE TABLE IF NOT EXISTS public.product_images (
-  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  product_id    UUID NOT NULL REFERENCES public.products(id) ON DELETE CASCADE,
-  url           TEXT NOT NULL,
-  alt_text      TEXT,
-  position      INT NOT NULL DEFAULT 0,
-  created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+CREATE TABLE public.product_images (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  product_id uuid NOT NULL,
+  url text NOT NULL,
+  alt_text text,
+  position integer NOT NULL DEFAULT 0,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  variant_id uuid,
+  CONSTRAINT product_images_pkey PRIMARY KEY (id),
+  CONSTRAINT product_images_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id),
+  CONSTRAINT product_images_variant_fkey FOREIGN KEY (variant_id) REFERENCES public.product_variants(id),
+  CONSTRAINT product_images_variant_fkey FOREIGN KEY (product_id) REFERENCES public.product_variants(product_id)
 );
-
-CREATE INDEX IF NOT EXISTS idx_images_product_id ON public.product_images (product_id);
-
-
--- 2.8  CUSTOMER ADDRESSES
--- ────────────────────────────────────────────────────────────────────────────
-
-CREATE TABLE IF NOT EXISTS public.addresses (
-  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id       UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  label         TEXT NOT NULL DEFAULT 'Home',
-  full_name     TEXT NOT NULL,
-  phone         TEXT NOT NULL,
-  address_line1 TEXT NOT NULL,
-  address_line2 TEXT,
-  city          TEXT NOT NULL,
-  province      TEXT NOT NULL,
-  postal_code   TEXT,
-  country       TEXT NOT NULL DEFAULT 'CR',
-  instructions  TEXT,
-  is_default    BOOLEAN NOT NULL DEFAULT FALSE,
-  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+CREATE TABLE public.addresses (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  province text NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  canton text NOT NULL DEFAULT ''::text,
+  district text NOT NULL DEFAULT ''::text,
+  exact_address text NOT NULL DEFAULT ''::text,
+  references text,
+  CONSTRAINT addresses_pkey PRIMARY KEY (id),
+  CONSTRAINT addresses_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.profiles(id)
 );
-
-CREATE INDEX IF NOT EXISTS idx_addresses_user_id ON public.addresses (user_id);
-
-
--- 2.9  CART ITEMS
--- ────────────────────────────────────────────────────────────────────────────
-
-CREATE TABLE IF NOT EXISTS public.cart_items (
-  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id       UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  variant_id    UUID NOT NULL REFERENCES public.product_variants(id) ON DELETE CASCADE,
-  quantity      INT NOT NULL DEFAULT 1 CHECK (quantity > 0),
-  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
-
-  CONSTRAINT uq_cart_user_variant UNIQUE (user_id, variant_id)
+CREATE TABLE public.cart_items (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  variant_id uuid NOT NULL,
+  quantity integer NOT NULL DEFAULT 1 CHECK (quantity > 0),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT cart_items_pkey PRIMARY KEY (id),
+  CONSTRAINT cart_items_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.profiles(id),
+  CONSTRAINT cart_items_variant_id_fkey FOREIGN KEY (variant_id) REFERENCES public.product_variants(id)
 );
-
-CREATE INDEX IF NOT EXISTS idx_cart_user_id ON public.cart_items (user_id);
-
-
--- 2.10  ORDERS
--- ────────────────────────────────────────────────────────────────────────────
-
-CREATE TABLE IF NOT EXISTS public.orders (
-  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  order_number      BIGINT GENERATED ALWAYS AS IDENTITY UNIQUE,
-  user_id           UUID NOT NULL REFERENCES public.profiles(id) ON DELETE RESTRICT,
-
-  -- Delivery snapshot (immutable copy of address at time of order)
-  shipping_full_name    TEXT NOT NULL,
-  shipping_phone        TEXT NOT NULL,
-  shipping_address_line1 TEXT NOT NULL,
-  shipping_address_line2 TEXT,
-  shipping_city         TEXT NOT NULL,
-  shipping_province     TEXT NOT NULL,
-  shipping_postal_code  TEXT,
-  shipping_country      TEXT NOT NULL DEFAULT 'CR',
-  shipping_instructions TEXT,
-
-  -- Totals
-  subtotal          NUMERIC(12,2) NOT NULL CHECK (subtotal >= 0),
-  shipping_cost     NUMERIC(12,2) NOT NULL DEFAULT 0 CHECK (shipping_cost >= 0),
-  tax               NUMERIC(12,2) NOT NULL DEFAULT 0 CHECK (tax >= 0),
-  discount          NUMERIC(12,2) NOT NULL DEFAULT 0 CHECK (discount >= 0),
-  total             NUMERIC(12,2) NOT NULL CHECK (total >= 0),
-
-  status            public.order_status NOT NULL DEFAULT 'pending',
-  notes             TEXT,
-
-  created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at        TIMESTAMPTZ NOT NULL DEFAULT now()
+CREATE TABLE public.orders (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  order_number bigint GENERATED ALWAYS AS IDENTITY NOT NULL UNIQUE,
+  user_id uuid,
+  customer_name text NOT NULL,
+  customer_phone text NOT NULL,
+  shipping_address text NOT NULL,
+  shipping_canton text NOT NULL,
+  shipping_province text NOT NULL,
+  shipping_reference text,
+  subtotal numeric NOT NULL CHECK (subtotal >= 0::numeric),
+  shipping_cost numeric NOT NULL DEFAULT 0 CHECK (shipping_cost >= 0::numeric),
+  tax numeric NOT NULL DEFAULT 0 CHECK (tax >= 0::numeric),
+  discount numeric NOT NULL DEFAULT 0 CHECK (discount >= 0::numeric),
+  total numeric NOT NULL CHECK (total >= 0::numeric),
+  order_status USER-DEFINED NOT NULL DEFAULT 'pending'::order_status,
+  notes text,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  customer_email text,
+  shipping_district text NOT NULL,
+  shipping_method text,
+  payment_status USER-DEFINED NOT NULL DEFAULT 'pending'::payment_status,
+  payment_provider text,
+  payment_reference text,
+  paid_at timestamp with time zone,
+  source text NOT NULL DEFAULT 'web'::text,
+  created_by_admin_id uuid,
+  CONSTRAINT orders_pkey PRIMARY KEY (id),
+  CONSTRAINT orders_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.profiles(id),
+  CONSTRAINT orders_created_by_admin_id_fkey FOREIGN KEY (created_by_admin_id) REFERENCES public.profiles(id)
 );
-
-CREATE INDEX IF NOT EXISTS idx_orders_user_id     ON public.orders (user_id);
-CREATE INDEX IF NOT EXISTS idx_orders_status      ON public.orders (status);
-CREATE INDEX IF NOT EXISTS idx_orders_created_at  ON public.orders (created_at DESC);
-
-
--- 2.11  ORDER ITEMS (immutable snapshots)
--- ────────────────────────────────────────────────────────────────────────────
-
-CREATE TABLE IF NOT EXISTS public.order_items (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  order_id        UUID NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
-  variant_id      UUID REFERENCES public.product_variants(id) ON DELETE SET NULL,
-
-  -- Snapshot fields (preserved even if product/variant changes or is deleted)
-  product_name    TEXT NOT NULL,
-  brand_name      TEXT NOT NULL,
-  product_type    public.product_type NOT NULL,
-  size_ml         NUMERIC(8,2) NOT NULL,
-  sku             TEXT NOT NULL,
-
-  quantity        INT NOT NULL CHECK (quantity > 0),
-  unit_price      NUMERIC(12,2) NOT NULL CHECK (unit_price >= 0),
-  line_total      NUMERIC(12,2) NOT NULL CHECK (line_total >= 0),
-
-  created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+CREATE TABLE public.order_items (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  order_id uuid NOT NULL,
+  variant_id uuid,
+  product_name text NOT NULL,
+  brand_name text NOT NULL,
+  product_type USER-DEFINED NOT NULL,
+  size_ml numeric NOT NULL,
+  sku text NOT NULL,
+  quantity integer NOT NULL CHECK (quantity > 0),
+  unit_price numeric NOT NULL CHECK (unit_price >= 0::numeric),
+  line_total numeric NOT NULL CHECK (line_total >= 0::numeric),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT order_items_pkey PRIMARY KEY (id),
+  CONSTRAINT order_items_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.orders(id),
+  CONSTRAINT order_items_variant_id_fkey FOREIGN KEY (variant_id) REFERENCES public.product_variants(id)
 );
-
-CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON public.order_items (order_id);
-
-
--- 2.12  STOCK MOVEMENTS (audit log)
--- ────────────────────────────────────────────────────────────────────────────
-
-CREATE TABLE IF NOT EXISTS public.stock_movements (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  variant_id      UUID NOT NULL REFERENCES public.product_variants(id) ON DELETE CASCADE,
-  previous_stock  INT NOT NULL,
-  new_stock       INT NOT NULL,
-  delta           INT NOT NULL,  -- positive = increase, negative = decrease
-  reason          public.stock_movement_reason NOT NULL,
-  reference_id    UUID,          -- optional FK to order or other entity
-  notes           TEXT,
-  performed_by    UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
-  created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+CREATE TABLE public.stock_movements (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  variant_id uuid,
+  previous_stock integer,
+  new_stock integer,
+  delta integer,
+  reason USER-DEFINED NOT NULL,
+  reference_id uuid,
+  notes text,
+  performed_by uuid,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  product_id uuid,
+  previous_ml numeric,
+  new_ml numeric,
+  ml_delta numeric,
+  CONSTRAINT stock_movements_pkey PRIMARY KEY (id),
+  CONSTRAINT stock_movements_variant_id_fkey FOREIGN KEY (variant_id) REFERENCES public.product_variants(id),
+  CONSTRAINT stock_movements_performed_by_fkey FOREIGN KEY (performed_by) REFERENCES public.profiles(id),
+  CONSTRAINT stock_movements_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id)
+);
+CREATE TABLE public.shipping_zones (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  code text NOT NULL UNIQUE,
+  name text NOT NULL,
+  base_cost numeric NOT NULL CHECK (base_cost >= 0::numeric),
+  free_shipping_threshold numeric CHECK (free_shipping_threshold IS NULL OR free_shipping_threshold > 0::numeric),
+  is_active boolean NOT NULL DEFAULT true,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT shipping_zones_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.shipping_zone_cantons (
+  canton_code text NOT NULL,
+  canton_name text NOT NULL,
+  province_code text NOT NULL,
+  province_name text NOT NULL,
+  zone_id uuid NOT NULL,
+  CONSTRAINT shipping_zone_cantons_pkey PRIMARY KEY (canton_code),
+  CONSTRAINT shipping_zone_cantons_zone_id_fkey FOREIGN KEY (zone_id) REFERENCES public.shipping_zones(id)
+);
+CREATE TABLE public.processed_webhooks (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  provider text NOT NULL,
+  event_id text NOT NULL,
+  payload_hash text,
+  processed_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT processed_webhooks_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.decant_transformations (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  product_id uuid NOT NULL,
+  source_variant_id uuid NOT NULL,
+  quantity_used integer NOT NULL CHECK (quantity_used > 0),
+  ml_generated numeric NOT NULL CHECK (ml_generated > 0::numeric),
+  performed_by uuid NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT decant_transformations_pkey PRIMARY KEY (id),
+  CONSTRAINT dt_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id),
+  CONSTRAINT dt_performed_by_fkey FOREIGN KEY (performed_by) REFERENCES public.profiles(id),
+  CONSTRAINT dt_source_variant_fkey FOREIGN KEY (source_variant_id) REFERENCES public.product_variants(id),
+  CONSTRAINT dt_source_variant_fkey FOREIGN KEY (product_id) REFERENCES public.product_variants(product_id)
+);
+CREATE TABLE public.profile_experience_events (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  order_id uuid NOT NULL UNIQUE,
+  xp_earned integer NOT NULL CHECK (xp_earned >= 0),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT profile_experience_events_pkey PRIMARY KEY (id),
+  CONSTRAINT profile_experience_events_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.profiles(id),
+  CONSTRAINT profile_experience_events_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.orders(id)
 );
 
 CREATE INDEX IF NOT EXISTS idx_stock_mv_variant   ON public.stock_movements (variant_id);

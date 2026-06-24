@@ -19,6 +19,8 @@ interface PurchasePanelProps {
   effectivePrice: number;
   hasOffer: boolean;
   outOfStock: boolean;
+  /** Sellable units of the selected variant (decant-aware). */
+  availableStock: number;
   onAddToCart: () => void;
 }
 
@@ -33,6 +35,7 @@ export default function PurchasePanel({
   effectivePrice,
   hasOffer,
   outOfStock,
+  availableStock,
   onAddToCart,
 }: PurchasePanelProps) {
   return (
@@ -50,7 +53,7 @@ export default function PurchasePanel({
           originalPrice={hasOffer ? selectedVariant.price : undefined}
           onOffer={hasOffer}
         />
-        <StockBadge stock={selectedVariant.stock} />
+        <StockBadge stock={availableStock} />
       </div>
 
       <span
@@ -66,6 +69,7 @@ export default function PurchasePanel({
         variants={variants}
         selectedId={selectedVariant.id}
         onSelect={onSelectVariant}
+        decantPoolMl={product.decant_stock_ml}
       />
 
       <div className="flex items-center justify-between gap-4">
@@ -74,7 +78,7 @@ export default function PurchasePanel({
         </h2>
         <QuantityStepper
           quantity={quantity}
-          max={Math.max(1, selectedVariant.stock)}
+          max={Math.max(1, availableStock)}
           onIncrement={onIncrement}
           onDecrement={onDecrement}
         />

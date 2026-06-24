@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useCallback } from "react";
 import type { ProductDetailData, ProductVariant } from "@/types/product";
+import { availableUnits } from "@/lib/stock";
 
 export interface UseProductSelectionReturn {
   sortedVariants: ProductVariant[];
@@ -14,6 +15,8 @@ export interface UseProductSelectionReturn {
   effectivePrice: number;
   hasOffer: boolean;
   outOfStock: boolean;
+  /** Sellable units of the selected variant (decant-aware). */
+  availableStock: number;
 }
 
 /**
@@ -41,19 +44,25 @@ export function useProductSelection(
     useState<ProductVariant>(initial);
   const [quantity, setQuantityState] = useState(1);
 
+  // Decant-aware sellable units for the selected variant.
+  const availableStock = availableUnits(
+    selectedVariant,
+    product.decant_stock_ml
+  );
+
   const selectVariant = useCallback((v: ProductVariant) => {
     setSelectedVariant(v);
     // Reset quantity so the user never holds a number that exceeds the new
-    // variant's stock.
+    // variant's available stock.
     setQuantityState(1);
   }, []);
 
   const setQuantity = useCallback(
     (q: number) => {
-      const clamped = Math.max(1, Math.min(q, selectedVariant.stock || 1));
+      const clamped = Math.max(1, Math.min(q, availableStock || 1));
       setQuantityState(clamped);
     },
-    [selectedVariant.stock]
+    [availableStock]
   );
 
   const increment = useCallback(
@@ -70,7 +79,7 @@ export function useProductSelection(
   const effectivePrice = hasOffer
     ? (selectedVariant.offer_price as number)
     : selectedVariant.price;
-  const outOfStock = selectedVariant.stock <= 0;
+  const outOfStock = availableStock <= 0;
 
   return {
     sortedVariants,
@@ -83,5 +92,6 @@ export function useProductSelection(
     effectivePrice,
     hasOffer,
     outOfStock,
+    availableStock,
   };
 }

@@ -2,11 +2,14 @@
 
 import { motion } from "framer-motion";
 import type { ProductVariant } from "@/types/product";
+import { availableUnits } from "@/lib/stock";
 
 interface VariantSelectorProps {
   variants: ProductVariant[];
   selectedId: string;
   onSelect: (v: ProductVariant) => void;
+  /** Parent decant ml pool — drives decant variants' availability. */
+  decantPoolMl: number;
 }
 
 const TYPE_LABEL: Record<string, string> = {
@@ -19,6 +22,7 @@ export default function VariantSelector({
   variants,
   selectedId,
   onSelect,
+  decantPoolMl,
 }: VariantSelectorProps) {
   if (variants.length === 0) return null;
 
@@ -39,6 +43,7 @@ export default function VariantSelector({
             key={v.id}
             variant={v}
             selected={v.id === selectedId}
+            disabled={availableUnits(v, decantPoolMl) <= 0}
             onClick={() => onSelect(v)}
           />
         ))}
@@ -50,11 +55,11 @@ export default function VariantSelector({
 interface VariantCardProps {
   variant: ProductVariant;
   selected: boolean;
+  disabled: boolean;
   onClick: () => void;
 }
 
-function VariantCard({ variant, selected, onClick }: VariantCardProps) {
-  const disabled = variant.stock <= 0;
+function VariantCard({ variant, selected, disabled, onClick }: VariantCardProps) {
 
   return (
     <motion.button

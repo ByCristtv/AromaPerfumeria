@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { formatPrice } from "@/lib/format";
+import Modal from "@/components/ui/Modal";
 import RankProgress from "@/components/account/RankProgress";
 import {
   getAccountData,
@@ -227,6 +228,42 @@ export default function AccountLoginCard() {
   const displayPhone = accountData?.profile?.phone ?? null;
   const displayAddress = accountData?.address ?? null;
 
+  // ── Modal open/close (reset transient state so a re-open is always clean) ──
+  const openPhoneModal = () => {
+    setPhoneValue(displayPhone ?? "");
+    setPhoneError("");
+    setEditingPhone(true);
+  };
+  const closePhoneModal = () => {
+    if (phoneSaving) return;
+    setEditingPhone(false);
+    setPhoneError("");
+  };
+
+  const resetAddressFields = () => {
+    if (accountData?.address) {
+      setDistrict(accountData.address.district);
+      setExactAddress(accountData.address.exact_address);
+      setReference(accountData.address.references ?? "");
+      const canton = findCanton(accountData.address.canton);
+      if (canton) {
+        setSelectedProvince(canton.provinceCode);
+        setCantonCode(canton.code);
+      }
+    }
+  };
+  const openAddressModal = () => {
+    resetAddressFields();
+    setAddressError("");
+    setEditingAddress(true);
+  };
+  const closeAddressModal = () => {
+    if (addressSaving) return;
+    setEditingAddress(false);
+    setAddressError("");
+    resetAddressFields();
+  };
+
   const formatAddress = () => {
     if (!displayAddress) return null;
     const canton = findCanton(displayAddress.canton);
@@ -306,22 +343,27 @@ export default function AccountLoginCard() {
                   <p className="text-white/50 text-xs uppercase tracking-wider">Teléfono</p>
                   <button
                     type="button"
-                    onClick={() => {
-                      if (editingPhone) {
-                        setEditingPhone(false);
-                        setPhoneError("");
-                        setPhoneValue(displayPhone ?? "");
-                      } else {
-                        setEditingPhone(true);
-                      }
-                    }}
+                    onClick={openPhoneModal}
                     className="text-[#c9a96e] text-xs hover:underline"
                   >
-                    {editingPhone ? "Cancelar" : displayPhone ? "Editar" : "Agregar"}
+                    {displayPhone ? "Editar" : "Agregar"}
                   </button>
                 </div>
-                {editingPhone ? (
-                  <div className="space-y-2">
+                <p className="text-white text-base">{displayPhone ?? "Sin teléfono"}</p>
+              </div>
+
+              <Modal
+                open={editingPhone}
+                onClose={closePhoneModal}
+                title="Editar teléfono"
+                subtitle="Lo usamos para coordinar tus entregas"
+                closeOnBackdrop={!phoneSaving}
+              >
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-white/60 text-xs mb-1 block">
+                      Número de teléfono
+                    </label>
                     <input
                       type="tel"
                       inputMode="tel"
@@ -329,22 +371,30 @@ export default function AccountLoginCard() {
                       value={phoneValue}
                       onChange={(e) => setPhoneValue(e.target.value)}
                       placeholder="8888-8888"
-                      className="w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#c9a96e]/50"
+                      className="w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#c9a96e]/50"
                     />
-                    {phoneError && <p className="text-xs text-red-400">{phoneError}</p>}
+                  </div>
+                  {phoneError && <p className="text-xs text-red-400">{phoneError}</p>}
+                  <div className="flex gap-3 pt-1">
+                    <button
+                      type="button"
+                      onClick={closePhoneModal}
+                      disabled={phoneSaving}
+                      className="flex-1 rounded-lg border border-white/20 py-2.5 text-sm font-medium text-white/80 transition hover:bg-white/5 disabled:opacity-50"
+                    >
+                      Cancelar
+                    </button>
                     <button
                       type="button"
                       onClick={handleSavePhone}
                       disabled={phoneSaving}
-                      className="w-full rounded-lg bg-[#c9a96e] text-black py-2 text-sm font-medium hover:bg-[#c9a96e]/90 transition disabled:opacity-50"
+                      className="flex-1 rounded-lg bg-[#c9a96e] py-2.5 text-sm font-medium text-black transition hover:bg-[#c9a96e]/90 disabled:opacity-50"
                     >
-                      {phoneSaving ? "Guardando…" : "Guardar teléfono"}
+                      {phoneSaving ? "Guardando…" : "Guardar"}
                     </button>
                   </div>
-                ) : (
-                  <p className="text-white text-base">{displayPhone ?? "Sin teléfono"}</p>
-                )}
-              </div>
+                </div>
+              </Modal>
 
               {/* ── Dirección ── */}
               <div>
@@ -352,31 +402,23 @@ export default function AccountLoginCard() {
                   <p className="text-white/50 text-xs uppercase tracking-wider">Dirección</p>
                   <button
                     type="button"
-                    onClick={() => {
-                      if (editingAddress) {
-                        setEditingAddress(false);
-                        setAddressError("");
-                        if (accountData?.address) {
-                          setDistrict(accountData.address.district);
-                          setExactAddress(accountData.address.exact_address);
-                          setReference(accountData.address.references ?? "");
-                          const canton = findCanton(accountData.address.canton);
-                          if (canton) {
-                            setSelectedProvince(canton.provinceCode);
-                            setCantonCode(canton.code);
-                          }
-                        }
-                      } else {
-                        setEditingAddress(true);
-                      }
-                    }}
+                    onClick={openAddressModal}
                     className="text-[#c9a96e] text-xs hover:underline"
                   >
-                    {editingAddress ? "Cancelar" : displayAddress ? "Editar" : "Agregar"}
+                    {displayAddress ? "Editar" : "Agregar"}
                   </button>
                 </div>
-                {editingAddress ? (
-                  <div className="space-y-3">
+                <p className="text-white text-base">{formatAddress() ?? "Sin dirección"}</p>
+              </div>
+
+              <Modal
+                open={editingAddress}
+                onClose={closeAddressModal}
+                title="Editar dirección"
+                maxWidthClassName="max-w-lg"
+                closeOnBackdrop={!addressSaving}
+              >
+                <div className="space-y-3">
                     <div className="grid grid-cols-2 gap-2">
                       <div>
                         <label className="text-white/50 text-xs mb-1 block">Provincia</label>
@@ -442,20 +484,29 @@ export default function AccountLoginCard() {
                         className="w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#c9a96e]/50"
                       />
                     </div>
-                {addressError && <p className="text-xs text-red-400">{addressError}</p>}
-                    <button
-                      type="button"
-                      onClick={handleSaveAddress}
-                      disabled={addressSaving}
-                      className="w-full rounded-lg bg-[#c9a96e] text-black py-2 text-sm font-medium hover:bg-[#c9a96e]/90 transition disabled:opacity-50"
-                    >
-                      {addressSaving ? "Guardando…" : "Guardar dirección"}
-                    </button>
-                  </div>
-                ) : (
-                  <p className="text-white text-base">{formatAddress() ?? "Sin dirección"}</p>
-                )}
-              </div>
+                    {addressError && (
+                      <p className="text-xs text-red-400">{addressError}</p>
+                    )}
+                    <div className="flex gap-3 pt-1">
+                      <button
+                        type="button"
+                        onClick={closeAddressModal}
+                        disabled={addressSaving}
+                        className="flex-1 rounded-lg border border-white/20 py-2.5 text-sm font-medium text-white/80 transition hover:bg-white/5 disabled:opacity-50"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleSaveAddress}
+                        disabled={addressSaving}
+                        className="flex-1 rounded-lg bg-[#c9a96e] py-2.5 text-sm font-medium text-black transition hover:bg-[#c9a96e]/90 disabled:opacity-50"
+                      >
+                        {addressSaving ? "Guardando…" : "Guardar dirección"}
+                      </button>
+                    </div>
+                </div>
+              </Modal>
             </div>
 
             <button

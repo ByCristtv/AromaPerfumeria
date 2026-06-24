@@ -22,6 +22,7 @@ export async function getProductBySlug(
       notes_middle,
       notes_base,
       featured_variant_id,
+      decant_stock_ml,
       brands ( name ),
       categories ( id, name ),
       product_variants!product_variants_product_id_fkey (

@@ -1,0 +1,66 @@
+import Image from "next/image";
+
+const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+
+export default function ArteDecant() {
+  return (
+    <section
+      aria-labelledby="decant-title"
+      className="bg-[#0a0a0a] py-24 md:py-32"
+    >
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="relative aspect-[16/8] w-full overflow-hidden mb-16">
+          <Image
+            src="/about/decant-process.jpg"
+            alt="Atomizadores de 2ml, 5ml y 10ml junto a jeringas de precisión y una botella de lujo siendo decantada"
+            fill
+            className="object-cover"
+            sizes="(min-width: 1280px) 1200px, 100vw"
+          />
+          <div className="absolute inset-0 ring-1 ring-inset ring-[#c9a96e]/20" />
+        </div>
+
+        <div className="max-w-3xl mx-auto text-center">
+          <p
+            className="text-[#c9a96e] tracking-[0.4em] text-xs mb-6 uppercase"
+            style={{ fontFamily: serif }}
+          >
+            El arte del decant
+          </p>
+          <h2
+            id="decant-title"
+            className="text-3xl md:text-5xl text-white leading-tight mb-8"
+            style={{ fontFamily: serif }}
+          >
+            Explora antes de <span className="italic text-[#c9a96e]">comprometerte</span>
+          </h2>
+          <p
+            className="text-white/75 text-base md:text-lg leading-relaxed"
+            style={{ fontFamily: serif }}
+          >
+            Los decants te permiten descubrir perfumes exclusivos en
+            presentaciones accesibles, sin renunciar a la autenticidad. Cada
+            atomizador se decanta a mano, con jeringas de precisión y
+            envasado estéril, directamente desde la botella original. Es la
+            forma más honesta de conocer una fragancia antes de adoptarla
+            como tuya.
+          </p>
+
+          <div
+            className="mt-12 flex flex-wrap justify-center gap-8 text-[#c9a96e]"
+            style={{ fontFamily: serif }}
+          >
+            {["2ml", "5ml", "10ml"].map((s) => (
+              <div key={s} className="text-center">
+                <div className="text-4xl md:text-5xl">{s}</div>
+                <div className="text-xs tracking-[0.3em] text-white/50 mt-2 uppercase">
+                  Atomizador
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

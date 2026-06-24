@@ -24,3 +24,23 @@ export async function uploadProductImage(file: File): Promise<string> {
 
   return publicUrl;
 }
+
+/**
+ * Best-effort deletion of a previously uploaded image, given its public URL.
+ *
+ * Used when replacing or removing a variant image so we don't leave orphaned
+ * objects in the bucket. Failures are logged but never thrown — the DB row is
+ * the source of truth, and a lingering file is harmless compared to blocking
+ * the admin's action.
+ */
+export async function deleteProductImageFile(publicUrl: string): Promise<void> {
+  const marker = `/object/public/${BUCKET}/`;
+  const idx = publicUrl.indexOf(marker);
+  if (idx === -1) return; // Not a URL from our bucket — nothing to delete.
+
+  const objectKey = decodeURIComponent(publicUrl.slice(idx + marker.length));
+  const { error } = await supabase.storage.from(BUCKET).remove([objectKey]);
+  if (error) {
+    console.warn("deleteProductImageFile: could not remove", objectKey, error.message);
+  }
+}

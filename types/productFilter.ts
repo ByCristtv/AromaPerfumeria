@@ -1,5 +1,5 @@
 
-import { ProductTypes, VariantCardData } from "./product";
+import { ProductCardData, ProductTypes } from "./product";
 
 /** Items fetched per catalog page (offset-based pagination). */
 export const PRODUCTS_PAGE_SIZE = 12;
@@ -35,7 +35,7 @@ export interface ProductFilters {
  * fetch, or `null` when the inventory has been fully traversed.
  */
 export interface ProductPage {
-  items: VariantCardData[];
+  items: ProductCardData[];
   nextPage: number | null;
   total: number;
 }
@@ -46,7 +46,7 @@ export interface ProductFilterOrderByProps {
 }
 
 export interface ProductListProps {
-  products: VariantCardData[];
+  products: ProductCardData[];
   isLoading: boolean;
 }
 

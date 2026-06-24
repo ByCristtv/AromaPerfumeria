@@ -22,6 +22,7 @@ export async function getRelatedProducts(
       slug,
       gender,
       concentration,
+      decant_stock_ml,
       brands ( name ),
       categories!inner ( id, name ),
       featured_variant:product_variants!fk_featured_variant (

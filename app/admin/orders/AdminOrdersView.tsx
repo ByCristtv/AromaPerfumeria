@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import OrdersFilters from "./OrdersFilters";
 import OrdersTable from "./OrdersTable";
 import {
@@ -45,9 +46,25 @@ export default function AdminOrdersView() {
               Gestiona los pedidos de tus clientes
             </p>
           </div>
-          {isFetching && !isLoading && (
-            <span className="text-xs text-[#a5a5a5]">Actualizando…</span>
-          )}
+          <div className="flex items-center gap-3">
+            {isFetching && !isLoading && (
+              <span className="text-xs text-[#a5a5a5]">Actualizando…</span>
+            )}
+            <Link
+              href="/admin/orders/new"
+              className="inline-flex items-center gap-2 rounded-lg bg-[#c9a96e] px-4 py-2.5 text-sm font-semibold text-black transition hover:bg-[#b8a060]"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <path
+                  d="M12 5v14M5 12h14"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+              Crear Orden
+            </Link>
+          </div>
         </header>
 
         <OrdersFilters value={filters} onChange={setFilters} />

@@ -9,6 +9,7 @@ import { useCategories } from "@/hooks/useCategories";
 import { useBrands } from "@/hooks/useBrands";
 import { PRODUCTS_QUERY_KEY } from "@/hooks/useProducts";
 import { ADMIN_PRODUCTS_QUERY_KEY } from "@/features/admin/getProductsAdmin";
+import ProductImagesManager from "@/components/admin/ProductImagesManager";
 import type { ProductTypes } from "@/types/product";
 
 interface ProductEditFormProps {
@@ -386,6 +387,7 @@ export default function ProductEditForm({
             >
               <option value="full_size">Full Size</option>
               <option value="decant">Decant</option>
+              <option value="set">Set</option>
             </select>
 
             <label className="flex items-center gap-2 text-[#ececec] cursor-pointer">
@@ -420,6 +422,9 @@ export default function ProductEditForm({
             </label>
           </div>
         </div>
+
+        {/* SECCIÓN 3: IMÁGENES DEL PRODUCTO (acciones independientes) */}
+        <ProductImagesManager productId={productId} />
 
         <button
           type="submit"

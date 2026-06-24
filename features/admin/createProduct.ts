@@ -43,14 +43,10 @@ export async function createProduct(formData: CreateProductDTO) {
  * Add another commercial variant (e.g. a 50ml decant) to an existing
  * product. Most fields mirror the `product_variants` table.
  *
- * Each variant now carries its own representative image: we upload it first,
- * insert the variant, then write a variant-scoped `product_images` row. If
- * the image row fails we roll the variant back so we never leave an
- * imageless variant behind.
+ * Variants no longer carry their own image — images belong to the parent
+ * product (`product_images`). A variant stores only commercial attributes.
  */
 export async function createVariant(variantData: CreateVariantDTO) {
-  const imageUrl = await uploadProductImage(variantData.file);
-
   const { data, error } = await supabase
     .from("product_variants")
     .insert({
@@ -68,19 +64,5 @@ export async function createVariant(variantData: CreateVariantDTO) {
     .single();
 
   if (error) throw error;
-
-  const { error: imageError } = await supabase.from("product_images").insert({
-    product_id: variantData.product_id,
-    variant_id: data.id,
-    url: imageUrl,
-    position: 0,
-  });
-
-  if (imageError) {
-    // Roll back the variant so it isn't left without its required image.
-    await supabase.from("product_variants").delete().eq("id", data.id);
-    throw imageError;
-  }
-
   return data;
 }

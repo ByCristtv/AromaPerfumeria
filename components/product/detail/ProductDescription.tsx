@@ -11,7 +11,7 @@ export default function ProductDescription({
         className="text-[11px] tracking-[0.32em] uppercase"
         style={{ color: "#c9a96e" }}
       >
-        La historia
+        Descripción
       </p>
       <div className="mt-4 flex justify-center">
         <span

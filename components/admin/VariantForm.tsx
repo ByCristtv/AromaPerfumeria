@@ -39,7 +39,6 @@ const INITIAL_STATE: VariantFormState = {
 export default function VariantForm({ onSuccess }: VariantFormProps) {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<VariantFormState>(INITIAL_STATE);
-  const [file, setFile] = useState<File | null>(null);
 
   const { data: variants = [] } = useAdminProducts();
   const queryClient = useQueryClient();
@@ -70,15 +69,6 @@ export default function VariantForm({ onSuccess }: VariantFormProps) {
       return;
     }
 
-    if (!file) {
-      Swal.fire({
-        icon: "warning",
-        title: "Imagen requerida",
-        text: "Cada variante necesita su propia imagen",
-      });
-      return;
-    }
-
     try {
       setLoading(true);
 
@@ -94,7 +84,6 @@ export default function VariantForm({ onSuccess }: VariantFormProps) {
         product_type: form.product_type,
         is_on_offer: form.is_on_offer,
         offer_price: form.is_on_offer ? Number(form.offer_price) : null,
-        file,
       });
 
       await Promise.all([
@@ -108,7 +97,6 @@ export default function VariantForm({ onSuccess }: VariantFormProps) {
         text: "Variante creada exitosamente",
       });
       setForm(INITIAL_STATE);
-      setFile(null);
       onSuccess?.();
     } catch (err) {
       Swal.fire({
@@ -241,20 +229,6 @@ export default function VariantForm({ onSuccess }: VariantFormProps) {
               />
             )}
           </div>
-        </div>
-
-        {/* IMAGEN DE LA VARIANTE */}
-        <div className="space-y-2">
-          <label className="text-xs font-bold text-[#c9a96e] uppercase">
-            Imagen de la Variante
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="w-full text-[#a5a5a5] file:bg-[#c9a96e] file:border-0 file:px-4 file:py-2 file:rounded-lg file:mr-4 file:cursor-pointer"
-            required
-          />
         </div>
 
         <button

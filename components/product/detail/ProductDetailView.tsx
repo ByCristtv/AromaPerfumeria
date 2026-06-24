@@ -28,24 +28,6 @@ const TYPE_LABEL: Record<string, string> = {
   set: "Set",
 };
 
-/**
- * Image that represents a variant: its own image when present, else the
- * product's lowest-position (base) image, else the placeholder.
- */
-function imageForVariant(
-  product: ProductDetailData,
-  variantId: string
-): string {
-  const own = product.product_images.find(
-    (img) => img.variant_id === variantId
-  );
-  if (own) return own.url;
-  const base = [...product.product_images].sort(
-    (a, b) => a.position - b.position
-  )[0];
-  return base?.url || "/placeholder.png";
-}
-
 export default function ProductDetailView({
   product,
   related,
@@ -54,10 +36,15 @@ export default function ProductDetailView({
   const { addItem } = useCart();
   const sel = useProductSelection(product, initialVariantId);
 
+  // Images belong to the parent product, not the variant — the cart line shows
+  // the parent's primary image regardless of the selected variant.
+  const primaryImage =
+    [...product.product_images].sort((a, b) => a.position - b.position)[0]?.url ||
+    "/placeholder.png";
+
   const handleAdd = useCallback(() => {
     if (sel.outOfStock) return;
     const v = sel.selectedVariant;
-    const img = imageForVariant(product, v.id);
     for (let i = 0; i < sel.quantity; i++) {
       addItem({
         variant_id: v.id,
@@ -65,11 +52,11 @@ export default function ProductDetailView({
         product_type: v.product_type,
         size_ml: v.size_ml,
         price: sel.effectivePrice,
-        image_url: img,
-        stock: v.stock,
+        image_url: primaryImage,
+        stock: sel.availableStock,
       });
     }
-  }, [addItem, product, sel]);
+  }, [addItem, product, sel, primaryImage]);
 
   return (
     <>
@@ -101,7 +88,6 @@ export default function ProductDetailView({
             <ProductGallery
               images={product.product_images}
               productName={product.name}
-              activeVariantId={sel.selectedVariant.id}
             />
             <PurchasePanel
               product={product}
@@ -114,6 +100,7 @@ export default function ProductDetailView({
               effectivePrice={sel.effectivePrice}
               hasOffer={sel.hasOffer}
               outOfStock={sel.outOfStock}
+              availableStock={sel.availableStock}
               onAddToCart={handleAdd}
             />
           </section>

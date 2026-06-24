@@ -951,7 +951,11 @@ export type Database = {
         Returns: undefined
       }
       is_admin: { Args: never; Returns: boolean }
-      mark_order_paid: { Args: { p_order_id: string }; Returns: Json }
+      mark_order_paid: {
+        Args: { p_order_id: string; p_reference?: string; p_note?: string }
+        Returns: Json
+      }
+      place_admin_order: { Args: { p_payload: Json }; Returns: Json }
       place_order: { Args: { p_payload: Json }; Returns: Json }
       restore_variant_stock: { Args: { p_order_id: string }; Returns: Json }
       search_products: {

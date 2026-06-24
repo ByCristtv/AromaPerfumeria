@@ -49,4 +49,21 @@ html {
     animation: fadeUp 500ms cubic-bezier(.22,1,.36,1) forwards;
     will-change: transform, opacity;
   }
+  /* Reveal scroll/entry animations */
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 700ms cubic-bezier(.22,1,.36,1), transform 700ms cubic-bezier(.22,1,.36,1);
+    will-change: transform, opacity;
+  }
+
+  .reveal--visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Optional directional helpers */
+  .reveal--left { transform: translateX(-14px); }
+  .reveal--right { transform: translateX(14px); }
+  .reveal--fade { transform: none; }
 }
