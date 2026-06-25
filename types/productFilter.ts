@@ -2,17 +2,7 @@
 import { ProductCardData, ProductTypes } from "./product";
 
 /** Items fetched per catalog page (offset-based pagination). */
-export const PRODUCTS_PAGE_SIZE = 12;
-
-export interface ProductFiltersProps {
-  selectedCategory?: string;
-  onCategoryChange: (category: string) => void;
-}
-
-export interface ProductTypeFilterProps {
-  selectedType?: ProductTypes | "";
-  onTypeChange: (type: ProductTypes | "") => void;
-}
+export const PRODUCTS_PAGE_SIZE = 20;
 
 export type ProductOrderBy = "price_asc" | "price_desc" | "name_asc" | "name_desc";
 
@@ -40,13 +30,18 @@ export interface ProductPage {
   total: number;
 }
 
-export interface ProductFilterOrderByProps {
-  selectedOrder: ProductOrderBy;
-  onOrderChange: (order: ProductOrderBy) => void;
-}
-
-export interface ProductListProps {
+/**
+ * One page of catalog results with full pagination metadata. Returned by
+ * the server-side `getCatalogPage` and consumed by the `/products` route
+ * and its premium numbered pagination UI.
+ */
+export interface CatalogPageResult {
   products: ProductCardData[];
-  isLoading: boolean;
+  totalProducts: number;
+  currentPage: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  pageSize: number;
 }
 

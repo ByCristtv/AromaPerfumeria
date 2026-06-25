@@ -23,8 +23,6 @@ export default function ContactExperience() {
         <div className="mx-auto max-w-6xl space-y-24 px-5 pb-28 sm:px-8 md:space-y-32 md:pb-36">
           <ContactMethods />
           <ContactForm />
-          <WhyContact />
-          <SocialCommunity />
           <FAQAccordion />
           <CTASection />
         </div>

@@ -1,7 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { ArrowRight, ChevronDown } from "lucide-react";
+
+const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
 
 const images = [
   "/hero-image.jpg",
@@ -10,83 +15,108 @@ const images = [
   "/hero-image4.jpg",
 ];
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const } },
+};
+
 export default function Hero() {
   const [current, setCurrent] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
-
-  const handleScroll = () => {
-    document
-      .getElementById("catalog")
-      ?.scrollIntoView({ behavior: "smooth" });
-  };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % images.length);
-    }, 4000); // 4 segundos
-
+    const interval = setInterval(
+      () => setCurrent((prev) => (prev + 1) % images.length),
+      5000
+    );
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const animationFrame = requestAnimationFrame(() => setIsVisible(true));
-    return () => cancelAnimationFrame(animationFrame);
-  }, []);
-
   return (
-    <section
-      className={`h-screen w-full relative flex items-center justify-center overflow-hidden transition-all duration-1000 ease-out ${
-        isVisible ? "opacity-100" : "opacity-80"
-      }`}
-    >
-      
-      {/* Fondo con fade */}
-          <div className="absolute inset-0">
-              {images.map((img, index) => (
-                  <Image
-                      key={index}
-                      src={img}
-                      alt="Perfume"
-                      fill
-                      className={`object-cover absolute inset-0 transition-all duration-4000 ${index === current
-                          ? "opacity-100 scale-105"
-                          : "opacity-0 scale-100"
-                          }`}
-                      priority={index === 0}
-                  />
-              ))}
-
-              {/* Overlay oscuro */}
-              <div className="absolute inset-0 bg-black/40" />
-          </div>
-
-      {/* Contenido */}
-      <div
-        className={`relative z-10 text-center text-white px-4 transition-all duration-1000 delay-150 ease-out ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-        }`}
-      >
-        <h1
-          className="text-4xl md:text-6xl tracking-widest mb-6"
-          style={{
-            fontFamily:
-              "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif",
-          }}
-        >
-          "Hablemos de perfumería"
-        </h1>
-
-        <button
-          onClick={handleScroll}
-          className="bg-black text-[#c9a96e] px-8 py-4 font-semibold hover:scale-105 hover:text-black hover:bg-[#c9a96e] transition border-[#c9a96e] border"
-          style={{
-            fontFamily:
-              "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif",
-          }}
-        >
-          VER CATÁLOGO
-        </button>
+    <section className="relative flex h-screen min-h-160 w-full items-center justify-center overflow-hidden">
+      {/* Rotating background */}
+      <div className="absolute inset-0">
+        {images.map((img, index) => (
+          <Image
+            key={img}
+            src={img}
+            alt=""
+            fill
+            priority={index === 0}
+            aria-hidden
+            className={`absolute inset-0 object-cover transition-all duration-2000 ease-out ${
+              index === current ? "scale-105 opacity-100" : "scale-100 opacity-0"
+            }`}
+          />
+        ))}
+        {/* Premium gradient overlays */}
+        <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/45 to-black/85" />
+        <div className="absolute inset-0 bg-linear-to-r from-black/60 via-transparent to-black/30" />
       </div>
+
+      {/* Top & bottom hairlines for an editorial frame */}
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#c9a96e]/40 to-transparent" />
+
+      {/* Content */}
+      <motion.div
+        variants={{ show: { transition: { staggerChildren: 0.14, delayChildren: 0.1 } } }}
+        initial="hidden"
+        animate="show"
+        className="relative z-10 mx-auto max-w-4xl px-6 text-center"
+      >
+      
+        <motion.h1
+          variants={fadeUp}
+          className="text-4xl leading-[1.1] text-white sm:text-5xl md:text-7xl"
+          style={{ fontFamily: serif }}
+        >
+          Bienvenido a
+          <br />
+          <span className="italic text-[#c9a96e]">Aroma Perfumería</span>
+        </motion.h1>
+
+        <motion.p
+          variants={fadeUp}
+          className="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-white/75 md:text-lg"
+          style={{ fontFamily: serif }}
+        >
+          "Se necesita un vestido para el cuerpo y un perfume para el alma." - Yves Saint Laurent.
+        </motion.p>
+
+        <motion.div
+          variants={fadeUp}
+          className="mt-11 flex flex-col items-center justify-center gap-4 sm:flex-row"
+        >
+          <Link
+            href="/products"
+            className="group inline-flex items-center gap-2 border border-[#c9a96e] bg-[#c9a96e] px-10 py-4 text-sm uppercase tracking-[0.22em] text-black transition-all duration-500 hover:bg-transparent hover:text-[#c9a96e]"
+            style={{ fontFamily: serif }}
+          >
+            Explorar catalogo
+            <ArrowRight
+              size={16}
+              aria-hidden
+              className="transition-transform duration-500 group-hover:translate-x-1"
+            />
+          </Link>
+          <Link
+            href="/about"
+            className="inline-block border border-white/30 px-10 py-4 text-sm uppercase tracking-[0.22em] text-white transition-all duration-500 hover:border-[#c9a96e] hover:text-[#c9a96e]"
+            style={{ fontFamily: serif }}
+          >
+            Nuestra historia
+          </Link>
+        </motion.div>
+      </motion.div>
+
+      {/* Scroll cue */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2, duration: 1 }}
+        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-[#c9a96e]/60"
+      >
+        <ChevronDown size={22} className="animate-bounce" aria-hidden />
+      </motion.div>
     </section>
   );
 }

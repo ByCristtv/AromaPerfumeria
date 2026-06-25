@@ -31,7 +31,7 @@ export default function ContactHero() {
         >
           <motion.div
             variants={fadeUp}
-            className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#c9a96e]/30 bg-[#c9a96e]/[0.06] px-4 py-2"
+            className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#c9a96e]/30 bg-[#c9a96e]/6 px-4 py-2"
           >
             <Sparkles size={14} className="text-[#c9a96e]" aria-hidden="true" />
             <span

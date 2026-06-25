@@ -2,6 +2,7 @@ import { supabase } from "@/lib/supabase/client";
 import type { ProductCardData } from "@/types/product";
 import {
   PRODUCTS_PAGE_SIZE,
+  type CatalogPageResult,
   type ProductFilters,
   type ProductPage,
 } from "@/types/productFilter";
@@ -132,6 +133,45 @@ function applyOrder(query: CatalogQuery, orderBy: ProductFilters["orderBy"]): Ca
 }
 
 /**
+ * Shared core for both the offset (`getProductsPage`) and numbered
+ * (`getCatalogPage`) entry points. Resolves the search/type id-lists,
+ * builds + orders the query, and returns the requested `[from, to]`
+ * window plus the exact total. Never throws: any failure degrades to
+ * an empty window with `total: 0`.
+ */
+async function runCatalogQuery(
+  from: number,
+  to: number,
+  filters?: ProductFilters
+): Promise<{ items: ProductCardData[]; total: number }> {
+  const [searchIds, typeIds] = await Promise.all([
+    resolveSearchIds(filters?.query),
+    resolveTypeIds(filters?.productType),
+  ]);
+
+  // A non-null but empty id-list means "filtered, matched nothing".
+  if (
+    (searchIds !== null && searchIds.length === 0) ||
+    (typeIds !== null && typeIds.length === 0)
+  ) {
+    return { items: [], total: 0 };
+  }
+
+  let query = buildBaseQuery(!!filters?.category);
+  query = applyFilters(query, filters, searchIds, typeIds);
+  query = applyOrder(query, filters?.orderBy);
+
+  const { data, error, count } = await query.range(from, to);
+
+  if (error) {
+    console.error("runCatalogQuery failed:", error.message);
+    return { items: [], total: 0 };
+  }
+
+  return { items: (data as unknown as ProductCardData[]) ?? [], total: count ?? 0 };
+}
+
+/**
  * Fetch a single page of catalog products (offset-based pagination).
  *
  * One card per parent product. Edge cases: an empty search/type resolves to
@@ -143,40 +183,59 @@ export async function getProductsPage(
   pageSize: number = PRODUCTS_PAGE_SIZE,
   filters?: ProductFilters
 ): Promise<ProductPage> {
-  const [searchIds, typeIds] = await Promise.all([
-    resolveSearchIds(filters?.query),
-    resolveTypeIds(filters?.productType),
-  ]);
-
-  // A non-null but empty id-list means "filtered, matched nothing".
-  if (
-    (searchIds !== null && searchIds.length === 0) ||
-    (typeIds !== null && typeIds.length === 0)
-  ) {
-    return { items: [], nextPage: null, total: 0 };
-  }
-
   const from = page * pageSize;
   const to = from + pageSize - 1;
 
-  let query = buildBaseQuery(!!filters?.category);
-  query = applyFilters(query, filters, searchIds, typeIds);
-  query = applyOrder(query, filters?.orderBy);
-
-  const { data, error, count } = await query.range(from, to);
-
-  if (error) {
-    console.error("getProductsPage failed:", error.message);
-    return { items: [], nextPage: null, total: 0 };
-  }
-
-  const items = (data as unknown as ProductCardData[]) ?? [];
-  const total = count ?? 0;
+  const { items, total } = await runCatalogQuery(from, to, filters);
   const hasNextPage = from + items.length < total;
 
   return {
     items,
     nextPage: hasNextPage ? page + 1 : null,
     total,
+  };
+}
+
+/**
+ * Fetch one page of the catalog with full pagination metadata, for the
+ * server-rendered `/products` route. Uses 1-based page numbers and
+ * Supabase `range()` so only the 20 rows for the current page are fetched —
+ * scalable to thousands of products without over-fetching.
+ *
+ * Out-of-range pages (e.g. `?page=999`) clamp to a valid window so the UI
+ * always reflects a coherent `currentPage` / `totalPages`.
+ */
+export async function getCatalogPage(
+  page: number,
+  filters?: ProductFilters,
+  pageSize: number = PRODUCTS_PAGE_SIZE
+): Promise<CatalogPageResult> {
+  // First fetch the requested page to learn the exact total.
+  const requested = Math.max(1, Math.floor(page) || 1);
+  const from = (requested - 1) * pageSize;
+  const to = from + pageSize - 1;
+
+  const { items: firstItems, total } = await runCatalogQuery(from, to, filters);
+  let items = firstItems;
+
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  // If the caller asked for a page beyond the end (stale link, manual URL),
+  // re-fetch the last valid page so the grid is never blank mid-catalog.
+  let currentPage = requested;
+  if (total > 0 && requested > totalPages) {
+    currentPage = totalPages;
+    const lastFrom = (currentPage - 1) * pageSize;
+    ({ items } = await runCatalogQuery(lastFrom, lastFrom + pageSize - 1, filters));
+  }
+
+  return {
+    products: items,
+    totalProducts: total,
+    currentPage,
+    totalPages,
+    hasNextPage: currentPage < totalPages,
+    hasPreviousPage: currentPage > 1,
+    pageSize,
   };
 }

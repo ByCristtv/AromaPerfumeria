@@ -1,0 +1,237 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown, Search, SlidersHorizontal, X } from "lucide-react";
+import { useCategories } from "@/hooks/useCategories";
+import { buildCatalogQuery } from "@/lib/catalogParams";
+import type { ProductFilters, ProductOrderBy } from "@/types/productFilter";
+import type { ProductTypes } from "@/types/product";
+
+const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+
+const TYPE_OPTIONS: { value: ProductTypes; label: string }[] = [
+  { value: "full_size", label: "Tamaño completo" },
+  { value: "decant", label: "Decants" },
+  { value: "set", label: "Sets" },
+];
+
+const ORDER_OPTIONS: { value: ProductOrderBy; label: string }[] = [
+  { value: "price_asc", label: "Precio: menor a mayor" },
+  { value: "price_desc", label: "Precio: mayor a menor" },
+  { value: "name_asc", label: "Nombre: A–Z" },
+  { value: "name_desc", label: "Nombre: Z–A" },
+];
+
+const selectClass =
+  "w-full appearance-none rounded-lg border border-white/10 bg-[#141414] px-4 py-3 pr-10 text-sm text-white/80 outline-none transition-colors duration-300 focus:border-[#c9a96e] focus:ring-1 focus:ring-[#c9a96e]/40";
+
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="block">
+      <span
+        className="mb-2 block text-[10px] uppercase tracking-[0.2em] text-white/45"
+        style={{ fontFamily: serif }}
+      >
+        {label}
+      </span>
+      <div className="relative">
+        {children}
+        <ChevronDown
+          size={15}
+          aria-hidden
+          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#c9a96e]/70"
+        />
+      </div>
+    </label>
+  );
+}
+
+export default function CatalogToolbar({ filters }: { filters: ProductFilters }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const { data: categories = [] } = useCategories();
+
+  // Keep latest searchParams without re-subscribing the debounce effect.
+  const spRef = useRef(searchParams);
+  useEffect(() => {
+    spRef.current = searchParams;
+  }, [searchParams]);
+
+  const [search, setSearch] = useState(filters.query ?? "");
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const firstRun = useRef(true);
+
+  const navigate = (
+    overrides: Parameters<typeof buildCatalogQuery>[1]
+  ) => {
+    // Any filter change returns to page 1.
+    const qs = buildCatalogQuery(new URLSearchParams(spRef.current.toString()), {
+      ...overrides,
+      page: undefined,
+    });
+    router.push(`${pathname}${qs}`, { scroll: false });
+  };
+
+  // Debounced search → URL.
+  useEffect(() => {
+    if (firstRun.current) {
+      firstRun.current = false;
+      return;
+    }
+    const handle = setTimeout(() => {
+      const current = spRef.current.get("q") ?? "";
+      if (search.trim() !== current) navigate({ query: search.trim() || undefined });
+    }, 400);
+    return () => clearTimeout(handle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
+  const activeCount =
+    (filters.category ? 1 : 0) +
+    (filters.productType ? 1 : 0) +
+    (filters.query ? 1 : 0);
+
+  const controls = (
+    <>
+      <Field label="Categoría">
+        <select
+          className={selectClass}
+          value={filters.category ?? ""}
+          onChange={(e) => navigate({ category: e.target.value || undefined })}
+        >
+          <option value="">Todas las categorías</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+      </Field>
+
+      <Field label="Tipo de producto">
+        <select
+          className={selectClass}
+          value={filters.productType ?? ""}
+          onChange={(e) => navigate({ type: e.target.value || undefined })}
+        >
+          <option value="">Todos los tipos</option>
+          {TYPE_OPTIONS.map((t) => (
+            <option key={t.value} value={t.value}>
+              {t.label}
+            </option>
+          ))}
+        </select>
+      </Field>
+
+      <Field label="Ordenar por">
+        <select
+          className={selectClass}
+          value={filters.orderBy ?? "price_asc"}
+          onChange={(e) => navigate({ sort: e.target.value })}
+        >
+          {ORDER_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+      </Field>
+    </>
+  );
+
+  return (
+    <div className="lg:sticky lg:top-[84px] lg:z-30">
+      <div className="rounded-2xl border border-white/8 bg-[#0d0d0d]/85 p-4 backdrop-blur-md sm:p-5">
+        {/* Search + mobile toggle */}
+        <div className="flex items-center gap-3">
+          <div className="relative flex-1">
+            <Search
+              size={17}
+              aria-hidden
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/35"
+            />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar perfumes, marcas, notas…"
+              aria-label="Buscar perfumes"
+              className="w-full rounded-lg border border-white/10 bg-[#141414] py-3 pl-11 pr-10 text-sm text-white placeholder:text-white/30 outline-none transition-colors duration-300 focus:border-[#c9a96e] focus:ring-1 focus:ring-[#c9a96e]/40"
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                aria-label="Limpiar búsqueda"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
+              >
+                <X size={15} />
+              </button>
+            )}
+          </div>
+
+          {/* Mobile filter toggle */}
+          <button
+            type="button"
+            onClick={() => setMobileOpen((v) => !v)}
+            aria-expanded={mobileOpen}
+            className="relative flex items-center gap-2 rounded-lg border border-[#c9a96e]/40 px-4 py-3 text-xs uppercase tracking-[0.15em] text-[#c9a96e] lg:hidden"
+            style={{ fontFamily: serif }}
+          >
+            <SlidersHorizontal size={15} aria-hidden />
+            Filtros
+            {activeCount > 0 && (
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#c9a96e] text-[9px] font-bold text-black">
+                {activeCount}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* Desktop controls */}
+        <div className="mt-4 hidden grid-cols-3 gap-4 lg:grid">{controls}</div>
+
+        {/* Mobile collapsible controls */}
+        <AnimatePresence initial={false}>
+          {mobileOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden lg:hidden"
+            >
+              <div className="grid gap-4 pt-4 sm:grid-cols-3">{controls}</div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Clear filters */}
+        {activeCount > 0 && (
+          <div className="mt-4 flex justify-end">
+            <button
+              type="button"
+              onClick={() => {
+                setSearch("");
+                router.push(pathname, { scroll: false });
+              }}
+              className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-white/50 transition-colors hover:text-[#c9a96e]"
+              style={{ fontFamily: serif }}
+            >
+              <X size={13} aria-hidden /> Limpiar filtros ({activeCount})
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

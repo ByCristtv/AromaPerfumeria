@@ -8,6 +8,7 @@ import { useIsMounted } from "@/hooks/useIsMounted";
 
 const NAV_LINKS = [
   { label: "Inicio", href: "/" },
+  { label: "Catálogo", href: "/products" },
   { label: "Contactanos", href: "/contact" },
   { label: "Como Comprar", href: "/howtobuy" },
   { label: "Sobre Nosotros", href: "/about" },
