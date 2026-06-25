@@ -26,13 +26,12 @@ const stats = [
   { value: 2500, prefix: "+", suffix: "", label: "Clientes satisfechos" },
   { value: 8000, prefix: "+", suffix: "", label: "Pedidos entregados" },
   { value: 300, prefix: "+", suffix: "", label: "Fragancias" },
-  { value: 98, prefix: "", suffix: "%", label: "Satisfacción" },
   { value: 50, prefix: "+", suffix: "", label: "Casas perfumistas" },
 ];
 
 function CountUp({
   to,
-  duration = 2000,
+  duration = 1500,
   active,
 }: {
   to: number;
@@ -96,7 +95,7 @@ export default function ExperienciaStats() {
             className="text-3xl md:text-5xl text-white leading-tight"
             style={{ fontFamily: serif }}
           >
-            Experiencia <span className="italic text-[#c9a96e]">Maison Élégance</span>
+            Experiencia <span className="italic text-[#c9a96e]">Aroma Perfumeria</span>
           </h2>
         </div>
 

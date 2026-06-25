@@ -9,14 +9,15 @@ export default function ArteDecant() {
       className="bg-[#0a0a0a] py-24 md:py-32"
     >
       <div className="max-w-7xl mx-auto px-6">
-        <div className="relative aspect-[16/8] w-full overflow-hidden mb-16">
+        <div className="relative aspect-16/8 w-full overflow-hidden mb-16">
           <Image
-            src="/about/decant-process.jpg"
+            src="/images/about/DecantsAbout.avif"
             alt="Atomizadores de 2ml, 5ml y 10ml junto a jeringas de precisión y una botella de lujo siendo decantada"
             fill
             className="object-cover"
             sizes="(min-width: 1280px) 1200px, 100vw"
           />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0)56%,rgba(0,0,0,0.65)100%)]" />
           <div className="absolute inset-0 ring-1 ring-inset ring-[#c9a96e]/20" />
         </div>
 

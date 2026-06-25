@@ -58,9 +58,9 @@ export default function Historia() {
           </div>
         </div>
 
-        <div className="relative aspect-[4/5] w-full overflow-hidden">
+        <div className="relative aspect-4/5 w-full overflow-hidden">
           <Image
-            src="/about/historia-editorial.jpg"
+            src="/images/about/SecondAbout.jpg"
             alt="Mesa con perfumes nicho dispuestos con iluminación cálida y editorial"
             fill
             className="object-cover"

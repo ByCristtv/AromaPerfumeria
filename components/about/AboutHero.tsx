@@ -11,13 +11,13 @@ export default function AboutHero() {
     >
       <div className="absolute inset-0">
         <Image
-          src="/about/hero-marble.jpg"
+          src="/images/about/HeroAbout.jpg"
           alt="Botellas de perfume exclusivas sobre mármol negro con iluminación cálida"
           fill
           priority
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/50 to-black/80" />
       </div>
 
       <div className="relative z-10 text-center px-6 max-w-4xl">

@@ -72,7 +72,7 @@ export default function Diferenciadores() {
             className="text-[#c9a96e] tracking-[0.4em] text-xs mb-6 uppercase"
             style={{ fontFamily: serif }}
           >
-            Maison Élégance
+            Aroma Perfumeria
           </p>
           <h2
             id="diferenciadores-title"
