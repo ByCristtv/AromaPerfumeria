@@ -63,33 +63,6 @@ export const TRUST_INDICATORS = [
   "Atención Personalizada",
 ] as const;
 
-// ---- Credibility stats (Section 4) ----
-export type FooterStat = {
-  value: number | null;
-  suffix?: string;
-  display?: string;
-  label: string;
-};
-
-export const FOOTER_STATS: FooterStat[] = [
-  { value: 300, suffix: "+", label: "Fragancias Disponibles" },
-  { value: 2500, suffix: "+", label: "Clientes Satisfechos" },
-  { value: 100, suffix: "%", label: "Productos Originales" },
-  { value: null, display: "Todo Costa Rica", label: "Cobertura Nacional" },
-];
-
-// ---- Featured fragrance houses (Section 5). Rendered as monochrome wordmarks. ----
-export const FEATURED_BRANDS = [
-  "Parfums de Marly",
-  "Xerjoff",
-  "Creed",
-  "Amouage",
-  "Initio",
-  "Mancera",
-  "Nishane",
-  "Maison Francis Kurkdjian",
-] as const;
-
 // ---- Accepted payment methods (Section 6) ----
 export const PAYMENT_METHODS = [
   "Visa",
