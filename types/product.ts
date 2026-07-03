@@ -4,23 +4,6 @@ export type ProductTypes = "full_size" | "decant" | "set"
 
 export type BaseCartItem = Database["public"]["Tables"]["cart_items"]["Row"];
 
-export interface DbCartQueryResponse {
-  quantity: BaseCartItem["quantity"];
-  variant: {
-    id: string;
-    price: number;
-    offer_price: number | null;
-    is_on_offer: boolean;
-    stock: number;
-    size_ml: number;
-    product_type: string; // O tu enum ProductTypes si coincide
-    product: {
-      name: string;
-      product_images: { url: string }[];
-    } | null;
-  } | null;
-}
-
 export interface AdminProductCategory {
   id: string;
   name: string;

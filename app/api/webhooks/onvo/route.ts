@@ -28,34 +28,20 @@ import { createAdminClient } from "@/lib/supabase/admin";
  *     See lib/onvo/verifyWebhook.ts for the full caveat.
  */
 export async function POST(request: NextRequest) {
-
-  console.log("========== WEBHOOK HIT ==========");
-
   // ────────── 1. Authenticate the webhook ──────────
   const env = getOnvoEnv();
   const headerSecret = request.headers.get("x-webhook-secret");
-
-  console.log("HEADER SECRET:", headerSecret);
-  console.log("ENV SECRET:", env.webhookSecret);
 
   if (!verifyOnvoWebhookSecret(headerSecret, env.webhookSecret)) {
     console.warn("[onvo-webhook] rejected: invalid or missing X-Webhook-Secret");
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  console.log("WEBHOOK AUTH PASSED");
-
   // ────────── 2. Parse the event ──────────
   let event: OnvoWebhookEvent;
 
   try {
     event = (await request.json()) as OnvoWebhookEvent;
-
-    console.log("EVENT TYPE:", event?.type);
-    console.log("EVENT ID:", event?.data?.id);
-    console.log("ORDER ID:", event?.data?.metadata?.orderId);
-    console.log("AMOUNT:", event?.data?.amount);
-
   } catch (err) {
     console.error("[onvo-webhook] body not JSON-parseable", err);
     return NextResponse.json({ received: true, ignored: "invalid_json" });
@@ -69,65 +55,51 @@ export async function POST(request: NextRequest) {
   // ────────── 3. Idempotency ──────────
   const admin = createAdminClient();
 
-  console.log("TRYING INSERT INTO processed_webhooks");
-
   const { error: dedupErr } = await admin.from("processed_webhooks").insert({
     provider: "onvo",
     event_id: event.data.id,
   });
 
   if (dedupErr) {
-
-    console.error("DEDUP ERROR:", dedupErr);
-
+    // 23505 = unique_violation → this event was already handled. Expected
+    // under Onvo's automatic retries, so treat it as success, not an error.
     if (dedupErr.code === "23505") {
       return NextResponse.json({ received: true, already_processed: true });
     }
-
+    console.error("[onvo-webhook] dedup insert failed", {
+      eventId: event.data.id,
+      dedupErr,
+    });
     return NextResponse.json({ received: true, ignored: "dedup_db_error" });
   }
 
-  console.log("WEBHOOK INSERTED SUCCESSFULLY");
-
   // ────────── 4. Route by event type ──────────
   try {
-
-    console.log("ROUTING EVENT:", event.type);
-
     switch (event.type) {
-
       case "payment-intent.succeeded":
-        console.log("CALLING handleSucceeded()");
         await handleSucceeded(admin, event);
         break;
 
       case "payment-intent.failed":
-        console.log("CALLING handleFailed()");
         await handleFailed(admin, event);
         break;
 
       case "payment-intent.deferred":
-        console.log("DEFERRED EVENT");
-        break;
-
       case "checkout-session.succeeded":
-        console.log("CHECKOUT SESSION SUCCEEDED");
+        // Acknowledged but intentionally inert — payment-intent success/failure
+        // events are what drive order state.
         break;
 
       default:
-        console.log("UNHANDLED EVENT TYPE:", event.type);
+        console.info("[onvo-webhook] unhandled event type", { type: event.type });
     }
-
   } catch (err) {
-
     console.error("[onvo-webhook] handler threw", {
       type: event.type,
       eventId: event.data.id,
       err,
     });
   }
-
-  console.log("========== WEBHOOK END ==========");
 
   return NextResponse.json({ received: true });
 }

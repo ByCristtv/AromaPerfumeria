@@ -2,8 +2,7 @@ import { BaseCartItem, CartLineItem } from "@/types/product";
 
 export type CartItemPayload = Omit<CartLineItem, "quantity">;
 
-// 2. Extraemos el tipo de la fila de cart_items para armar el Join estructurado
-
+/** Nested cart_items → variant → product join shape consumed by cartService. */
 export interface DbCartQueryResponse {
   quantity: BaseCartItem["quantity"];
   variant: {
