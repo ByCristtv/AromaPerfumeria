@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useTransition, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import {
@@ -9,6 +8,8 @@ import {
   markOrderPaidAction,
 } from "../actions";
 import { formatPrice } from "@/lib/format";
+import AdminContainer from "@/components/admin/ui/AdminContainer";
+import AdminPageHeader from "@/components/admin/ui/AdminPageHeader";
 
 interface OrderItem {
   id: string;
@@ -181,29 +182,31 @@ export default function AdminOrderDetail({ order }: Props) {
     order.order_status !== "shipped" && order.order_status !== "denied";
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] pt-20 pb-12">
-      <div className="max-w-6xl mx-auto px-6 mt-3">
-        {/* ──────── Header ──────── */}
-        <header className="mb-6">
-          <Link
-            href="/admin/orders"
-            className="text-xs text-[#a5a5a5] hover:text-[#c9a96e] uppercase tracking-wider"
-          >
-            ← Volver a órdenes
-          </Link>
-          <div className="mt-2 flex flex-wrap items-baseline gap-3">
-            <h1 className="text-3xl font-bold text-[#ececec]">
-              Pedido <span className="font-mono text-[#c9a96e]">#{order.order_number}</span>
-            </h1>
+    <AdminContainer width="narrow">
+      <AdminPageHeader
+        eyebrow="Pedidos"
+        backHref="/admin/orders"
+        backLabel="Volver a órdenes"
+        title={
+          <span className="flex flex-wrap items-center gap-3">
+            <span>
+              Pedido{" "}
+              <span className="font-mono text-[#c9a96e]">
+                #{order.order_number}
+              </span>
+            </span>
             <StatusBadge status={order.order_status} />
             <PaymentBadge status={order.payment_status} />
-            <span className="text-xs text-[#a5a5a5] ml-auto">
-              {formatDate(order.created_at)}
-            </span>
-          </div>
-        </header>
+          </span>
+        }
+        actions={
+          <span className="text-xs text-[#a5a5a5]">
+            {formatDate(order.created_at)}
+          </span>
+        }
+      />
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5">
           {/* ──────── Left column: details ──────── */}
           <div className="space-y-5">
             <Panel title="Productos" index={nextIndex()} visible={pageMounted}>
@@ -377,9 +380,8 @@ export default function AdminOrderDetail({ order }: Props) {
               </p>
             </Panel>
           </aside>
-        </div>
       </div>
-    </div>
+    </AdminContainer>
   );
 }
 

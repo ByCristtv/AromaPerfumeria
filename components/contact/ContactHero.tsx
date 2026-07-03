@@ -93,6 +93,7 @@ export default function ContactHero() {
             alt="Atención al cliente de lujo o fotografía de perfumes"
             label="Fotografía hero / Atención premium"
             priority
+            src="/images/contact/Hero.avif"
           />
         </motion.div>
       </div>

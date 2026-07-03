@@ -16,6 +16,8 @@ export interface ProductFilters {
   category?: string;
   /** Variant `product_type` (`full_size` | `decant` | `set`). */
   productType?: ProductTypes | "";
+  /** When true, only products with at least one on-offer active variant. */
+  onOffer?: boolean;
   orderBy?: ProductOrderBy;
   query?: string;
 }

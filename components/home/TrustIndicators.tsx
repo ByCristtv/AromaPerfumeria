@@ -11,17 +11,17 @@ import {
 
 const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
 
-const items: { icon: LucideIcon; title: string; desc: string }[] = [
-  { icon: ShieldCheck, title: "Fragancias auténticas", desc: "100% originales y seleccionadas" },
-  { icon: Truck, title: "Envíos a todo el país", desc: "Entregas rápidas y seguras" },
-  { icon: Lock, title: "Pagos seguros", desc: "Tarjeta o SINPE Móvil" },
-  { icon: Headset, title: "Atención premium", desc: "Asesoría personalizada" },
+const items: { icon: LucideIcon; title: string; }[] = [
+  { icon: ShieldCheck, title: "Fragancias 100% originales"},
+  { icon: Truck, title: "Envíos a todo el país" },
+  { icon: Lock, title: "Pagos con Tarjeta o SINPE"},
+  { icon: Headset, title: "Asesoría personalizada"},
 ];
 
 export default function TrustIndicators() {
   return (
     <section className="border-y border-white/8 bg-[#0a0a0a]">
-      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px bg-white/[0.06] lg:grid-cols-4">
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px bg-white/6 lg:grid-cols-4">
         {items.map((item, i) => {
           const Icon = item.icon;
           return (
@@ -40,9 +40,7 @@ export default function TrustIndicators() {
                 <p className="text-base text-white" style={{ fontFamily: serif }}>
                   {item.title}
                 </p>
-                <p className="text-xs text-white/45" style={{ fontFamily: serif }}>
-                  {item.desc}
-                </p>
+                
               </div>
             </motion.div>
           );

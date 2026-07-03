@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Search, SlidersHorizontal, X } from "lucide-react";
+import { ChevronDown, Search, SlidersHorizontal, Tag, X } from "lucide-react";
 import { useCategories } from "@/hooks/useCategories";
 import { buildCatalogQuery } from "@/lib/catalogParams";
 import type { ProductFilters, ProductOrderBy } from "@/types/productFilter";
@@ -98,6 +98,7 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
   const activeCount =
     (filters.category ? 1 : 0) +
     (filters.productType ? 1 : 0) +
+    (filters.onOffer ? 1 : 0) +
     (filters.query ? 1 : 0);
 
   const controls = (
@@ -148,8 +149,30 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
     </>
   );
 
+  const offerToggle = (
+    <label className="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-white/10 bg-[#141414] px-4 py-3">
+      <span className="flex items-center gap-2 text-sm text-white/80">
+        <Tag size={15} aria-hidden className="text-[#c9a96e]" />
+        Solo en oferta
+      </span>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={!!filters.onOffer}
+        onClick={() => navigate({ offer: filters.onOffer ? undefined : "1" })}
+        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-300 ${filters.onOffer ? "bg-[#c9a96e]" : "bg-white/15"
+          }`}
+      >
+        <span
+          className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white transition-transform duration-300 ${filters.onOffer ? "translate-x-5" : "translate-x-0"
+            }`}
+        />
+      </button>
+    </label>
+  );
+
   return (
-    <div className="lg:sticky lg:top-[84px] lg:z-30">
+    <div className="lg:sticky lg:top-21 lg:z-30">
       <div className="rounded-2xl border border-white/8 bg-[#0d0d0d]/85 p-4 backdrop-blur-md sm:p-5">
         {/* Search + mobile toggle */}
         <div className="flex items-center gap-3">
@@ -199,6 +222,7 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
 
         {/* Desktop controls */}
         <div className="mt-4 hidden grid-cols-3 gap-4 lg:grid">{controls}</div>
+        <div className="mt-4 hidden lg:block">{offerToggle}</div>
 
         {/* Mobile collapsible controls */}
         <AnimatePresence initial={false}>
@@ -211,6 +235,7 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
               className="overflow-hidden lg:hidden"
             >
               <div className="grid gap-4 pt-4 sm:grid-cols-3">{controls}</div>
+              <div className="pt-4">{offerToggle}</div>
             </motion.div>
           )}
         </AnimatePresence>

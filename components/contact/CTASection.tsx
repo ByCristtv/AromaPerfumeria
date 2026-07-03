@@ -73,6 +73,7 @@ export default function CTASection() {
           <ImagePlaceholder
             alt="Fotografía lifestyle de perfume de lujo"
             label="Fotografía lifestyle de lujo"
+            src="/images/contact/CTA.avif"
           />
         </motion.div>
       </div>

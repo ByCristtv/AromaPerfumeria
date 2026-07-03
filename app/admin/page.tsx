@@ -1,82 +1,108 @@
 "use client";
+
 import Link from "next/link";
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
+import {
+  Package,
+  BarChart3,
+  ClipboardList,
+  FlaskConical,
+  ArrowDownToLine,
+  type LucideIcon,
+} from "lucide-react";
+import AdminContainer from "@/components/admin/ui/AdminContainer";
+import AdminPageHeader from "@/components/admin/ui/AdminPageHeader";
+import { adminSerif } from "@/components/admin/ui/styles";
+
+interface AdminSection {
+  href: string;
+  title: string;
+  description: string;
+  Icon: LucideIcon;
+}
+
+/** Single source of truth for the dashboard tiles — no per-card duplication. */
+const SECTIONS: AdminSection[] = [
+  {
+    href: "/admin/products",
+    title: "Administrar Productos",
+    description:
+      "Agrega, elimina y edita todos tus productos. Mantén tu catálogo al día con las últimas fragancias.",
+    Icon: Package,
+  },
+  {
+    href: "/admin/dashboard",
+    title: "Mis Ventas",
+    description:
+      "Observa tus ingresos y ventas totales. Analiza el rendimiento de tu tienda y decide con datos.",
+    Icon: BarChart3,
+  },
+  {
+    href: "/admin/orders",
+    title: "Administrar Órdenes",
+    description:
+      "Gestiona los pedidos pendientes: envíos, actualizaciones de estado y soporte al cliente.",
+    Icon: ClipboardList,
+  },
+  {
+    href: "/admin/decant-stock",
+    title: "Stock para Decants",
+    description:
+      "Administra el pool de mililitros de tus decants. Transforma botellas full size en stock compartido.",
+    Icon: FlaskConical,
+  },
+  {
+    href: "/admin/stock",
+    title: "Movimientos de Stock",
+    description:
+      "Consulta el historial de inventario y registra entradas de stock en lote para varias variantes.",
+    Icon: ArrowDownToLine,
+  },
+];
 
 export default function AdminPage() {
   return (
-    <main className="min-h-screen bg-linear-to-b from-[#333333] to-[#100d13] px-6 py-16 sm:px-10 lg:px-16">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-12 text-center mt-12">
-          <h1 className="text-4xl font-bold text-[#ececec] tracking-wide mb-4">
-            Panel de Administración
-          </h1>
-          <p className="text-[#a5a5a5] text-lg">
-            Gestiona tu tienda de perfumes con facilidad
-          </p>
-        </div>
+    <AdminContainer>
+      <AdminPageHeader
+        showBack={false}
+        eyebrow="Panel de Administración"
+        title="Aroma Perfumería"
+        description="Gestiona tu tienda de perfumes desde un solo lugar."
+      />
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <Link href="/admin/products" className="group">
-            <article       
-             className="h-full rounded-2xl border border-[#c9a96e]/30 bg-[#1a1a1a] p-8 text-center shadow-[0_18px_64px_rgba(82,63,47,0.08)] transition-all duration-300 hover:border-[#c9a96e] hover:shadow-[0_0_20px_rgba(201,169,110,0.2)] hover:-translate-y-2 animate-bounce opacity-0 animate-fadeUp" style={{ animationDelay: '0ms' }}>
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-[#c9a96e]/20 to-[#b8a060]/20 text-3xl text-[#c9a96e] shadow-inner shadow-[#c9a96e]/10">
-                📦
-              </div>
-              <h3 className="mb-4 text-2xl font-bold text-[#ececec] group-hover:text-[#c9a96e] transition-colors">
-                Administrar Productos
-              </h3>
-              <p className="text-sm leading-relaxed text-[#a5a5a5]">
-                Agrega, elimina y edita todos tus productos aquí. Mantén tu catálogo actualizado con las últimas fragancias.
-              </p>
-            </article>
-          </Link>
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {SECTIONS.map(({ href, title, description, Icon }, i) => (
+          <motion.div
+            key={href}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.5,
+              delay: i * 0.08,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            <Link href={href} className="group block h-full">
+              <article className="flex h-full flex-col rounded-2xl border border-[#c9a96e]/20 bg-[#141414] p-7 shadow-[0_18px_64px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-[#c9a96e]/60 hover:shadow-[0_0_28px_rgba(201,169,110,0.12)]">
+                <span className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-xl border border-[#c9a96e]/25 bg-[#c9a96e]/[0.06] text-[#c9a96e] transition-colors duration-300 group-hover:border-[#c9a96e]/60 group-hover:bg-[#c9a96e]/10">
+                  <Icon size={26} strokeWidth={1.5} aria-hidden />
+                </span>
 
-          <Link href="/admin/dashboard" className="group">
-            <article
-              className="h-full rounded-2xl border border-[#c9a96e]/30 bg-[#1a1a1a] p-8 text-center shadow-[0_18px_64px_rgba(82,63,47,0.08)] transition-all duration-300 hover:border-[#c9a96e] hover:shadow-[0_0_20px_rgba(201,169,110,0.2)] hover:-translate-y-2 animate-bounce opacity-0 animate-fadeUp" style={{ animationDelay: '150ms' }}>
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-[#c9a96e]/20 to-[#b8a060]/20 text-3xl text-[#c9a96e] shadow-inner shadow-[#c9a96e]/10">
-                📊
-              </div>
-              <h3 className="mb-4 text-2xl font-bold text-[#ececec] group-hover:text-[#c9a96e] transition-colors">
-                Mis Ventas
-              </h3>
-              <p className="text-sm leading-relaxed text-[#a5a5a5]">
-                Observa todas tus ganancias y ventas totales. Analiza el rendimiento de tu tienda y toma decisiones informadas.
-              </p>
-            </article>
-          </Link>
+                <h3
+                  className="mb-3 text-xl text-[#ececec] transition-colors group-hover:text-[#c9a96e]"
+                  style={{ fontFamily: adminSerif }}
+                >
+                  {title}
+                </h3>
 
-          <Link href="/admin/orders" className="group">
-            <article
-              className="h-full rounded-2xl border border-[#c9a96e]/30 bg-[#1a1a1a] p-8 text-center shadow-[0_18px_64px_rgba(82,63,47,0.08)] transition-all duration-300 hover:border-[#c9a96e] hover:shadow-[0_0_20px_rgba(201,169,110,0.2)] hover:-translate-y-2 animate-bounce opacity-0 animate-fadeUp" style={{ animationDelay: '300ms' }}>
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-[#c9a96e]/20 to-[#b8a060]/20 text-3xl text-[#c9a96e] shadow-inner shadow-[#c9a96e]/10">
-                📋
-              </div>
-              <h3 className="mb-4 text-2xl font-bold text-[#ececec] group-hover:text-[#c9a96e] transition-colors">
-                Administrar Órdenes
-              </h3>
-              <p className="text-sm leading-relaxed text-[#a5a5a5]">
-                Aquí puedes administrar tus órdenes pendientes. Gestiona envíos, actualizaciones y soporte al cliente.
-              </p>
-            </article>
-          </Link>
-
-          <Link href="/admin/decant-stock" className="group md:col-span-2 lg:col-span-1">
-            <article
-              className="h-full rounded-2xl border border-[#c9a96e]/30 bg-[#1a1a1a] p-8 text-center shadow-[0_18px_64px_rgba(82,63,47,0.08)] transition-all duration-300 hover:border-[#c9a96e] hover:shadow-[0_0_20px_rgba(201,169,110,0.2)] hover:-translate-y-2 animate-bounce opacity-0 animate-fadeUp" style={{ animationDelay: '450ms' }}>
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-[#c9a96e]/20 to-[#b8a060]/20 text-3xl text-[#c9a96e] shadow-inner shadow-[#c9a96e]/10">
-                🧪
-              </div>
-              <h3 className="mb-4 text-2xl font-bold text-[#ececec] group-hover:text-[#c9a96e] transition-colors">
-                Stock para Decants
-              </h3>
-              <p className="text-sm leading-relaxed text-[#a5a5a5]">
-                Administra el pool de mililitros de tus decants. Transforma botellas full size en stock de decant compartido.
-              </p>
-            </article>
-          </Link>
-        </div>
+                <p className="text-sm leading-relaxed text-[#a5a5a5]">
+                  {description}
+                </p>
+              </article>
+            </Link>
+          </motion.div>
+        ))}
       </div>
-    </main>
+    </AdminContainer>
   );
 }

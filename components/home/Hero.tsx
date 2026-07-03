@@ -9,10 +9,10 @@ import { ArrowRight, ChevronDown } from "lucide-react";
 const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
 
 const images = [
-  "/hero-image.jpg",
-  "/hero-image2.jpg",
-  "/hero-image3.jpg",
-  "/hero-image4.jpg",
+  "/hero-image.avif",
+  "/hero-image2.avif",
+  "/hero-image3.avif",
+  "/hero-image4.avif",
 ];
 
 const fadeUp = {
@@ -43,7 +43,7 @@ export default function Hero() {
             fill
             priority={index === 0}
             aria-hidden
-            className={`absolute inset-0 object-cover transition-all duration-2000 ease-out ${
+            className={`absolute inset-0 object-cover transition-all duration-3000 ease-out ${
               index === current ? "scale-105 opacity-100" : "scale-100 opacity-0"
             }`}
           />

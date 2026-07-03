@@ -46,6 +46,31 @@ export default function AccountLoginCard() {
   const provinces = getProvinces();
   const cantonesForProvince = getCantones(selectedProvince);
 
+  // ── Email/password sign-in (manual auth, complements Google OAuth) ──
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [loginLoading, setLoginLoading] = useState(false);
+
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError("");
+    setLoginLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: loginEmail.trim().toLowerCase(),
+        password: loginPassword,
+      });
+      if (error) {
+        setLoginError("Correo o contraseña incorrectos.");
+        return;
+      }
+      // onAuthStateChange (subscribed in the effect below) refreshes the view.
+    } finally {
+      setLoginLoading(false);
+    }
+  };
+
   const loadAccountData = useCallback(async (userId: string) => {
     setOrdersLoading(true);
     setOrdersError("");
@@ -314,7 +339,7 @@ export default function AccountLoginCard() {
               <Image
                 width={96}
                 height={96}
-                src={user.user_metadata?.avatar_url || "/default-avatar.png"}
+                src={user.user_metadata?.avatar_url || "/User/UserAnonimous.avif"}
                 alt="Avatar"
                 className="w-24 h-24 rounded-full mx-auto mt-4 object-cover border-2 border-[#c9a96e]/40"
               />
@@ -559,6 +584,51 @@ export default function AccountLoginCard() {
               Accede a tu cuenta para gestionar pedidos y favoritos.
             </p>
           </div>
+
+          {/* ── Email / password sign-in ── */}
+          <form onSubmit={handleEmailLogin} className="space-y-3 mb-5" noValidate>
+            <input
+              type="email"
+              autoComplete="email"
+              required
+              value={loginEmail}
+              onChange={(e) => setLoginEmail(e.target.value)}
+              placeholder="Correo electrónico"
+              className="w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#c9a96e]/50"
+            />
+            <input
+              type="password"
+              autoComplete="current-password"
+              required
+              value={loginPassword}
+              onChange={(e) => setLoginPassword(e.target.value)}
+              placeholder="Contraseña"
+              className="w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#c9a96e]/50"
+            />
+            {loginError && <p className="text-xs text-red-400">{loginError}</p>}
+            <button
+              type="submit"
+              disabled={loginLoading}
+              className="w-full rounded-xl bg-[#c9a96e] py-3 text-sm font-medium text-black transition hover:bg-[#c9a96e]/90 disabled:opacity-50"
+            >
+              {loginLoading ? "Ingresando…" : "Iniciar sesión"}
+            </button>
+          </form>
+
+          <p className="text-center text-sm text-white/55 mb-5">
+            ¿No tienes cuenta?{" "}
+            <Link href="/register" className="text-[#c9a96e] hover:underline">
+              Crear cuenta
+            </Link>
+          </p>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 mb-5">
+            <span className="h-px flex-1 bg-white/10" />
+            <span className="text-[11px] uppercase tracking-wider text-white/40">o</span>
+            <span className="h-px flex-1 bg-white/10" />
+          </div>
+
           <button
             type="button"
             className="w-full flex items-center justify-center gap-3 rounded-xl bg-white text-black py-3.5 px-4 font-medium hover:bg-neutral-100 transition duration-200"

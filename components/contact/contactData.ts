@@ -5,6 +5,7 @@ export const CONTACT = {
   whatsapp: "https://wa.me/71387812",
   instagram: "https://www.instagram.com/aromaperfumeriacr/",
   facebook: "https://www.facebook.com/aromaperfumeriacr?locale=es_LA",
+  tiktok: "https://www.tiktok.com/@aromaperfumeriacr",
 } as const;
 
 export type Social = {
@@ -40,5 +41,13 @@ export const SOCIALS: Social[] = [
     description: "Chatea con nosotros para soporte inmediato.",
     url: CONTACT.whatsapp,
     icon: "/icons/whatsapp.svg",
+  },
+  {
+    key: "tiktok",
+    name: "TikTok",
+    handle: "@aromaperfumeriacr",
+    description: "Síguenos para ver nuestros videos y novedades.",
+    url: CONTACT.tiktok,
+    icon: "/icons/tiktok.svg",
   },
 ];

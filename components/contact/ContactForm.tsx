@@ -87,6 +87,7 @@ export default function ContactForm() {
           <ImagePlaceholder
             alt="Ilustración o fotografía de atención personalizada"
             label="Ilustración del formulario"
+            src="/images/contact/Message.avif"
           />
         </motion.div>
 

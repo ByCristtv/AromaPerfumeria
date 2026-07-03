@@ -62,7 +62,11 @@ function Table({ rows }: { rows: LowStockRow[] }) {
                 <td className="px-5 py-3">
                   <div className="font-medium">{row.product_name}</div>
                   <div className="text-xs text-[#a5a5a5]">
-                    {row.product_type === "decant" ? "Decant" : "Full size"} ·{" "}
+                    {{
+                      decant: "Decant",
+                      set: "Set",
+                      full_size: "Full size"
+                    }[row.product_type] || "Desconocido"} ·{" "}
                     {row.size_ml} ml
                   </div>
                 </td>

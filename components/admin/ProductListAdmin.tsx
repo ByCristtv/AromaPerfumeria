@@ -123,7 +123,11 @@ export default function ProductListAdmin({ searchQuery, onEdit }: ProductListAdm
                 <td className="px-4 py-3 font-medium">{v.name}</td>
                 <td className="px-4 py-3 text-[#a5a5a5]">{v.brand}</td>
                 <td className="px-4 py-3 capitalize text-[#a5a5a5]">
-                  {v.product_type === "full_size" ? "Full size" : "Decant"}
+                  {{
+                    decant: "Decant",
+                    set: "Set",
+                    full_size: "Full size"
+                  }[v.product_type] || "Desconocido"}
                 </td>
                 <td className="px-4 py-3 text-[#a5a5a5]">{v.size_ml} ml</td>
                 <td className="px-4 py-3">
@@ -145,14 +149,16 @@ export default function ProductListAdmin({ searchQuery, onEdit }: ProductListAdm
                 <td className="px-4 py-3">
                   <span
                     className={
-                      v.stock <= 0
+                      v.product_type === "decant"
+                        ? "text-[#c9a96e]"
+                        : v.stock <= 0
                         ? "text-red-400"
                         : v.stock < 5
                         ? "text-yellow-400"
                         : "text-[#ececec]"
                     }
                   >
-                    {v.stock}
+                    {v.product_type === "decant" ? "X" : v.stock}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-[#a5a5a5]">

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/footer/Footer";
+import FooterGate from "@/components/layout/footer/FooterGate";
 import QueryProvider from "@/components/providers/QueryProvider";
 import AuthListener from "@/components/auth/AuthListener";
 
@@ -23,6 +25,9 @@ export default function RootLayout({
           <main className="flex-1">
             {children}
           </main>
+          <FooterGate>
+            <Footer />
+          </FooterGate>
         </QueryProvider>
       </body>
     </html>

@@ -39,33 +39,36 @@ export default function Modal({
   const panelRef = useRef<HTMLDivElement>(null);
   const lastFocused = useRef<HTMLElement | null>(null);
 
-  // Lock body scroll while the modal is open.
+  // Focus management.
   useEffect(() => {
     if (!open) return;
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+
+    lastFocused.current = document.activeElement as HTMLElement | null;
+
+    const raf = requestAnimationFrame(() => {
+      panelRef.current?.focus();
+    });
+
     return () => {
-      document.body.style.overflow = previous;
+      cancelAnimationFrame(raf);
+      lastFocused.current?.focus?.();
     };
   }, [open]);
 
-  // ESC to close + focus management.
+  // ESC to close.
   useEffect(() => {
     if (!open) return;
-    lastFocused.current = document.activeElement as HTMLElement | null;
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+      }
     };
-    document.addEventListener("keydown", onKeyDown);
 
-    // Focus the panel on the next frame so the animation has mounted it.
-    const raf = requestAnimationFrame(() => panelRef.current?.focus());
+    document.addEventListener("keydown", onKeyDown);
 
     return () => {
       document.removeEventListener("keydown", onKeyDown);
-      cancelAnimationFrame(raf);
-      lastFocused.current?.focus?.();
     };
   }, [open, onClose]);
 
@@ -76,7 +79,7 @@ export default function Modal({
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          className="fixed inset-0 z-100 flex items-center justify-center p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

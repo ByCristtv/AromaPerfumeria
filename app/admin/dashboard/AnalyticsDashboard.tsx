@@ -8,6 +8,8 @@ import DateRangePicker, {
 } from "./DateRangePicker";
 import KpiCards from "./KpiCards";
 import LowStockTable from "./LowStockTable";
+import AdminContainer from "@/components/admin/ui/AdminContainer";
+import AdminPageHeader from "@/components/admin/ui/AdminPageHeader";
 
 /**
  * Client orchestrator for the analytics dashboard. Owns the date-range
@@ -27,26 +29,19 @@ export default function AnalyticsDashboard() {
   const since = useMemo(() => presetToDate(preset), [preset]);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] pt-20 pb-12">
-      <div className="max-w-7xl mx-auto px-6 mt-3">
-        <header className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <h1 className="text-3xl font-bold text-[#ececec] tracking-wide">
-              Mis Ventas
-            </h1>
-            <p className="text-[#a5a5a5] mt-1">
-              Ingresos, productos más vendidos y alertas de inventario
-            </p>
-          </div>
-          <DateRangePicker value={preset} onChange={setPreset} />
-        </header>
+    <AdminContainer>
+      <AdminPageHeader
+        eyebrow="Analítica"
+        title="Mis Ventas"
+        description="Ingresos, productos más vendidos y alertas de inventario."
+        actions={<DateRangePicker value={preset} onChange={setPreset} />}
+      />
 
-        <div className="space-y-5">
-          <KpiCards since={since} />
-          <BestSellersTable since={since} />
-          <LowStockTable />
-        </div>
+      <div className="space-y-5">
+        <KpiCards since={since} />
+        <BestSellersTable since={since} />
+        <LowStockTable />
       </div>
-    </div>
+    </AdminContainer>
   );
 }

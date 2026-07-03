@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { supabase } from "@/lib/supabase/client";
@@ -13,6 +12,8 @@ import {
   findProvince,
 } from "@/lib/cr-geo";
 import { useAdminProducts } from "@/hooks/useAdminProducts";
+import AdminContainer from "@/components/admin/ui/AdminContainer";
+import AdminPageHeader from "@/components/admin/ui/AdminPageHeader";
 import { createAdminOrderAction } from "../actions";
 import type { AdminOrderInput, AdminShippingMethod } from "@/types/adminOrder";
 import type { AdminVariantRow } from "@/types/product";
@@ -212,23 +213,21 @@ export default function AdminOrderCreateView() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] pt-20 pb-16">
-      <div className="max-w-6xl mx-auto px-6">
-        <header className="mb-6">
-          <Link
-            href="/admin/orders"
-            className="text-xs text-[#a5a5a5] hover:text-[#c9a96e] uppercase tracking-wider"
-          >
-            ← Volver a órdenes
-          </Link>
-          <h1 className="mt-2 text-3xl font-bold text-[#ececec]">Crear orden manual</h1>
-          <p className="text-[#a5a5a5] mt-1">
+    <AdminContainer width="narrow">
+      <AdminPageHeader
+        eyebrow="Pedidos"
+        title="Crear orden manual"
+        description={
+          <>
             Para clientes que escriben por WhatsApp, redes o teléfono. El pedido
             queda <span className="text-[#c9a96e]">pendiente de pago</span>.
-          </p>
-        </header>
+          </>
+        }
+        backHref="/admin/orders"
+        backLabel="Volver a órdenes"
+      />
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5 items-start">
           {/* ── Left: form ── */}
           <div className="space-y-5">
             {/* Customer */}
@@ -471,7 +470,6 @@ export default function AdminOrderCreateView() {
             </Panel>
           </aside>
         </div>
-      </div>
 
       <style jsx global>{`
         .adm-input {
@@ -496,7 +494,7 @@ export default function AdminOrderCreateView() {
           opacity: 0.5;
         }
       `}</style>
-    </div>
+    </AdminContainer>
   );
 }
 

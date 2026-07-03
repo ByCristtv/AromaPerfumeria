@@ -173,7 +173,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
             }`}
             style={{ fontFamily: serif }}
           >
-            {inStock ? (lowStock ? "Pocas unidades" : "Disponible") : "Sin stock"}
+            {inStock ? " ": "Sin stock"}
           </span>
         </div>
 

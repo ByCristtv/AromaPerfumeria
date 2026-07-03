@@ -6,6 +6,8 @@ import VariantForm from "./VariantForm";
 import ProductEditForm from "./ProductEditForm";
 import ProductListAdmin from "./ProductListAdmin";
 import Searchbar from "../ui/Searchbar";
+import AdminContainer from "./ui/AdminContainer";
+import AdminPageHeader from "./ui/AdminPageHeader";
 
 /**
  * Full-screen admin products view. The variants table is the default
@@ -52,49 +54,44 @@ export default function AdminProductsView() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] pt-20 pb-12">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-[#ececec] tracking-wide">
-              Gestión de Productos
-            </h1>
-            <p className="text-[#a5a5a5] mt-1">
-              Administra tu colección de perfumes premium
-            </p>
-          </div>
-          <div className="flex gap-3 self-start sm:self-auto">
+    <AdminContainer>
+      <AdminPageHeader
+        eyebrow="Catálogo"
+        title="Gestión de Productos"
+        description="Administra tu colección de perfumes premium."
+        actions={
+          <>
             <button
               type="button"
               onClick={() => setCreateModalOpen(true)}
-              className="bg-[#c9a96e] hover:bg-[#b8a060] text-black font-bold px-5 py-3 rounded-lg uppercase text-sm tracking-wider transition-colors shadow-lg"
+              className="rounded-lg bg-[#c9a96e] px-5 py-2.5 text-sm font-semibold uppercase tracking-wider text-black transition-colors hover:bg-[#b8a060]"
             >
               + Nuevo Producto
             </button>
             <button
               type="button"
               onClick={() => setVariantModalOpen(true)}
-              className="bg-transparent hover:bg-[#c9a96e]/10 text-[#c9a96e] border border-[#c9a96e]/50 hover:border-[#c9a96e] font-bold px-5 py-3 rounded-lg uppercase text-sm tracking-wider transition-colors shadow-lg"
+              className="rounded-lg border border-[#c9a96e]/50 bg-transparent px-5 py-2.5 text-sm font-semibold uppercase tracking-wider text-[#c9a96e] transition-colors hover:border-[#c9a96e] hover:bg-[#c9a96e]/10"
             >
               + Nueva Variante
             </button>
-          </div>
-        </div>
+          </>
+        }
+      />
 
-        <div className="mb-6 max-w-md">
-          <Searchbar
-            onSearch={setSearchQuery}
-            placeholder="Buscar por nombre o marca..."
-          />
-        </div>
-
-        <ProductListAdmin
-          searchQuery={searchQuery}
-          onEdit={(productId, variantId) =>
-            setEditTarget({ productId, variantId })
-          }
+      <div className="mb-6 max-w-md">
+        <Searchbar
+          onSearch={setSearchQuery}
+          placeholder="Buscar por nombre o marca..."
         />
       </div>
+
+      <ProductListAdmin
+        searchQuery={searchQuery}
+        onEdit={(productId, variantId) =>
+          setEditTarget({ productId, variantId })
+        }
+      />
 
       {/* Create modal */}
       {createModalOpen && (
@@ -120,7 +117,7 @@ export default function AdminProductsView() {
           />
         </ModalOverlay>
       )}
-    </div>
+    </AdminContainer>
   );
 }
 

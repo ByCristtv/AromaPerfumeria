@@ -95,17 +95,40 @@ async function resolveTypeIds(
   return [...new Set(((data ?? []) as { product_id: string }[]).map((r) => r.product_id))];
 }
 
-/** Apply the active filters. Both id-list filters AND together (intersection). */
+/**
+ * Resolve IDs of products that have at least one active variant currently on
+ * offer. Mirrors `resolveTypeIds`: a narrow `product_id`-only projection keeps
+ * the round-trip cheap (no variant rows hydrated into memory) and lets the
+ * product-centric catalog intersect by id. Returns `null` when not filtering.
+ *
+ * `is_on_offer` is the authoritative flag (an `offer_price` may linger while the
+ * offer is toggled off), so we filter on it directly.
+ */
+async function resolveOfferIds(onOffer?: boolean): Promise<string[] | null> {
+  if (!onOffer) return null;
+
+  const { data } = await supabase
+    .from("product_variants")
+    .select("product_id")
+    .eq("is_on_offer", true)
+    .eq("is_active", true);
+
+  return [...new Set(((data ?? []) as { product_id: string }[]).map((r) => r.product_id))];
+}
+
+/** Apply the active filters. All id-list filters AND together (intersection). */
 function applyFilters(
   query: CatalogQuery,
   filters: ProductFilters | undefined,
   searchIds: string[] | null,
-  typeIds: string[] | null
+  typeIds: string[] | null,
+  offerIds: string[] | null
 ): CatalogQuery {
   let next = query;
 
   if (searchIds) next = next.in("id", searchIds);
   if (typeIds) next = next.in("id", typeIds);
+  if (offerIds) next = next.in("id", offerIds);
 
   if (filters?.category) {
     // categories!inner makes this prune parent rows, not just the embedded array.
@@ -144,21 +167,23 @@ async function runCatalogQuery(
   to: number,
   filters?: ProductFilters
 ): Promise<{ items: ProductCardData[]; total: number }> {
-  const [searchIds, typeIds] = await Promise.all([
+  const [searchIds, typeIds, offerIds] = await Promise.all([
     resolveSearchIds(filters?.query),
     resolveTypeIds(filters?.productType),
+    resolveOfferIds(filters?.onOffer),
   ]);
 
   // A non-null but empty id-list means "filtered, matched nothing".
   if (
     (searchIds !== null && searchIds.length === 0) ||
-    (typeIds !== null && typeIds.length === 0)
+    (typeIds !== null && typeIds.length === 0) ||
+    (offerIds !== null && offerIds.length === 0)
   ) {
     return { items: [], total: 0 };
   }
 
   let query = buildBaseQuery(!!filters?.category);
-  query = applyFilters(query, filters, searchIds, typeIds);
+  query = applyFilters(query, filters, searchIds, typeIds, offerIds);
   query = applyOrder(query, filters?.orderBy);
 
   const { data, error, count } = await query.range(from, to);

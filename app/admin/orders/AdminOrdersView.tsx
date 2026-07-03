@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import OrdersFilters from "./OrdersFilters";
 import OrdersTable from "./OrdersTable";
+import AdminContainer from "@/components/admin/ui/AdminContainer";
+import AdminPageHeader from "@/components/admin/ui/AdminPageHeader";
 import {
   useAdminOrdersList,
   type OrderStatusFilter,
@@ -35,18 +37,13 @@ export default function AdminOrdersView() {
   const { data, isLoading, isError, error, isFetching } = useAdminOrdersList(filters);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] pt-20 pb-12">
-      <div className="max-w-7xl mx-auto px-6">
-        <header className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <h1 className="text-3xl font-bold text-[#ececec] tracking-wide">
-              Órdenes
-            </h1>
-            <p className="text-[#a5a5a5] mt-1">
-              Gestiona los pedidos de tus clientes
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
+    <AdminContainer>
+      <AdminPageHeader
+        eyebrow="Pedidos"
+        title="Órdenes"
+        description="Gestiona los pedidos de tus clientes."
+        actions={
+          <>
             {isFetching && !isLoading && (
               <span className="text-xs text-[#a5a5a5]">Actualizando…</span>
             )}
@@ -64,22 +61,22 @@ export default function AdminOrdersView() {
               </svg>
               Crear Orden
             </Link>
-          </div>
-        </header>
+          </>
+        }
+      />
 
-        <OrdersFilters value={filters} onChange={setFilters} />
+      <OrdersFilters value={filters} onChange={setFilters} />
 
-        <div className="mt-6">
-          {isLoading ? (
-            <SkeletonState />
-          ) : isError ? (
-            <ErrorState error={error} />
-          ) : (
-            <OrdersTable orders={data ?? []} />
-          )}
-        </div>
+      <div className="mt-6">
+        {isLoading ? (
+          <SkeletonState />
+        ) : isError ? (
+          <ErrorState error={error} />
+        ) : (
+          <OrdersTable orders={data ?? []} />
+        )}
       </div>
-    </div>
+    </AdminContainer>
   );
 }
 

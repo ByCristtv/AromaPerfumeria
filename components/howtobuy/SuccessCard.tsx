@@ -60,7 +60,7 @@ export default function SuccessCard() {
             style={{ fontFamily: serif }}
           >
             Gracias por confiar en Aroma Perfumería. Prepararemos tu fragancia con
-            el cuidado que merece una pieza de alta perfumería.
+            el cuidado que merece.
           </p>
 
           <ul className="mb-9 space-y-4">

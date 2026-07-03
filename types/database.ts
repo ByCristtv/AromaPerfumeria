@@ -1,4 +1,4 @@
-export type Json =
+type Json =
   | string
   | number
   | boolean
@@ -861,6 +861,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_list_stock_movements: {
+        Args: { p_limit?: number; p_offset?: number; p_search?: string }
+        Returns: {
+          brand_name: string
+          created_at: string
+          delta: number
+          id: string
+          ml_delta: number
+          new_ml: number
+          new_stock: number
+          notes: string
+          performed_by_name: string
+          previous_ml: number
+          previous_stock: number
+          product_id: string
+          product_name: string
+          product_type: Database["public"]["Enums"]["product_type"]
+          reason: Database["public"]["Enums"]["stock_movement_reason"]
+          size_ml: number
+          sku: string
+          total_count: number
+          variant_id: string
+        }[]
+      }
       advance_order_status: {
         Args: { p_new_status: string; p_order_id: string }
         Returns: Json
@@ -951,12 +975,15 @@ export type Database = {
         Returns: undefined
       }
       is_admin: { Args: never; Returns: boolean }
-      mark_order_paid: {
-        Args: { p_order_id: string; p_reference?: string; p_note?: string }
-        Returns: Json
-      }
+      mark_order_paid:
+        | { Args: { p_order_id: string }; Returns: Json }
+        | {
+            Args: { p_note?: string; p_order_id: string; p_reference?: string }
+            Returns: Json
+          }
       place_admin_order: { Args: { p_payload: Json }; Returns: Json }
       place_order: { Args: { p_payload: Json }; Returns: Json }
+      register_bulk_stock: { Args: { p_payload: Json }; Returns: Json }
       restore_variant_stock: { Args: { p_order_id: string }; Returns: Json }
       search_products: {
         Args: { p_limit?: number; p_offset?: number; p_query: string }

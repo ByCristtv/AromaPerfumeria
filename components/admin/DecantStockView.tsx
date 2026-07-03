@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import DecantStockTable from "./DecantStockTable";
 import TransformDecantForm from "./TransformDecantForm";
 import Searchbar from "../ui/Searchbar";
+import AdminContainer from "./ui/AdminContainer";
+import AdminPageHeader from "./ui/AdminPageHeader";
 
 /**
  * Admin → "Stock para Decants" module.
@@ -37,42 +39,37 @@ export default function DecantStockView() {
   const closeModal = () => setTransformModalOpen(false);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] pt-20 pb-12">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-[#ececec] tracking-wide">
-              Stock para Decants
-            </h1>
-            <p className="text-[#a5a5a5] mt-1">
-              Pool de mililitros compartido por producto para tus decants
-            </p>
-          </div>
+    <AdminContainer>
+      <AdminPageHeader
+        eyebrow="Inventario"
+        title="Stock para Decants"
+        description="Pool de mililitros compartido por producto para tus decants."
+        actions={
           <button
             type="button"
             onClick={() => setTransformModalOpen(true)}
-            className="bg-[#c9a96e] hover:bg-[#b8a060] text-black font-bold px-5 py-3 rounded-lg uppercase text-sm tracking-wider transition-colors shadow-lg self-start sm:self-auto"
+            className="rounded-lg bg-[#c9a96e] px-5 py-2.5 text-sm font-semibold uppercase tracking-wider text-black transition-colors hover:bg-[#b8a060]"
           >
             + Generar Stock de Decant
           </button>
-        </div>
+        }
+      />
 
-        <div className="mb-6 max-w-md">
-          <Searchbar
-            onSearch={setSearchQuery}
-            placeholder="Buscar por producto, marca o SKU..."
-          />
-        </div>
-
-        <DecantStockTable searchQuery={searchQuery} />
+      <div className="mb-6 max-w-md">
+        <Searchbar
+          onSearch={setSearchQuery}
+          placeholder="Buscar por producto, marca o SKU..."
+        />
       </div>
+
+      <DecantStockTable searchQuery={searchQuery} />
 
       {transformModalOpen && (
         <ModalOverlay onClose={closeModal} label="Generar stock de decant">
           <TransformDecantForm onSuccess={closeModal} />
         </ModalOverlay>
       )}
-    </div>
+    </AdminContainer>
   );
 }
 
