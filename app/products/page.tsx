@@ -50,7 +50,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       />
 
       <div className="relative">
-        <CatalogHero total={result.totalProducts} />
+        <CatalogHero />
 
         <div className="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
           <CatalogToolbar filters={filters} />

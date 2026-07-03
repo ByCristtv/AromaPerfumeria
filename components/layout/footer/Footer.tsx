@@ -1,10 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Check, Clock, Mail, MapPin, Phone } from "lucide-react";
-import PreFooterCTA from "./PreFooterCTA";
-import FooterNewsletter from "./FooterNewsletter";
-import FooterStats from "./FooterStats";
-import FooterBrands from "./FooterBrands";
 import FooterBottomBar from "./FooterBottomBar";
 import {
   BRAND_STATEMENT,

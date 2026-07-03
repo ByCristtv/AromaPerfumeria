@@ -23,6 +23,11 @@ export default function Reveal({
     const el = ref.current;
     if (!el) return;
     if (typeof IntersectionObserver === 'undefined') {
+      // Defensive fallback for the (now vanishingly rare) environments that
+      // lack IntersectionObserver: reveal immediately so content is never
+      // stuck hidden. This fires at most once and cannot cascade, so the
+      // synchronous setState is intentional here.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(true);
       return;
     }

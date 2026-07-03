@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Check, Eye, Heart, ShoppingBag } from "lucide-react";
+import { Check, Eye, ShoppingBag } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { ProductCardData, ProductTypes } from "@/types/product";
 import { availableUnits } from "@/lib/stock";

@@ -1,4 +1,3 @@
-import { Database } from "@/types/database";
 import { BaseCartItem, CartLineItem } from "@/types/product";
 
 export type CartItemPayload = Omit<CartLineItem, "quantity">;

@@ -91,7 +91,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <a href="/" className="shrink-0 group">
+          <Link href="/" className="shrink-0 group">
             <div className="flex flex-col leading-none select-none">
               <span
                 className="text-white tracking-[0.35em] text-2xl font-light transition-all duration-300 group-hover:tracking-[0.45em]"
@@ -106,7 +106,7 @@ export default function Navbar() {
                 Luxury Fragrance
               </span>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Nav Links */}
           <ul className="hidden md:flex items-center gap-8">

@@ -3,8 +3,6 @@
 import ContactHero from "./ContactHero";
 import ContactMethods from "./ContactMethods";
 import ContactForm from "./ContactForm";
-import WhyContact from "./WhyContact";
-import SocialCommunity from "./SocialCommunity";
 import FAQAccordion from "./FAQAccordion";
 import CTASection from "./CTASection";
 

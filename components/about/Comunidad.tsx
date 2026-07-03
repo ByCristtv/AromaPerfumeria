@@ -99,8 +99,8 @@ export default function Comunidad() {
               className="text-white text-2xl md:text-4xl italic leading-snug"
               style={{ fontFamily: serif }}
             >
-              "El lujo no se trata únicamente de lo que llevas, sino de cómo te
-              hace sentir."
+              &ldquo;El lujo no se trata únicamente de lo que llevas, sino de
+              cómo te hace sentir.&rdquo;
             </p>
             <footer
               className="text-[#c9a96e] tracking-[0.3em] text-xs mt-6 uppercase"

@@ -45,7 +45,7 @@ export async function fetchCartFromDB(userId: string): Promise<CartLineItem[]> {
       return {
         variant_id: v.id,
         product_name: prod.name,
-        product_type: v.product_type as any,
+        product_type: v.product_type,
         size_ml: v.size_ml,
         price: v.is_on_offer && v.offer_price !== null ? v.offer_price : v.price,
         image_url: prod.product_images?.[0]?.url || "",

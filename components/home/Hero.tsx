@@ -79,7 +79,7 @@ export default function Hero() {
           className="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-white/75 md:text-lg"
           style={{ fontFamily: serif }}
         >
-          "Se necesita un vestido para el cuerpo y un perfume para el alma." - Yves Saint Laurent.
+          &ldquo;Se necesita un vestido para el cuerpo y un perfume para el alma.&rdquo; — Yves Saint Laurent.
         </motion.p>
 
         <motion.div

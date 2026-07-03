@@ -1,5 +1,9 @@
 import { supabase } from "@/lib/supabase/client";
-import type { AdminVariantRow, ProductTypes } from "@/types/product";
+import type {
+  AdminProductCategory,
+  AdminVariantRow,
+  ProductTypes,
+} from "@/types/product";
 
 const ADMIN_VARIANT_SELECT = `
   id,
@@ -23,6 +27,27 @@ const ADMIN_VARIANT_SELECT = `
   )
 ` as const;
 
+/** Raw shape returned by ADMIN_VARIANT_SELECT before it is flattened. */
+interface AdminVariantQueryRow {
+  id: string;
+  sku: string;
+  price: number | null;
+  stock: number | null;
+  size_ml: number;
+  product_type: string;
+  is_on_offer: boolean | null;
+  offer_price: number | null;
+  is_active: boolean | null;
+  created_at: string;
+  products: {
+    id: string;
+    name: string | null;
+    description: string | null;
+    brands: { name: string } | null;
+    product_categories: { categories: AdminProductCategory | null }[] | null;
+  } | null;
+}
+
 /**
  * Fetch all commercial variants for the admin table.
  *
@@ -40,15 +65,16 @@ export const getProductsAdmin = async (): Promise<AdminVariantRow[]> => {
   if (error) {
     throw new Error(error.message);
   }
-  console.log("Raw admin products data:", data);
 
-  return (data ?? []).map((v: any): AdminVariantRow => {
-    const parent = v.products ?? null;
-    const flatCategories = parent?.product_categories
-      ? parent.product_categories
-          .map((pc: any) => pc.categories)
-          .filter(Boolean)
-      : [];
+  const rows = (data ?? []) as unknown as AdminVariantQueryRow[];
+
+  return rows.map((v): AdminVariantRow => {
+    const parent = v.products;
+    const flatCategories: AdminProductCategory[] = (
+      parent?.product_categories ?? []
+    )
+      .map((pc) => pc.categories)
+      .filter((category): category is AdminProductCategory => category !== null);
 
     return {
       variant_id: v.id,

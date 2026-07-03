@@ -11,7 +11,7 @@ const fadeUp = {
 };
 
 /** Compact editorial hero that opens the catalog like a boutique entrance. */
-export default function CatalogHero({ total }: { total: number }) {
+export default function CatalogHero() {
   return (
     <section className="relative overflow-hidden px-5 pt-28 pb-12 text-center sm:px-8 md:pt-36">
       <div

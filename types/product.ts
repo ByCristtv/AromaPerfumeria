@@ -21,7 +21,7 @@ export interface DbCartQueryResponse {
   } | null;
 }
 
-interface AdminProductCategory {
+export interface AdminProductCategory {
   id: string;
   name: string;
 }

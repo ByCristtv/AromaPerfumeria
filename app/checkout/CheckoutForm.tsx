@@ -46,6 +46,10 @@ export default function CheckoutForm({
   useEffect(() => {
     const canton = findCanton(watchedCantonCode);
     if (canton && canton.provinceCode !== selectedProvince) {
+      // Intentional, guarded cross-field sync: fires only on programmatic
+      // canton_code changes (e.g. saved-address prefill via form.reset), and
+      // the equality guard prevents any cascade. Not derived render state.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedProvince(canton.provinceCode);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

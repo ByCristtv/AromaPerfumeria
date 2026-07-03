@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase/client";
 import { useCartStore } from "@/store/useCartStore";
 import { CartLineItem } from "@/types/product";
 import { fetchCartFromDB } from "@/services/cartService";
+import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 
 async function mergeLocalCartIntoDB(userId: string, localCart: CartLineItem[]) {
   if (localCart.length === 0) return;
@@ -41,7 +42,10 @@ export default function AuthListener(): null {
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       void handleAuthChange(event, session);
     });
-    async function handleAuthChange(event: string, session: any) {
+    async function handleAuthChange(
+      event: AuthChangeEvent,
+      session: Session | null
+    ) {
       if (event === "SIGNED_IN" && session?.user) {
         const userId = session.user.id;
         await mergeLocalCartIntoDB(userId, cartRef.current);
