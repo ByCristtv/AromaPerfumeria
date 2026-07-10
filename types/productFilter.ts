@@ -2,7 +2,7 @@
 import { ProductCardData, ProductTypes } from "./product";
 
 /** Items fetched per catalog page (offset-based pagination). */
-export const PRODUCTS_PAGE_SIZE = 20;
+export const PRODUCTS_PAGE_SIZE = 16;
 
 export type ProductOrderBy = "price_asc" | "price_desc" | "name_asc" | "name_desc";
 

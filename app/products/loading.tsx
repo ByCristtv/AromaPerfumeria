@@ -6,7 +6,7 @@ export default function CatalogLoading() {
     <main className="relative min-h-screen bg-[#0a0a0a]">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0c0b0a] via-[#0a0a0a] to-[#080808]"
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-[#0c0b0a] via-[#0a0a0a] to-[#080808]"
       />
 
       <div className="relative">

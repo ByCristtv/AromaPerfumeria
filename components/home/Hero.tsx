@@ -99,11 +99,11 @@ export default function Hero() {
             />
           </Link>
           <Link
-            href="/about"
+            href="/howtobuy"
             className="inline-block border border-white/30 px-10 py-4 text-sm uppercase tracking-[0.22em] text-white transition-all duration-500 hover:border-[#c9a96e] hover:text-[#c9a96e]"
             style={{ fontFamily: serif }}
           >
-            Nuestra historia
+            Como Comprar
           </Link>
         </motion.div>
       </motion.div>
