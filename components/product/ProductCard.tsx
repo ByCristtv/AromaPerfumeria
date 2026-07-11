@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
 import { Check, Eye, ShoppingBag } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { ProductCardData, ProductTypes } from "@/types/product";
@@ -78,13 +77,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 22 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/8 bg-[#101010] transition-all duration-500 hover:border-[#c9a96e]/40 hover:shadow-[0_30px_70px_-35px_rgba(201,169,110,0.4)]"
-    >
+    <div className="animate-fadeIn group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/8 bg-[#101010] transition-[border-color,box-shadow] duration-300 hover:border-[#c9a96e]/40 hover:shadow-[0_30px_70px_-35px_rgba(201,169,110,0.4)]">
       {/* ---- Visual niche ---- */}
       <div className="relative">
         <Link
@@ -203,6 +196,6 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
           )}
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 }

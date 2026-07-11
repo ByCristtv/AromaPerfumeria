@@ -34,6 +34,30 @@ html {
 }
 
 @layer utilities {
+  /*
+   * Minimal entrance for product cards & grids: opacity only, runs immediately
+   * on mount (never scroll-triggered), once. No movement/scale/blur — keeps
+   * browsing feeling fast rather than cinematic.
+   */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 200ms ease-out both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fadeIn {
+      animation: none;
+    }
+  }
+
   @keyframes fadeUp {
     from {
       opacity: 0;

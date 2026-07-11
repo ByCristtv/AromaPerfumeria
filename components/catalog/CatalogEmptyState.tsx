@@ -1,7 +1,4 @@
-"use client";
-
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { SearchX } from "lucide-react";
 
 const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
@@ -9,12 +6,7 @@ const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
 /** Luxury empty state shown when no products match the active filters. */
 export default function CatalogEmptyState({ filtered }: { filtered: boolean }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="mx-auto flex max-w-md flex-col items-center px-6 py-20 text-center"
-    >
+    <div className="animate-fadeIn mx-auto flex max-w-md flex-col items-center px-6 py-20 text-center">
       {/* Illustration placeholder */}
       <div className="relative mb-8 flex aspect-video w-full max-w-xs items-center justify-center overflow-hidden rounded-2xl border border-dashed border-[#c9a96e]/25 bg-white/[0.02]">
         <span className="flex h-14 w-14 items-center justify-center rounded-full border border-[#c9a96e]/30 text-[#c9a96e]/70">
@@ -40,6 +32,6 @@ export default function CatalogEmptyState({ filtered }: { filtered: boolean }) {
           Limpiar filtros
         </Link>
       )}
-    </motion.div>
+    </div>
   );
 }

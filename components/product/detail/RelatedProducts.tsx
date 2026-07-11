@@ -1,8 +1,5 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { formatPrice } from "@/lib/format";
 import type { ProductCardData } from "@/types/product";
 
@@ -31,20 +28,10 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
       </header>
 
       <ul className="grid grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-7">
-        {products.map((p, i) => (
-          <motion.li
-            key={p.id}
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{
-              duration: 0.6,
-              delay: i * 0.08,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          >
+        {products.map((p) => (
+          <li key={p.id} className="animate-fadeIn">
             <RelatedCard product={p} />
-          </motion.li>
+          </li>
         ))}
       </ul>
     </section>
