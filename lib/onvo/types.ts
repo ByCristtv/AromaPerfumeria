@@ -38,6 +38,71 @@ export interface OnvoCheckoutSession {
   status: "open" | "complete" | "expired" | string;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Embedded checkout (Web SDK): Customers + Payment Intents
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Input to POST /v1/customers. Built from the checkout form. Onvo's customer
+ * address only requires `country` at the API level; the descriptive CR address
+ * lives on our own order record, so we send the country code only.
+ */
+export interface OnvoCreateCustomerInput {
+  name: string;
+  email: string;
+  phone: string;
+  address?: {
+    /** ISO 3166-1 alpha-2. Costa Rica → "CR". */
+    country: string;
+  };
+}
+
+/** Response from POST /v1/customers. We only consume `id`. */
+export interface OnvoCustomer {
+  id: string;
+}
+
+/** Input to POST /v1/payment-intents. */
+export interface OnvoCreatePaymentIntentInput {
+  /** Amount in the currency's smallest unit (céntimos for CRC: ₡5,000 → 500000). */
+  amount: number;
+  currency: "CRC" | "USD";
+  description?: string;
+  /** Associates the intent with an Onvo customer. Optional at the API level. */
+  customerId?: string;
+  /**
+   * Forwarded to the webhook as `data.metadata`. We attach our order_id so the
+   * webhook handler (payment-intent.succeeded/failed) can correlate the intent
+   * back to the order — same lookup key the hosted flow used.
+   */
+  metadata?: Record<string, string>;
+}
+
+/** Response from POST /v1/payment-intents. */
+export interface OnvoPaymentIntent {
+  id: string;
+  amount: number;
+  currency: "CRC" | "USD" | string;
+  /** Lifecycle status. Initial is 'requires_payment_method'. */
+  status: "requires_payment_method" | "succeeded" | "canceled" | string;
+}
+
+/**
+ * Input to POST /v1/payment-intents/{id}/cancel.
+ *
+ * We deliberately DON'T use POST /v1/payment-intents/{id} ("Actualizar una
+ * Intención de pago"). Onvo documents that the endpoint exists, but their
+ * OpenAPI spec does not confirm `amount` is updatable — and if it silently
+ * ignored an amount change, the customer would be charged the old total and the
+ * webhook's amount check would then refuse to mark the order paid, leaving a
+ * charged-but-unpaid order. Cancel + create a fresh intent instead: unambiguous,
+ * and an unconfirmed intent costs nothing.
+ */
+export interface OnvoCancelPaymentIntentInput {
+  /** Optional free-text reason, surfaced in the Onvo dashboard. */
+  reason?: string;
+}
+
 /**
  * Webhook event types we care about. Onvo may add more — code MUST treat
  * unknown types as a no-op, not an error (don't break their retry loop).

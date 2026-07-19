@@ -191,7 +191,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
           ) : (
             <>
               <ShoppingBag size={14} aria-hidden />
-              {inStock ? "Agregar al carrito" : "Sin stock"}
+              {inStock ? "Agregar" : "Sin stock"}
             </>
           )}
         </button>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
+import PaymentMethodSelector from "./PaymentMethodSelector";
 import {
   findCanton,
   getCantones,
@@ -37,31 +38,30 @@ export default function CheckoutForm({
   // sync is needed. If we add programmatic canton resets later (e.g., "use my
   // saved address" button), revisit and pass the new province explicitly.
   const watchedCantonCode = watch("shipping.canton_code");
-  const [selectedProvince, setSelectedProvince] = useState<string>(() => {
-    const canton = findCanton(watchedCantonCode);
-    return canton?.provinceCode ?? "";
-  });
+  const watchedPaymentMethod = watch("payment_method");
 
-  // Sync province when canton_code is set programmatically (e.g. form.reset() prefill).
-  useEffect(() => {
-    const canton = findCanton(watchedCantonCode);
-    if (canton && canton.provinceCode !== selectedProvince) {
-      // Intentional, guarded cross-field sync: fires only on programmatic
-      // canton_code changes (e.g. saved-address prefill via form.reset), and
-      // the equality guard prevents any cascade. Not derived render state.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSelectedProvince(canton.provinceCode);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watchedCantonCode]);
+  // The province the user picked by hand. Authoritative ONLY while no cantón is
+  // chosen yet — once a cantón exists, the province is implied by it.
+  const [provinceOverride, setProvinceOverride] = useState("");
+
+  // DERIVED during render, never stored, never synced in an effect.
+  //
+  // This is the fix for the saved-address prefill: `form.reset()` lands
+  // canton_code="101", and on that SAME render the province — and therefore the
+  // cantón <option> list — is already correct. The previous version derived the
+  // province in an effect, so the options for the incoming cantón did not exist
+  // yet when its value was applied, and the browser silently dropped it.
+  const selectedProvince =
+    findCanton(watchedCantonCode)?.provinceCode ?? provinceOverride;
 
   const provinces = getProvinces();
   const cantonesForProvince = getCantones(selectedProvince);
 
   const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newProvince = e.target.value;
-    setSelectedProvince(newProvince);
-    // Reset canton — the previously selected one likely belongs to the old province
+    setProvinceOverride(e.target.value);
+    // Drop the cantón — the previous one belongs to the old province. This also
+    // hands control back to `provinceOverride` above, since the derived lookup
+    // now misses.
     setValue("shipping.canton_code", "", { shouldValidate: false });
   };
 
@@ -148,8 +148,23 @@ export default function CheckoutForm({
             required
             error={errors.shipping?.canton_code?.message}
           >
+            {/*
+              CONTROLLED on purpose — do not switch back to `register()`.
+              An uncontrolled <select> gets its value assigned by RHF's ref at
+              reset() time; if the matching <option> isn't mounted yet the browser
+              discards it, and React never reapplies it when the options arrive.
+              Binding `value` makes React set it during the same commit that
+              renders the options, which is what makes the prefill stick.
+            */}
             <select
-              {...register("shipping.canton_code")}
+              name="shipping.canton_code"
+              value={watchedCantonCode}
+              onChange={(e) =>
+                setValue("shipping.canton_code", e.target.value, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                })
+              }
               className={inputClass(!!errors.shipping?.canton_code)}
               autoComplete="address-level2"
               disabled={!selectedProvince}
@@ -225,6 +240,20 @@ export default function CheckoutForm({
             placeholder="Ej. Es para regalo, no incluyas factura impresa"
           />
         </Field>
+      </Section>
+
+      {/* ──────── Método de pago ──────── */}
+      <Section
+        title="Método de pago"
+        description="Elige cómo quieres pagar tu pedido."
+        appearDelay={240}
+      >
+        <PaymentMethodSelector
+          value={watchedPaymentMethod}
+          onChange={(method) =>
+            setValue("payment_method", method, { shouldValidate: true })
+          }
+        />
       </Section>
 
       {/* ──────── Submit ──────── */}

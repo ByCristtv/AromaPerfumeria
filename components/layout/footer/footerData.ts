@@ -28,7 +28,7 @@ export const FOOTER_SOCIALS = [
   { name: "Instagram", url: CONTACT.instagram, icon: "/icons/instagram.svg" },
   { name: "Facebook", url: CONTACT.facebook, icon: "/icons/facebook.svg" },
   { name: "WhatsApp", url: CONTACT.whatsapp, icon: "/icons/whatsapp.svg" },
-  { name: "TikTok", url: CONTACT.tiktok, icon: "/icons/tiktok.webp" },
+  { name: "TikTok", url: CONTACT.tiktok, icon: "/icons/TikTok.svg" },
 ] as const;
 
 type FooterLink = { label: string; href: string };

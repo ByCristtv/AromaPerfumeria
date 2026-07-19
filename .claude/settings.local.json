@@ -4,7 +4,8 @@
       "Bash(npx tsc *)",
       "Bash(npm run *)",
       "Bash(pnpm add *)",
-      "Bash(npx eslint *)"
+      "Bash(npx eslint *)",
+      "WebFetch(domain:docs.onvopay.com)"
     ]
   }
 }

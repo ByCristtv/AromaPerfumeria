@@ -28,10 +28,11 @@ const channels: ContactChannel[] = [
     name: "Facebook",
     description:
       "Conoce nuestras promociones, novedades y mantente al día con la comunidad.",
-    cta: "Visitar página",
+    cta: "Seguir cuenta",
     url: CONTACT.facebook,
     icon: "/icons/facebook.svg",
   },
+  
 ];
 
 export default function ContactMethods() {

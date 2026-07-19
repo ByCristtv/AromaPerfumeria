@@ -1,5 +1,12 @@
-import AccountLoginCard from "@/components/account/AccountView";
+import type { Metadata } from "next";
+import LoginView from "@/components/account/LoginView";
 
-export default function AccountPage() {
-  return <AccountLoginCard />;
+export const metadata: Metadata = {
+  title: "Iniciar sesión — Aroma Perfumería",
+  description: "Accede a tu cuenta para gestionar tus pedidos.",
+  robots: { index: false, follow: false },
+};
+
+export default function LoginPage() {
+  return <LoginView />;
 }

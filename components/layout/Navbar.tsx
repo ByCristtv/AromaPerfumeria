@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useCartStore } from "@/store/useCartStore";
+import { useAuthUser } from "@/hooks/useAuthUser";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useIsMounted } from "@/hooks/useIsMounted";
 
@@ -16,15 +17,353 @@ const NAV_LINKS = [
 
 const SERIF = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
 
-function CartIcon() {
+/** Rotating brand promises in the utility bar — a luxury-retail convention. */
+const PROMISES = [
+  "Perfumes 100% originales",
+  "Envío a todo Costa Rica",
+  "Atención personalizada por WhatsApp",
+] as const;
+
+export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  const mounted = useIsMounted();
+  const isAdmin = useIsAdmin();
+  const { isAuthenticated, isLoading: authLoading } = useAuthUser();
+  const totalItems = useCartStore((state) =>
+    state.cart.reduce((acc, item) => acc + item.quantity, 0)
+  );
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Close the mobile drawer on route-ish interactions and lock body scroll while open.
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
+  const cartBadge = mounted ? totalItems : 0;
+
+  return (
+    <>
+      {/*
+        No entrance animation, by design.
+
+        The previous version initialised `isVisible=false` and flipped it inside
+        requestAnimationFrame. rAF does not run while `document.visibilityState`
+        is "hidden", so the primary navigation stayed at opacity:0 until the tab
+        was focused. Re-implementing the same fade in CSS has the identical flaw —
+        a hidden document freezes animation timelines at t=0.
+
+        A fixed site header is the one element that must never wait on anything to
+        become visible, and fading in the main nav costs perceived performance for
+        no real gain. It simply renders.
+      */}
+      <header
+        className="fixed top-0 left-0 w-full z-50"
+        style={{ fontFamily: SERIF }}
+      >
+
+        {/* ──────── Utility bar ──────── */}
+        <div
+          className={`overflow-hidden border-b border-[#c9a96e]/15 bg-black transition-all duration-500 ${
+            scrolled ? "max-h-0 opacity-0" : "max-h-10 opacity-100"
+          }`}
+        >
+          <div className="max-w-7xl mx-auto px-6 lg:px-10 h-9 flex items-center justify-center gap-8">
+            {PROMISES.map((promise, i) => (
+              <span
+                key={promise}
+                className={`text-[9px] tracking-[0.28em] uppercase text-white/40 whitespace-nowrap ${
+                  i === 0 ? "" : "hidden md:inline"
+                }`}
+              >
+                {promise}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* ──────── Main bar ──────── */}
+        <nav
+          className={`transition-all duration-500 ${
+            scrolled
+              ? "bg-black/95 backdrop-blur-md shadow-[0_2px_30px_rgba(0,0,0,0.6)]"
+              : "bg-black"
+          }`}
+        >
+          <div className="max-w-7xl mx-auto px-6 lg:px-10">
+            {/*
+              Three-column grid rather than flex-between: it lets the navigation
+              sit optically centred under the wordmark regardless of how wide the
+              right-hand actions get — the editorial layout luxury houses use,
+              and the main thing that stops this reading as a stock template.
+            */}
+            <div className="grid grid-cols-[auto_1fr_auto] items-center h-[72px] gap-6">
+              {/* Wordmark */}
+              <Link href="/" className="shrink-0 group">
+                <span className="flex flex-col leading-none select-none">
+                  <span className="text-white tracking-[0.35em] text-xl sm:text-2xl font-light transition-all duration-500 group-hover:tracking-[0.42em]">
+                    AROMA
+                  </span>
+                  <span className="text-[#c9a96e] text-[9px] tracking-[0.25em] font-light italic mt-0.5">
+                    Luxury Fragrance
+                  </span>
+                </span>
+              </Link>
+
+              {/* Centred navigation */}
+              <ul className="hidden lg:flex items-center justify-center gap-9">
+                {NAV_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <NavLink href={link.href} label={link.label} />
+                  </li>
+                ))}
+                {isAdmin && (
+                  <li>
+                    <NavLink href="/admin" label="Administrar" accent />
+                  </li>
+                )}
+              </ul>
+
+              {/* Actions */}
+              <div className="hidden lg:flex items-center gap-6 shrink-0">
+                <CartLink count={cartBadge} />
+                <span className="h-5 w-px bg-white/15" />
+                <AuthActions
+                  isAuthenticated={isAuthenticated}
+                  isLoading={authLoading}
+                />
+              </div>
+
+              {/* Mobile hamburger */}
+              <button
+                className="lg:hidden justify-self-end flex flex-col gap-1.5 p-2"
+                onClick={() => setMenuOpen((prev) => !prev)}
+                aria-label="Abrir menú"
+                aria-expanded={menuOpen}
+              >
+                <span className={`block h-px w-6 bg-white transition-all duration-300 ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
+                <span className={`block h-px w-6 bg-white transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`} />
+                <span className={`block h-px w-6 bg-white transition-all duration-300 ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+              </button>
+            </div>
+          </div>
+
+          {/* Hairline */}
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-[#c9a96e]/40 to-transparent" />
+        </nav>
+
+        {/* ──────── Mobile drawer ──────── */}
+        <div
+          className={`lg:hidden overflow-hidden bg-black/98 backdrop-blur-md transition-[max-height,opacity] duration-500 ease-in-out ${
+            menuOpen ? "max-h-[32rem] opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <div className="px-6 pt-5 pb-8">
+            <ul className="flex flex-col">
+              {NAV_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="block py-3.5 text-white/70 hover:text-white text-xs tracking-[0.22em] uppercase border-b border-white/5 transition-colors duration-200"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+              {isAdmin && (
+                <li>
+                  <Link
+                    href="/admin"
+                    onClick={() => setMenuOpen(false)}
+                    className="block py-3.5 text-[#c9a96e] text-xs tracking-[0.22em] uppercase border-b border-white/5"
+                  >
+                    Administrar
+                  </Link>
+                </li>
+              )}
+            </ul>
+
+            <div className="mt-7 flex flex-col gap-3">
+              {authLoading ? null : isAuthenticated ? (
+                <MobileAction
+                  href="/profile"
+                  label="Mi Perfil"
+                  onClick={() => setMenuOpen(false)}
+                  primary
+                />
+              ) : (
+                <>
+                  <MobileAction
+                    href="/login"
+                    label="Iniciar sesión"
+                    onClick={() => setMenuOpen(false)}
+                  />
+                  <MobileAction
+                    href="/register"
+                    label="Registrarse"
+                    onClick={() => setMenuOpen(false)}
+                    primary
+                  />
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Floating mobile cart */}
+      {mounted && (
+        <Link
+          href="/cart"
+          aria-label={`Carrito, ${cartBadge} artículos`}
+          className="fixed bottom-6 right-6 z-50 lg:hidden flex items-center justify-center w-14 h-14 rounded-full bg-[#c9a96e] shadow-[0_4px_20px_rgba(0,0,0,0.4)] active:scale-95 transition-transform duration-150"
+        >
+          <BagIcon className="w-6 h-6 text-black" />
+          {cartBadge > 0 && (
+            <span className="absolute -top-1 -right-1 bg-black text-[#c9a96e] text-[10px] font-bold min-w-[20px] h-5 px-1 rounded-full flex items-center justify-center">
+              {cartBadge}
+            </span>
+          )}
+        </Link>
+      )}
+    </>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Guests get a clear two-step entry (sign in / register) instead of the old
+ * ambiguous "MI CUENTA", which promised an account the visitor may not have.
+ * Renders nothing until auth resolves — a flash of "Iniciar sesión" for a
+ * signed-in user reads as being logged out, which is worse than a brief gap.
+ */
+function AuthActions({
+  isAuthenticated,
+  isLoading,
+}: {
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}) {
+  if (isLoading) {
+    return <span className="w-28 h-9" aria-hidden />;
+  }
+
+  if (isAuthenticated) {
+    return (
+      <Link
+        href="/profile"
+        className="px-5 py-2.5 border border-[#c9a96e]/60 text-[#c9a96e] text-[10px] tracking-[0.2em] uppercase transition-all duration-300 hover:bg-[#c9a96e] hover:text-black"
+      >
+        Mi Perfil
+      </Link>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-4">
+      <Link
+        href="/login"
+        className="text-[10px] tracking-[0.2em] uppercase text-white/60 hover:text-white transition-colors duration-300"
+      >
+        Iniciar sesión
+      </Link>
+      <Link
+        href="/register"
+        className="px-5 py-2.5 border border-[#c9a96e]/60 text-[#c9a96e] text-[10px] tracking-[0.2em] uppercase transition-all duration-300 hover:bg-[#c9a96e] hover:text-black"
+      >
+        Registrarse
+      </Link>
+    </div>
+  );
+}
+
+function NavLink({
+  href,
+  label,
+  accent,
+}: {
+  href: string;
+  label: string;
+  accent?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`relative text-[10px] tracking-[0.22em] uppercase transition-colors duration-300 group py-1 ${
+        accent ? "text-[#c9a96e]" : "text-white/65 hover:text-white"
+      }`}
+    >
+      {label}
+      <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-[#c9a96e] transition-all duration-300 group-hover:w-full" />
+    </Link>
+  );
+}
+
+function CartLink({ count }: { count: number }) {
+  return (
+    <Link
+      href="/cart"
+      aria-label={`Carrito, ${count} artículos`}
+      className="relative text-white/65 hover:text-white transition-colors duration-200"
+    >
+      <BagIcon className="w-5 h-5" />
+      {count > 0 && (
+        <span className="absolute -top-1.5 -right-2 bg-[#c9a96e] text-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+          {count}
+        </span>
+      )}
+    </Link>
+  );
+}
+
+function MobileAction({
+  href,
+  label,
+  onClick,
+  primary,
+}: {
+  href: string;
+  label: string;
+  onClick: () => void;
+  primary?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className={`w-full text-center py-3 text-[10px] tracking-[0.22em] uppercase transition-all duration-300 ${
+        primary
+          ? "bg-[#c9a96e] text-black hover:bg-[#c9a96e]/90"
+          : "border border-white/20 text-white/75 hover:border-[#c9a96e]/60 hover:text-[#c9a96e]"
+      }`}
+    >
+      {label}
+    </Link>
+  );
+}
+
+function BagIcon({ className }: { className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      className="w-4.5 h-4.5"
+      className={className}
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
       strokeWidth={1.5}
+      aria-hidden="true"
     >
       <path
         strokeLinecap="round"
@@ -32,216 +371,5 @@ function CartIcon() {
         d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"
       />
     </svg>
-  );
-}
-
-function NavLink({ href, label }: { href: string; label: string }) {
-  return (
-    <Link
-      href={href}
-      className="relative text-[11px] tracking-[0.2em] uppercase text-white/70 hover:text-white transition-colors duration-300 group py-1"
-      style={{ fontFamily: SERIF, letterSpacing: "0.15em" }}
-    >
-      {label}
-      <span className="absolute bottom-0 left-0 h-px w-0 bg-[#c9a96e] transition-all duration-300 group-hover:w-full" />
-    </Link>
-  );
-}
-
-export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-
-  const mounted = useIsMounted();
-  const isAdmin = useIsAdmin();
-  const totalItems = useCartStore((state) =>
-    state.cart.reduce((acc, item) => acc + item.quantity, 0)
-  );
-
-  // Entrance animation: fade in on next frame so the transition runs.
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => setIsVisible(true));
-    return () => cancelAnimationFrame(frame);
-  }, []);
-
-  // Sticky-on-scroll behavior.
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const cartBadge = mounted ? totalItems : 0;
-
-  return (
-    <>
-    <nav
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ease-out ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-3"
-      } ${
-        scrolled
-          ? "bg-black/95 backdrop-blur-md shadow-[0_2px_30px_rgba(0,0,0,0.6)]"
-          : "bg-black"
-      }`}
-    >
-      {/* Top accent line */}
-      <div className="h-px w-full bg-linear-to-r from-transparent via-[#c9a96e] to-transparent opacity-70" />
-
-      <div className="max-w-7xl mx-auto px-6 lg:px-10">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link href="/" className="shrink-0 group">
-            <div className="flex flex-col leading-none select-none">
-              <span
-                className="text-white tracking-[0.35em] text-2xl font-light transition-all duration-300 group-hover:tracking-[0.45em]"
-                style={{ fontFamily: SERIF }}
-              >
-                AROMA
-              </span>
-              <span
-                className="text-[#c9a96e] text-[10px] tracking-[0.25em] font-light italic -mt-0.5 transition-opacity duration-300 group-hover:opacity-80"
-                style={{ fontFamily: SERIF }}
-              >
-                Luxury Fragrance
-              </span>
-            </div>
-          </Link>
-
-          {/* Desktop Nav Links */}
-          <ul className="hidden md:flex items-center gap-8">
-            {NAV_LINKS.map((link) => (
-              <li key={link.href}>
-                <NavLink href={link.href} label={link.label} />
-              </li>
-            ))}
-            {isAdmin && (
-              <li>
-                <NavLink href="/admin" label="Administrar" />
-              </li>
-            )}
-          </ul>
-
-          {/* Right Actions */}
-          <div className="hidden md:flex items-center gap-5">
-            <span
-              className="text-white/60 text-[10px] tracking-[0.15em] uppercase"
-              style={{ fontFamily: SERIF }}
-            >
-              Carrito
-            </span>
-            <Link
-              href="/cart"
-              aria-label="Cart"
-              className="relative text-white/60 hover:text-white transition-colors duration-200"
-            >
-              <CartIcon />
-              <span className="absolute -top-1.5 -right-1.5 bg-[#c9a96e] text-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                {cartBadge}
-              </span>
-            </Link>
-
-            <Link
-              href="/login"
-              className="ml-2 px-5 py-2 border font-semibold border-[#c9a96e]/60 text-[#c9a96e] text-[10px] tracking-[0.2em] uppercase hover:bg-[#c9a96e] hover:text-black transition-all duration-300"
-              style={{ fontFamily: SERIF }}
-            >
-              MI CUENTA
-            </Link>
-          </div>
-
-          {/* Mobile Hamburger */}
-          <button
-            className="md:hidden flex flex-col gap-1.25 p-2 group"
-            onClick={() => setMenuOpen((prev) => !prev)}
-            aria-label="Toggle menu"
-          >
-            <span className={`block h-px w-6 bg-white transition-all duration-300 ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
-            <span className={`block h-px w-6 bg-white transition-all duration-300 ${menuOpen ? "opacity-0 scale-x-0" : ""}`} />
-            <span className={`block h-px w-6 bg-white transition-all duration-300 ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
-          </button>
-        </div>
-      </div>
-
-      {/* Bottom accent line */}
-      <div className="h-px w-full bg-linear-to-r from-transparent via-white/10 to-transparent" />
-
-      {/* Mobile Menu */}
-      <div
-        className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out ${
-          menuOpen ? "max-h-100 opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <div className="bg-black/98 border-t border-white/5 px-6 pt-4 pb-8">
-          <ul className="flex flex-col gap-1">
-            {NAV_LINKS.map((link, i) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className="block py-3 text-white/70 hover:text-white text-sm tracking-[0.15em] uppercase border-b border-white/5 hover:border-[#c9a96e]/40 transition-all duration-200"
-                  style={{ fontFamily: SERIF, transitionDelay: `${i * 40}ms` }}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <div className="flex items-center gap-4 mt-6">
-            <span className="text-white/50">Carrito</span>
-
-            <Link
-              href="/cart"
-              aria-label="Cart"
-              className="relative text-white/50 hover:text-white transition-colors"
-              onClick={() => setMenuOpen(false)}
-            >
-              <CartIcon />
-              <span className="absolute -top-1.5 -right-1.5 bg-[#c9a96e] text-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                {cartBadge}
-              </span>
-            </Link>
-            <Link
-              href="/login"
-              className="ml-auto px-5 py-2 border border-[#c9a96e]/60 text-[#c9a96e] text-[10px] tracking-[0.2em] uppercase hover:bg-[#c9a96e] hover:text-black transition-all duration-300"
-              style={{ fontFamily: SERIF }}
-            >
-              MI CUENTA
-            </Link>
-          </div>
-        </div>
-      </div>
-    </nav>
-
-    {/* Floating mobile cart button — bottom-right, visible only on small screens */}
-    {mounted && (
-      <Link
-        href="/cart"
-        aria-label="Carrito"
-        className="fixed bottom-6 right-6 z-50 md:hidden flex items-center justify-center w-14 h-14 rounded-full bg-[#c9a96e] shadow-[0_4px_20px_rgba(0,0,0,0.4)] active:scale-95 transition-transform duration-150"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-6 h-6 text-black"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={1.8}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"
-          />
-        </svg>
-        {cartBadge > 0 && (
-          <span className="absolute -top-1 -right-1 bg-black text-[#c9a96e] text-[10px] font-bold min-w-[20px] h-5 px-1 rounded-full flex items-center justify-center">
-            {cartBadge}
-          </span>
-        )}
-      </Link>
-    )}
-    </>
   );
 }

@@ -27,6 +27,44 @@ html {
   scroll-behavior: smooth;
 }
 
+/*
+ * ── Horizontal overflow guard (real mobile devices) ──────────────────────────
+ *
+ * Why this doesn't reproduce in DevTools responsive mode: the emulator lays out
+ * against a clean viewport, while a real Android Chrome viewport is affected by
+ * the dynamic URL bar, a physically narrower visual viewport, and — critically —
+ * horizontal *overscroll*, which lets the page sway even when nothing genuinely
+ * overflows. The two rules below address those as separate problems.
+ *
+ * `overflow-x: clip` NOT `hidden` — this is the part that matters:
+ *   `hidden` turns the element into a scroll container, which silently breaks
+ *   every `position: sticky` descendant and can hijack `scroll-behavior`.
+ *   `clip` visually clips without creating a scroll container, so the sticky
+ *   sidebars (admin order detail, order summary) and the fixed Navbar keep
+ *   working. The `hidden` line first is a fallback for engines without `clip`.
+ *
+ * `overscroll-behavior-x: none` kills the elastic side-to-side sway itself —
+ * that swipe-drag feel is overscroll, not layout overflow, and no amount of
+ * width fixing removes it.
+ */
+html,
+body {
+  overflow-x: hidden; /* fallback: pre-Safari 16 / older Chromium */
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+  /* Belt-and-braces: nothing may make the document itself wider than the screen. */
+  max-width: 100%;
+}
+
+/*
+ * Fixed/absolute decorative elements are the usual culprits behind the last few
+ * px of overflow. Constrain the layout box, not the individual offenders.
+ */
+#__next,
+body > * {
+  min-width: 0;
+}
+
 @layer components {
   .input-field-custom {
     @apply w-full px-4 py-3 bg-[#1a1a1a] border border-[#c9a96e]/30 rounded-lg text-[#ececec] transition-all duration-200 focus:border-[#c9a96e] focus:outline-none focus:ring-1 focus:ring-[#c9a96e];

@@ -1,7 +1,12 @@
 import { getOnvoEnv } from "./env";
 import type {
+  OnvoCancelPaymentIntentInput,
   OnvoCheckoutSession,
   OnvoCreateCheckoutSessionInput,
+  OnvoCreateCustomerInput,
+  OnvoCreatePaymentIntentInput,
+  OnvoCustomer,
+  OnvoPaymentIntent,
 } from "./types";
 
 /**
@@ -68,4 +73,64 @@ export async function createCheckoutSession(
     method: "POST",
     body: JSON.stringify(input),
   });
+}
+
+/**
+ * Create an Onvo customer for the embedded (Web SDK) checkout flow.
+ *
+ * Onvo has no reliable "find by email" lookup (the list endpoint only supports
+ * cursor pagination + createdAt filters), so we create a fresh customer per
+ * checkout and attach it to the payment intent. See lib/onvo docs / the
+ * checkout migration plan for the rationale.
+ */
+export async function createOnvoCustomer(
+  input: OnvoCreateCustomerInput
+): Promise<OnvoCustomer> {
+  return onvoRequest<OnvoCustomer>("/customers", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+/**
+ * Create a one-time Payment Intent. Returned `id` is passed to the Web SDK
+ * (`onvo.pay({ paymentIntentId })`) which renders the card fields and submits
+ * the charge. Capture is automatic (we omit captureMethod) so the payment
+ * settles immediately — matching the previous hosted-checkout behavior.
+ *
+ * See https://docs.onvopay.com — POST /v1/payment-intents.
+ */
+export async function createPaymentIntent(
+  input: OnvoCreatePaymentIntentInput
+): Promise<OnvoPaymentIntent> {
+  return onvoRequest<OnvoPaymentIntent>("/payment-intents", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+/**
+ * Cancel a payment intent that will never be confirmed — the order's total moved
+ * (so it needs a fresh intent), the customer switched to SINPE, or the order was
+ * cancelled outright.
+ *
+ * Callers MUST treat this as best-effort: see releasePayment() in
+ * lib/checkout/payments. A stranded unconfirmed intent is harmless (it is never
+ * charged, and the webhook correlates via metadata.orderId, not the intent id),
+ * whereas letting an Onvo hiccup here block the customer from finishing their
+ * purchase is not.
+ *
+ * See https://docs.onvopay.com — POST /v1/payment-intents/{id}/cancel.
+ */
+export async function cancelPaymentIntent(
+  paymentIntentId: string,
+  input: OnvoCancelPaymentIntentInput = {}
+): Promise<OnvoPaymentIntent> {
+  return onvoRequest<OnvoPaymentIntent>(
+    `/payment-intents/${encodeURIComponent(paymentIntentId)}/cancel`,
+    {
+      method: "POST",
+      body: JSON.stringify(input),
+    }
+  );
 }

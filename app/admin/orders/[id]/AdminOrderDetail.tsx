@@ -174,12 +174,40 @@ export default function AdminOrderDetail({ order }: Props) {
 
   // ──────── Derived button visibility ────────
 
+  // Strict chronological state machine: payment is recorded BEFORE fulfilment
+  // advances. This is not a stylistic choice — mark_order_paid() raises
+  // "Order is in order_status=%; cannot mark as paid" once order_status leaves
+  // 'pending', so letting an admin confirm receipt first strands the order as
+  // permanently unpayable through the UI *and* through the RPC.
+  const isPaid = order.payment_status === "paid";
+
+  // Mirrors mark_order_paid()'s guard after migration 20260718000100: recording
+  // payment is allowed while the order is non-terminal, because money arriving is
+  // orthogonal to fulfilment progress.
   const canMarkPaid =
-    order.payment_status === "pending" && order.order_status === "pending";
-  const canConfirm = order.order_status === "pending";
+    order.payment_status === "pending" &&
+    (order.order_status === "pending" || order.order_status === "received");
+
+  // Forward-only guard: confirming receipt still requires payment first, so the
+  // normal flow stays chronological and orders don't drift out of order.
+  const canConfirm = order.order_status === "pending" && isPaid;
   const canShip = order.order_status === "received";
   const canDeny =
     order.order_status !== "shipped" && order.order_status !== "denied";
+
+  // Confirmation is gated purely by the missing payment — say so instead of
+  // rendering nothing and leaving the admin guessing.
+  const awaitingPaymentBeforeConfirm =
+    order.order_status === "pending" && !isPaid;
+
+  // Shipped + unpaid is the one unrecoverable combination: the RPC refuses it
+  // (deliberately — that's a dispute, not a data-entry slip), so point the admin
+  // at the manual fix rather than silently offering no actions.
+  const isStrandedUnpaid =
+    !isPaid &&
+    order.payment_status !== "failed" &&
+    order.payment_status !== "refunded" &&
+    order.order_status === "shipped";
 
   return (
     <AdminContainer width="narrow">
@@ -354,6 +382,12 @@ export default function AdminOrderDetail({ order }: Props) {
                     variant="primary"
                   />
                 )}
+                {awaitingPaymentBeforeConfirm && (
+                  <p className="text-xs text-[#a5a5a5] leading-relaxed border-l-2 border-[#c9a96e]/40 pl-3 py-1">
+                    Registra el pago antes de confirmar el pedido. Una vez
+                    confirmado, el cobro ya no puede marcarse como pagado.
+                  </p>
+                )}
                 {canDeny && (
                   <ActionButton
                     label="Cancelar pedido"
@@ -361,6 +395,15 @@ export default function AdminOrderDetail({ order }: Props) {
                     disabled={isPending}
                     variant="danger"
                   />
+                )}
+                {isStrandedUnpaid && (
+                  <p className="text-xs text-amber-200/90 leading-relaxed border-l-2 border-amber-400/60 pl-3 py-1">
+                    Este pedido se envió sin registrar el pago. Por seguridad no
+                    puede marcarse como pagado desde aquí — verifica si realmente
+                    se cobró y corrige{" "}
+                    <span className="font-mono">payment_status</span> en la base
+                    de datos.
+                  </p>
                 )}
                 {!canMarkPaid && !canConfirm && !canShip && !canDeny && (
                   <p className="text-xs text-[#a5a5a5] py-2">

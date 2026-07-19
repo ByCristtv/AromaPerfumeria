@@ -67,6 +67,14 @@ const shippingSchema = z.object({
 // Form schema (what react-hook-form validates)
 // ─────────────────────────────────────────────────────────────────────────────
 
+/**
+ * How the customer wants to pay. Values match PaymentMethodId in
+ * lib/checkout/types.ts — the registry maps each to a processor.
+ */
+export const paymentMethodSchema = z.enum(["card", "sinpe"], {
+  message: "Selecciona un método de pago",
+});
+
 export const checkoutFormSchema = z.object({
   customer: customerSchema,
   shipping: shippingSchema,
@@ -74,6 +82,7 @@ export const checkoutFormSchema = z.object({
     .string()
     .trim()
     .max(500, { message: "Notas demasiado largas" }),
+  payment_method: paymentMethodSchema,
 });
 
 export type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
@@ -113,6 +122,22 @@ const shippingPayloadSchema = shippingSchema.extend({
     .max(100),
 });
 
+/**
+ * Reference to this checkout's live pending order, echoed back by the client on
+ * every submit after the first.
+ *
+ * Its presence is what turns a submit into an UPDATE instead of a new order. The
+ * server re-verifies `order_token` (an HMAC of order_id) before touching
+ * anything — a client-supplied order_id is never trusted on its own.
+ */
+const checkoutSessionSchema = z.object({
+  order_id: z.string().uuid({ message: "session.order_id debe ser un UUID válido" }),
+  order_token: z
+    .string()
+    .min(1, { message: "session.order_token es requerido" })
+    .max(200),
+});
+
 export const checkoutPayloadSchema = z.object({
   customer: customerSchema,
   shipping: shippingPayloadSchema,
@@ -125,9 +150,14 @@ export const checkoutPayloadSchema = z.object({
     .trim()
     .max(500, { message: "Notas demasiado largas" })
     .optional(),
+  payment_method: paymentMethodSchema,
+  session: checkoutSessionSchema.optional(),
 });
 
 export type CheckoutPayloadValidated = z.infer<typeof checkoutPayloadSchema>;
+
+/** Customer-selected payment method. Mirrors PaymentMethodId (lib/checkout/types.ts). */
+export type PaymentMethod = z.infer<typeof paymentMethodSchema>;
 
 /**
  * Sensible defaults for `useForm({ defaultValues })`. All strings (never
@@ -137,6 +167,9 @@ export const checkoutFormDefaults: CheckoutFormValues = {
   customer: { name: "", email: "", phone: "" },
   shipping: { address: "", canton_code: "", district: "", reference: "" },
   notes: "",
+  // Card is the default: it completes in-page, whereas SINPE hands the customer a
+  // manual transfer + a wait for admin validation.
+  payment_method: "card",
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -168,6 +201,15 @@ export interface CheckoutPayload {
     quantity: number;
   }>;
   notes?: string;
+  payment_method: PaymentMethod;
+  /**
+   * Omitted on the first submit; set once the checkout has a pending order, which
+   * makes every later submit update that order instead of creating another.
+   */
+  session?: {
+    order_id: string;
+    order_token: string;
+  };
 }
 
 /**
@@ -185,7 +227,8 @@ export interface CheckoutPayload {
  */
 export function buildCheckoutPayload(
   formValues: CheckoutFormValues,
-  cartItems: CartLineItem[]
+  cartItems: CartLineItem[],
+  session?: CheckoutPayload["session"]
 ): CheckoutPayload {
   const canton = findCanton(formValues.shipping.canton_code);
   if (!canton) {
@@ -221,5 +264,7 @@ export function buildCheckoutPayload(
       quantity: item.quantity,
     })),
     notes: optional(formValues.notes),
+    payment_method: formValues.payment_method,
+    ...(session && { session }),
   };
 }
