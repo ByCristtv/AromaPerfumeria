@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { useReveal } from "@/hooks/useReveal";
 import { CreditCard, Smartphone, Sparkles } from "lucide-react";
 import ImagePlaceholder from "./ImagePlaceholder";
-import { fadeUp, serif, stagger } from "./styles";
+import { serif } from "./styles";
 
 const notes = [
   {
@@ -21,14 +21,13 @@ const notes = [
 
 /** Closing celebration card that reinforces confidence and the luxury feel. */
 export default function SuccessCard() {
+  const ref = useReveal<HTMLElement>();
+
   return (
-    <motion.section
-      variants={stagger}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, margin: "-80px" }}
+    <section
+      ref={ref}
       aria-labelledby="success-title"
-      className="relative overflow-hidden rounded-[2rem] border border-[#c9a96e]/25 bg-gradient-to-b from-[#121110] to-[#0a0a0a] p-7 shadow-[0_60px_140px_-60px_rgba(201,169,110,0.4)] sm:p-12"
+      className="reveal relative overflow-hidden rounded-[2rem] border border-[#c9a96e]/25 bg-gradient-to-b from-[#121110] to-[#0a0a0a] p-7 shadow-[0_60px_140px_-60px_rgba(201,169,110,0.4)] sm:p-12"
     >
       {/* Ambient gold aura */}
       <div
@@ -37,7 +36,7 @@ export default function SuccessCard() {
       />
 
       <div className="relative grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        <motion.div variants={fadeUp} className="order-2 lg:order-1">
+        <div className="reveal reveal-d1 order-2 lg:order-1">
           <span className="mb-7 inline-flex h-16 w-16 items-center justify-center rounded-full border border-[#c9a96e]/40 bg-[#c9a96e]/10 text-[#c9a96e]">
             <Sparkles size={26} strokeWidth={1.3} aria-hidden="true" />
           </span>
@@ -98,17 +97,17 @@ export default function SuccessCard() {
           >
             Explorar colección
           </Link>
-        </motion.div>
+        </div>
 
-        <motion.div variants={fadeUp} className="order-1 lg:order-2">
+        <div className="reveal reveal-d2 order-1 lg:order-2">
           <ImagePlaceholder
             number={11}
             showBadge={false}
             alt="Empaque de fragancia de lujo o ilustración de pedido completado"
             label="Empaque premium / Pedido completado"
           />
-        </motion.div>
+        </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import AnalyticsDashboard from "./AnalyticsDashboard";
 
 export const metadata: Metadata = {
-  title: "Dashboard — Admin · Aroma Perfumería",
+  title: "Dashboard — Admin",
   description: "Métricas de ventas e inventario.",
 };
 

@@ -62,7 +62,7 @@ export default function ProductDetailView({
     <>
       <AmbientBackground />
 
-      <main className="relative pt-24 pb-24 sm:pt-28 sm:pb-32">
+      <div className="relative pt-24 pb-24 sm:pt-28 sm:pb-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
           <nav
@@ -128,7 +128,7 @@ export default function ProductDetailView({
             </Reveal>
           )}
         </div>
-      </main>
+      </div>
 
       <StickyPurchaseBar
         productName={product.name}

@@ -1,6 +1,21 @@
 @import "tailwindcss";
 
 :root {
+  /*
+   * This is a light storefront (white content, black navbar). It is NOT a
+   * dark-themed site, so we pin the color scheme to light.
+   *
+   * Why this matters on real Android hardware: previously a
+   * `@media (prefers-color-scheme: dark)` block flipped the root background to
+   * #0a0a0a. On a phone in dark mode, any area the browser paints with the root
+   * colour — the strip exposed while the URL bar collapses (dynamic viewport),
+   * and elastic overscroll — showed up as a BLACK FLASH behind the light page.
+   * That is the "black block near the bottom during fast scroll".
+   *
+   * `color-scheme: light` also makes the browser's own overscroll/root fill
+   * white, so there is no dark gap even for a single frame.
+   */
+  color-scheme: light;
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -9,13 +24,6 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: "Times New Roman", Times, serif;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
@@ -96,6 +104,125 @@ body > * {
     }
   }
 
+  /*
+   * ── Scroll reveal (replaces per-element Framer Motion) ──────────────────────
+   *
+   * The "Cómo Comprar" journey previously mounted ~9 motion components per step
+   * card across 12 cards — 100+ independent viewport observers and JS-driven
+   * animation loops, which is what made low-end Android devices stutter.
+   *
+   * These two classes plus ONE shared IntersectionObserver (hooks/useReveal.ts)
+   * do the same job. Only `opacity` and `transform` are animated, so the whole
+   * effect stays on the compositor and never triggers layout.
+   */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /*
+   * A revealed element also releases any `.reveal` descendants. This is what
+   * makes the stagger work with a single observed target per card: the card is
+   * observed, and its children ride along, offset only by transition-delay.
+   */
+  .reveal-in,
+  .reveal-in .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Stagger without extra observers — the parent reveals, children just delay. */
+  .reveal-d1 { transition-delay: 70ms; }
+  .reveal-d2 { transition-delay: 140ms; }
+  .reveal-d3 { transition-delay: 210ms; }
+  .reveal-d4 { transition-delay: 280ms; }
+
+  /*
+   * Gold shimmer for empty media slots. Was an `Infinity`-repeat Framer
+   * animation running a rAF loop per placeholder — with the mobile flow's empty
+   * placeholders that meant a dozen concurrent JS loops. As a CSS animation on
+   * `transform` alone it is compositor-driven and browsers throttle it when
+   * off-screen.
+   */
+  @keyframes shimmerSweep {
+    0%   { transform: translateX(-130%); }
+    100% { transform: translateX(330%); }
+  }
+
+  .shimmer-sweep {
+    animation: shimmerSweep 4.2s ease-in-out infinite;
+  }
+
+  /*
+   * Timeline connector between step cards. Was two Framer nodes with two
+   * viewport observers each, repeated for every gap — 20+ observers for pure
+   * decoration. Both halves now ride one parent reveal.
+   */
+  .connector-line {
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .connector-dot {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition:
+      opacity 900ms ease-in-out 200ms,
+      transform 900ms ease-in-out 200ms;
+  }
+
+  .reveal-in .connector-line {
+    transform: scaleY(1);
+  }
+
+  .reveal-in .connector-dot {
+    opacity: 1;
+    transform: translateY(10px);
+  }
+
+  /* Hover lift only where hovering actually exists — pure overhead on touch. */
+  @media (hover: hover) {
+    .hover-lift {
+      transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .hover-lift:hover {
+      transform: translateY(-6px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /*
+     * Critical: do NOT leave `.reveal` hidden here. Content must never depend on
+     * an animation running to become visible.
+     */
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .shimmer-sweep {
+      animation: none;
+    }
+    .hover-lift,
+    .hover-lift:hover {
+      transition: none;
+      transform: none;
+    }
+    .connector-line {
+      transform: scaleY(1);
+      transition: none;
+    }
+    .connector-dot {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
   @keyframes fadeUp {
     from {
       opacity: 0;
@@ -109,23 +236,55 @@ body > * {
 
   .animate-fadeUp {
     animation: fadeUp 500ms cubic-bezier(.22,1,.36,1) forwards;
-    will-change: transform, opacity;
   }
-  /* Reveal scroll/entry animations */
-  .reveal {
+
+  /*
+   * ── Section reveal for <ui/Reveal> (About page) ─────────────────────────────
+   *
+   * A SEPARATE system from the `.reveal` / `.reveal-in` classes above. It used to
+   * also be named `.reveal`, which was a real bug: two `.reveal { opacity: 0 }`
+   * rules existed and this (later) one overrode the How-to-Buy release rule
+   * `.reveal-in`, leaving that whole page's content stuck invisible. Namespacing
+   * it as `.reveal-fx` removes the collision — each system now owns its own class.
+   */
+  .reveal-fx {
     opacity: 0;
     transform: translateY(18px);
     transition: opacity 700ms cubic-bezier(.22,1,.36,1), transform 700ms cubic-bezier(.22,1,.36,1);
-    will-change: transform, opacity;
   }
 
-  .reveal--visible {
+  .reveal-fx--visible {
     opacity: 1;
     transform: translateY(0);
   }
 
-  /* Optional directional helpers */
-  .reveal--left { transform: translateX(-14px); }
-  .reveal--right { transform: translateX(14px); }
-  .reveal--fade { transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    /* Never let content depend on the animation to become visible. */
+    .reveal-fx {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /*
+   * ── Floating cart ⇄ StickyPurchaseBar coordination ──────────────────────────
+   *
+   * The mobile floating cart (Navbar) sits bottom-right; the product page's
+   * StickyPurchaseBar is a full-width bar pinned to the same bottom edge, so its
+   * "Agregar" button collided with the cart. StickyPurchaseBar toggles
+   * `.purchase-bar-open` on <html> while it is visible; the cart lifts clear of
+   * the bar instead of overlapping it. Decoupled via a root class so the two
+   * components need no shared React state. Only `bottom` on one small element,
+   * toggled on visibility (not per frame), so the cost is negligible.
+   */
+  .floating-cart {
+    transition:
+      bottom 300ms cubic-bezier(.22, 1, .36, 1),
+      transform 150ms ease;
+  }
+
+  .purchase-bar-open .floating-cart {
+    bottom: 6.75rem;
+  }
 }

@@ -1,4 +1,14 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
+
+/**
+ * Keeps the whole admin panel out of search results. Defence in depth alongside
+ * the robots.txt disallow — a crawler that ignores robots.txt still sees this,
+ * and it applies to every nested /admin route automatically.
+ */
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 /**
  * Shared admin layout.

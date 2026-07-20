@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import AdminOrderCreateView from "./AdminOrderCreateView";
 
 export const metadata: Metadata = {
-  title: "Crear orden — Admin · Aroma Perfumería",
+  title: "Crear orden — Admin",
   description: "Crear un pedido manual para un cliente.",
 };
 

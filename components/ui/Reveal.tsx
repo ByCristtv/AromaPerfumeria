@@ -50,7 +50,7 @@ export default function Reveal({
   }, [rootMargin, threshold, once]);
 
   return (
-    <div ref={ref} className={`reveal ${visible ? 'reveal--visible' : ''} ${className}`}>
+    <div ref={ref} className={`reveal-fx ${visible ? 'reveal-fx--visible' : ''} ${className}`}>
       {children}
     </div>
   );

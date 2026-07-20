@@ -1,123 +1,21 @@
 "use client";
 
-import React from "react";
-import {
-  ClipboardList,
-  LayoutGrid,
-  ListFilter,
-  LogIn,
-  MapPin,
-  ShoppingBag,
-  ShoppingCart,
-  SprayCan,
-  UserRound,
-  Wallet,
-} from "lucide-react";
+import React, { useMemo, useState, useSyncExternalStore } from "react";
 import HowToBuyHero from "./HowToBuyHero";
 import SectionHeading from "./SectionHeading";
-import StepCard, { type Step } from "./StepCard";
+import StepCard from "./StepCard";
 import StepConnector from "./StepConnector";
 import SuccessCard from "./SuccessCard";
+import ViewToggle from "./ViewToggle";
+import {
+  MAIN_STEPS,
+  OPTIONAL_STEPS,
+  resolveSteps,
+  type FlowView,
+  type ResolvedStep,
+} from "./steps";
 
-const optionalSteps: Step[] = [
-  {
-    number: 1,
-    title: "Inicia sesión en tu cuenta",
-    description:
-      'Para una experiencia más rápida y personalizada, haz clic en "Mi Cuenta", ubicado en la esquina superior derecha del sitio.',
-    icon: UserRound,
-    imageSrc: "/images/howtobuy/1.png",
-    imageAlt: 'Botón "Mi Cuenta" resaltado en la barra superior.',
-
-  },
-  {
-    number: 2,
-    title: "Continúa con Google",
-    description:
-      'Selecciona "Continuar con Google" y elige la cuenta que deseas usar. Iniciar sesión te permite dar seguimiento a tus pedidos y disfrutar de un checkout más fluido.',
-    icon: LogIn,
-    imageSrc: "/images/howtobuy/2.png",
-    imageAlt: "Pantalla de inicio de sesión con Google.",
-  },
-];
-
-const mainSteps: Step[] = [
-  {
-    number: 3,
-    title: "Explora el catálogo",
-    description:
-      'Desde la página principal, haz clic en "Ver Catálogo" para descubrir nuestra colección completa de fragancias.',
-    icon: LayoutGrid,
-    imageSrc: "/images/howtobuy/3.png",
-    imageAlt: 'Página de inicio con el botón "Ver Catálogo" resaltado.',
-  },
-  {
-    number: 4,
-    title: "Encuentra tu fragancia ideal",
-    description:
-      "Usa la barra de búsqueda para localizar un perfume al instante, o afina tu búsqueda con filtros por categoría, tipo de producto y orden por precio o nombre.",
-    icon: ListFilter,
-    imageSrc: "/images/howtobuy/4.png",
-    imageAlt: "Página de catálogo mostrando búsqueda y filtros.",
-  },
-  {
-    number: 5,
-    title: "Elige tu presentación",
-    description:
-      "Al encontrar una fragancia, puedes agregarla directamente al carrito o abrir su página para ver información detallada y elegir el formato que mejor se ajuste a ti: frascos completos, decants u otros tamaños disponibles.",
-    icon: SprayCan,
-    imageSrc: "/images/howtobuy/5.png",
-    imageAlt: "Página de producto mostrando variantes y tamaños.",
-  },
-  {
-    number: 6,
-    title: "Abre tu carrito",
-    description:
-      "Cuando estés listo, haz clic en el ícono del carrito ubicado en la esquina superior derecha de la página.",
-    icon: ShoppingCart,
-    imageSrc: "/images/howtobuy/6.png",
-    imageAlt: "Ícono del carrito de compras resaltado.",
-  },
-  {
-    number: 7,
-    title: "Revisa y gestiona tu pedido",
-    description:
-      "Ajusta cantidades, revisa los productos seleccionados o elimina artículos antes de continuar al pago.",
-    icon: ClipboardList,
-    imageSrc: "/images/howtobuy/7.png",
-    imageAlt: "Página del carrito con productos y controles de cantidad.",
-  },
-  {
-    number: 8,
-    title: "Procede al pago",
-    description:
-      'Haz clic en el botón "Pagar" ubicado en el resumen de tu orden.',
-    icon: ShoppingBag,
-    imageSrc: "/images/howtobuy/8.png",
-    imageAlt: 'Botón de "Pagar" resaltado en el resumen del pedido.',
-  },
-  {
-    number: 9,
-    title: "Ingresa tus datos de envío",
-    description:
-      "Completa el formulario con tu información personal y dirección de entrega para asegurar que tu pedido llegue a ti de forma segura.",
-    icon: MapPin,
-    imageSrc: "/images/howtobuy/9.png",
-    imageAlt: "Formulario de checkout con los datos de envío.",
-  },
-  {
-    number: 10,
-    title: "Completa tu pago de forma segura",
-    description:
-      "En la página de pago de ONVO, ingresa los datos de tu tarjeta o selecciona SINPE Móvil como método de pago preferido.",
-    note: "Si pagas por SINPE Móvil, envía tu comprobante al número que aparece en pantalla para que nuestro equipo pueda verificar tu pago.",
-    icon: Wallet,
-    imageSrc: "/images/howtobuy/10.png",
-    imageAlt: "Página de pago de ONVO con la opción de SINPE Móvil.",
-  },
-];
-
-function StepList({ steps }: { steps: Step[] }) {
+function StepList({ steps }: { steps: ResolvedStep[] }) {
   return (
     <div className="mt-16 flex flex-col">
       {steps.map((step, i) => (
@@ -132,8 +30,32 @@ function StepList({ steps }: { steps: Step[] }) {
 
 /** Full premium onboarding journey for "Cómo Comprar". */
 export default function HowToBuyExperience() {
+  // Default to the journey matching the device the reader is actually on — a
+  // phone visitor shouldn't have to switch to see their own screenshots.
+  //
+  // Read through useSyncExternalStore rather than an effect: matchMedia IS an
+  // external store, and this keeps the default out of render-cascading setState.
+  // The subscribe callback is intentionally inert, so a resize/rotation never
+  // yanks the flow out from under someone mid-scroll — this is an initial
+  // preference, not a responsive layout.
+  const prefersMobileFlow = useSyncExternalStore(
+    () => () => {},
+    () => window.matchMedia("(max-width: 1023px)").matches,
+    () => false // server render: assume desktop
+  );
+
+  // An explicit choice always beats the device default.
+  const [override, setOverride] = useState<FlowView | null>(null);
+  const view: FlowView = override ?? (prefersMobileFlow ? "mobile" : "desktop");
+
+  const optionalSteps = useMemo(
+    () => resolveSteps(OPTIONAL_STEPS, view),
+    [view]
+  );
+  const mainSteps = useMemo(() => resolveSteps(MAIN_STEPS, view), [view]);
+
   return (
-    <main className="relative bg-[#0a0a0a]">
+    <div className="relative bg-[#0a0a0a]">
       {/* Subtle vertical texture behind the whole journey */}
       <div
         aria-hidden="true"
@@ -144,6 +66,14 @@ export default function HowToBuyExperience() {
         <HowToBuyHero />
 
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          {/* ──────── Device flow switch ──────── */}
+          <div className="pt-10 md:pt-14">
+            <p className="mb-4 text-center text-xs uppercase tracking-[0.3em] text-white/35">
+              ¿Cómo estás navegando?
+            </p>
+            <ViewToggle value={view} onChange={setOverride} />
+          </div>
+
           {/* Optional but recommended */}
           <section
             aria-labelledby="optional-heading"
@@ -189,6 +119,6 @@ export default function HowToBuyExperience() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

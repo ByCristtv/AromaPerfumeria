@@ -3,7 +3,7 @@ const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
 /** Luxury skeleton shown while a catalog page is fetched server-side. */
 export default function CatalogLoading() {
   return (
-    <main className="relative min-h-screen bg-[#0a0a0a]">
+    <div className="relative min-h-screen bg-[#0a0a0a]">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-linear-to-b from-[#0c0b0a] via-[#0a0a0a] to-[#080808]"
@@ -45,6 +45,6 @@ export default function CatalogLoading() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

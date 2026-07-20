@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useRef, useState } from "react";
 
 export interface GalleryImage {
@@ -21,6 +20,14 @@ const PLACEHOLDER = "/placeholder.png";
  * Parent-product gallery: a main image plus a thumbnail strip, switched on
  * click. Images belong to the parent product — variant selection does NOT
  * change them.
+ *
+ * The main image is deliberately NOT wrapped in any entrance animation. It
+ * previously lived inside two nested Framer Motion nodes that started at
+ * `opacity: 0`, so even though `next/image priority` preloaded the bytes early,
+ * the pixels stayed invisible until React hydrated and ran the animation — on a
+ * slow phone that is exactly the "hero loads noticeably after the rest of the
+ * page" symptom. Now the server-rendered, prioritized image is visible on first
+ * paint. The only motion left is the desktop hover-zoom, which is pure CSS.
  */
 export default function ProductGallery({
   images,
@@ -62,16 +69,13 @@ export default function ProductGallery({
           }}
         />
 
-        <motion.div
+        <div
           ref={frameRef}
           onMouseMove={onMove}
           onMouseLeave={() => setZoom((z) => ({ ...z, on: false }))}
           className="group relative aspect-square overflow-hidden rounded-[1.75rem] border border-black/5 bg-linear-to-b from-white via-white to-[#fafaf7] shadow-[0_30px_80px_-30px_rgba(0,0,0,0.25)]"
-          initial={{ opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Gold animated border */}
+          {/* Gold animated border (hover only) */}
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 rounded-[1.75rem] opacity-0 transition-opacity duration-700 group-hover:opacity-100"
@@ -86,36 +90,26 @@ export default function ProductGallery({
             }}
           />
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={active.url}
-              initial={{ opacity: 0, scale: 1.02 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.99 }}
-              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-0"
-            >
-              <Image
-                src={active.url}
-                alt={active.alt_text || productName}
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority
-                className="object-contain p-8 transition-transform duration-500 ease-out will-change-transform"
-                style={{
-                  transform: zoom.on ? "scale(1.6)" : "scale(1)",
-                  transformOrigin: `${zoom.x}% ${zoom.y}%`,
-                }}
-              />
-            </motion.div>
-          </AnimatePresence>
+          <Image
+            key={active.url}
+            src={active.url}
+            alt={active.alt_text || productName}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            priority
+            className="object-contain p-8 transition-transform duration-500 ease-out"
+            style={{
+              transform: zoom.on ? "scale(1.6)" : "scale(1)",
+              transformOrigin: `${zoom.x}% ${zoom.y}%`,
+            }}
+          />
 
           {/* Corner ornaments */}
           <Corner className="top-4 left-4" />
           <Corner className="top-4 right-4 rotate-90" />
           <Corner className="bottom-4 right-4 rotate-180" />
           <Corner className="bottom-4 left-4 -rotate-90" />
-        </motion.div>
+        </div>
       </div>
 
       {/* Thumbnails */}

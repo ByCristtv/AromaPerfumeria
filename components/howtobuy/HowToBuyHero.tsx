@@ -1,11 +1,20 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { fadeUp, serif, stagger } from "./styles";
+import { serif } from "./styles";
+import { useReveal } from "@/hooks/useReveal";
 
-/** Editorial opening for the buying-guide journey. */
+/**
+ * Editorial opening for the buying-guide journey.
+ *
+ * Uses the shared reveal rather than Framer's mount animation. Because the
+ * reveal is driven by an IntersectionObserver — and falls back to "just show it"
+ * when observers are unavailable — the headline can never end up stranded
+ * invisible waiting on an animation frame that hasn't come.
+ */
 export default function HowToBuyHero() {
+  const ref = useReveal<HTMLDivElement>();
+
   return (
     <section
       aria-label="Cómo comprar en Aroma Perfumería"
@@ -21,46 +30,40 @@ export default function HowToBuyHero() {
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#c9a96e]/30 to-transparent"
       />
 
-      <motion.div
-        variants={stagger}
-        initial="hidden"
-        animate="show"
-        className="relative mx-auto max-w-3xl"
-      >
-        <motion.p
-          variants={fadeUp}
-          className="mb-6 text-xs uppercase tracking-[0.4em] text-[#c9a96e] md:text-sm"
+      <div ref={ref} className="reveal relative mx-auto max-w-3xl">
+        <p
+          className="reveal reveal-d1 mb-6 text-xs uppercase tracking-[0.4em] text-[#c9a96e] md:text-sm"
           style={{ fontFamily: serif }}
         >
           Guía de compra · Aroma Perfumería
-        </motion.p>
-        <motion.h1
-          variants={fadeUp}
-          className="text-4xl leading-tight text-white md:text-6xl lg:text-7xl"
+        </p>
+        <h1
+          className="reveal reveal-d2 text-4xl leading-tight text-white md:text-6xl lg:text-7xl"
           style={{ fontFamily: serif }}
         >
           Comprar nunca fue
           <br />
           <span className="italic text-[#c9a96e]">tan sencillo</span>
-        </motion.h1>
-        <motion.p
-          variants={fadeUp}
-          className="mx-auto mt-8 max-w-xl text-base leading-relaxed text-white/65 md:text-lg"
+        </h1>
+        <p
+          className="reveal reveal-d3 mx-auto mt-8 max-w-xl text-base leading-relaxed text-white/65 md:text-lg"
           style={{ fontFamily: serif }}
         >
           Te acompañamos paso a paso para que llevar tu próxima fragancia a casa
-          sea una experiencia facil de entender.
-        </motion.p>
+          sea una experiencia fácil de entender.
+        </p>
 
-        <motion.div
-          variants={fadeUp}
-          className="mt-12 flex items-center justify-center gap-3 text-[#c9a96e]/60"
-        >
+        <div className="reveal reveal-d4 mt-12 flex items-center justify-center gap-3 text-[#c9a96e]/60">
           <span className="h-px w-10 bg-[#c9a96e]/40" />
-          <ChevronDown size={18} className="animate-bounce" aria-hidden="true" />
+          {/* motion-safe: the bounce is decorative and loops forever. */}
+          <ChevronDown
+            size={18}
+            className="motion-safe:animate-bounce"
+            aria-hidden="true"
+          />
           <span className="h-px w-10 bg-[#c9a96e]/40" />
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </section>
   );
 }

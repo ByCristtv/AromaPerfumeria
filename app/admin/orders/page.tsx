@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import AdminOrdersView from "./AdminOrdersView";
 
 export const metadata: Metadata = {
-  title: "Órdenes — Admin · Aroma Perfumería",
+  title: "Órdenes — Admin",
   description: "Gestión de pedidos.",
 };
 

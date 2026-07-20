@@ -1,13 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { ImageOff } from "lucide-react";
 import StepBadge from "./StepBadge";
 import { serif } from "./styles";
 
 type ImagePlaceholderProps = {
-  /** Optional future screenshot / illustration. When omitted the elegant skeleton shows. */
+  /** Optional screenshot. When omitted the elegant skeleton shows instead. */
   src?: string;
   alt: string;
   /** Step number rendered as an overlay badge on the visual. */
@@ -20,8 +19,19 @@ type ImagePlaceholderProps = {
 
 /**
  * 16:9 media slot for every step. Renders a real image when `src` is provided,
- * otherwise a refined dashed-border skeleton with a slow gold shimmer.
- * Designed so a future upload drops in without touching the layout.
+ * otherwise a refined dashed-border skeleton with a slow gold shimmer — which is
+ * the mobile journey's default state until captures are added.
+ *
+ * Two performance fixes live here:
+ *
+ *  1. The shimmer was a Framer `animate` with `repeat: Infinity`, i.e. a JS
+ *     rAF loop per placeholder. With an all-empty mobile flow that meant ~12
+ *     concurrent loops on the page. It is now a CSS `transform` animation, which
+ *     runs on the compositor and gets throttled off-screen automatically.
+ *  2. The card lift was `whileHover` with a spring — mounting a motion component
+ *     and its listeners on every slot to serve an interaction that does not exist
+ *     on touch. It is now a CSS `:hover` behind `@media (hover: hover)`, so phones
+ *     pay nothing for it at all.
  */
 export default function ImagePlaceholder({
   src,
@@ -32,16 +42,11 @@ export default function ImagePlaceholder({
   priority = false,
 }: ImagePlaceholderProps) {
   return (
-    <motion.div
-      whileHover={{ y: -6 }}
-      transition={{ type: "spring", stiffness: 220, damping: 22 }}
-      className="group/img relative w-full"
-    >
+    <div className="group/img hover-lift relative w-full">
       {/* Soft gold glow that intensifies on hover */}
-      <div className="pointer-events-none absolute -inset-1 rounded-[1.4rem] bg-[#c9a96e]/0 blur-2xl transition-all duration-700 group-hover/img:bg-[#c9a96e]/10" />
+      <div className="pointer-events-none absolute -inset-1 rounded-[1.4rem] bg-[#c9a96e]/0 blur-2xl transition-colors duration-700 group-hover/img:bg-[#c9a96e]/10" />
 
-      <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-[#c9a96e]/15 bg-[#0e0e0e] shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)] transition-all duration-500 group-hover/img:border-[#c9a96e]/40 group-hover/img:shadow-[0_30px_80px_-30px_rgba(201,169,110,0.25)]">
-        {/* Step badge overlay */}
+      <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-[#c9a96e]/15 bg-[#0e0e0e] shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)] transition-colors duration-500 group-hover/img:border-[#c9a96e]/40">
         {showBadge && (
           <div className="absolute left-4 top-4 z-20">
             <StepBadge number={number} />
@@ -66,18 +71,10 @@ export default function ImagePlaceholder({
             {/* Dashed elegant frame */}
             <div className="absolute inset-3 rounded-xl border border-dashed border-[#c9a96e]/25" />
 
-            {/* Slow shimmer sweep */}
-            <motion.div
+            {/* Slow shimmer sweep — CSS, compositor-only */}
+            <div
               aria-hidden="true"
-              initial={{ x: "-120%" }}
-              animate={{ x: "120%" }}
-              transition={{
-                duration: 2.8,
-                repeat: Infinity,
-                repeatDelay: 1.4,
-                ease: "easeInOut",
-              }}
-              className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-[#c9a96e]/10 to-transparent"
+              className="shimmer-sweep absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-[#c9a96e]/10 to-transparent"
             />
 
             {/* Centre label */}
@@ -98,6 +95,6 @@ export default function ImagePlaceholder({
         {/* Subtle inner vignette for depth */}
         <div className="pointer-events-none absolute inset-0 rounded-2xl shadow-[inset_0_0_60px_-20px_rgba(0,0,0,0.8)]" />
       </div>
-    </motion.div>
+    </div>
   );
 }

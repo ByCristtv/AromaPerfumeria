@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <main className="min-h-screen flex items-center justify-center px-4 pt-28 pb-20">
+    <div className="min-h-screen flex items-center justify-center px-4 pt-28 pb-20">
       <div className="text-center max-w-md">
         <p
           className="text-[11px] tracking-[0.32em] uppercase"
@@ -32,6 +32,6 @@ export default function NotFound() {
           Volver al catálogo
         </Link>
       </div>
-    </main>
+    </div>
   );
 }

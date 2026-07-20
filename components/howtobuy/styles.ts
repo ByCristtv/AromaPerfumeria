@@ -1,38 +1,11 @@
 // Shared design tokens for the "Cómo Comprar" experience.
 // Keeps the premium identity (gold on charcoal, Cormorant serif) in one place.
+//
+// The Framer Motion variants that used to live here (fadeUp / stagger /
+// cardReveal) are gone: the journey's reveals are now CSS transitions driven by
+// a single shared IntersectionObserver (hooks/useReveal.ts + the `.reveal`
+// utilities in globals.css). Note that components/contact/styles.ts is a
+// separate file and still uses Framer — this change is scoped to How-to-Buy.
 
 export const serif =
   "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
-
-export const GOLD = "#c9a96e";
-
-// Framer Motion fade-up used across every block.
-export const fadeUp = {
-  hidden: { opacity: 0, y: 32 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const },
-  },
-};
-
-// Soft stagger for grouped children (labels, headings, copy).
-export const stagger = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.12, delayChildren: 0.05 } },
-};
-
-// Card-level reveal: fades the card up AND orchestrates its inner fadeUp children.
-export const cardReveal = {
-  hidden: { opacity: 0, y: 36 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.7,
-      ease: [0.22, 1, 0.36, 1] as const,
-      when: "beforeChildren" as const,
-      staggerChildren: 0.1,
-    },
-  },
-};

@@ -9,7 +9,7 @@ import { formatPrice } from "@/lib/format";
 import { CONTACT } from "@/components/contact/contactData";
 
 export const metadata: Metadata = {
-  title: "Paga con SINPE Móvil — Aroma Perfumería",
+  title: "Paga con SINPE Móvil",
   description: "Instrucciones para completar tu pedido con SINPE Móvil.",
 };
 

@@ -9,7 +9,7 @@ import CTASection from "./CTASection";
 /** Full premium "Contacto" experience. */
 export default function ContactExperience() {
   return (
-    <main className="relative bg-[#0a0a0a]">
+    <div className="relative bg-[#0a0a0a]">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0c0b0a] via-[#0a0a0a] to-[#080808]"
@@ -25,6 +25,6 @@ export default function ContactExperience() {
           <CTASection />
         </div>
       </div>
-    </main>
+    </div>
   );
 }

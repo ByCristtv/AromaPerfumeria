@@ -167,7 +167,7 @@ export default function ProfileView() {
           </aside>
 
           {/* ──────── Right: order history ──────── */}
-          <main>
+          <div>
             <Card>
               <CardHeading
                 title="Historial de pedidos"
@@ -210,7 +210,7 @@ export default function ProfileView() {
                 </>
               )}
             </Card>
-          </main>
+          </div>
         </div>
       </div>
     </section>

@@ -15,7 +15,8 @@ import CatalogEmptyState from "@/components/catalog/CatalogEmptyState";
 const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
 
 export const metadata: Metadata = {
-  title: "Catálogo · Aroma Perfumería",
+  alternates: { canonical: "/products" },
+  title: "Catálogo",
   description:
     "Explora la colección completa de Aroma Perfumería: perfumes nicho, diseñadores de lujo y decants originales. Filtra por categoría, tipo y precio.",
 };
@@ -43,7 +44,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   );
 
   return (
-    <main className="relative min-h-screen bg-[#0a0a0a]">
+    <div className="relative min-h-screen bg-[#0a0a0a]">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0c0b0a] via-[#0a0a0a] to-[#080808]"
@@ -78,6 +79,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           )}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

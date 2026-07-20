@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import CheckoutClient from "./CheckoutClient";
 
 export const metadata: Metadata = {
-  title: "Checkout — Aroma Perfumería",
+  robots: { index: false, follow: false },
+  title: "Checkout",
   description: "Confirma tus datos de envío y finaliza tu compra.",
 };
 

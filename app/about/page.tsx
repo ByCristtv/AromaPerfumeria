@@ -11,7 +11,8 @@ import CTAFinal from "@/components/about/CTAFinal";
 import Reveal from "@/components/ui/Reveal";
 
 export const metadata: Metadata = {
-  title: "Sobre Nosotros · Aroma Perfumería",
+  alternates: { canonical: "/about" },
+  title: "Sobre Nosotros",
   description:
     "Aroma Perfumería: perfumes nicho, diseñadores de lujo y decants originales en Costa Rica. Descubre nuestra historia, filosofía y compromiso con la excelencia olfativa.",
 };

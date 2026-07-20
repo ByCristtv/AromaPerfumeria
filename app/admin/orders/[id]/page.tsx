@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import AdminOrderDetail from "./AdminOrderDetail";
 
 export const metadata: Metadata = {
-  title: "Pedido — Admin · Aroma Perfumería",
+  title: "Pedido — Admin",
 };
 
 interface AdminOrderPageProps {

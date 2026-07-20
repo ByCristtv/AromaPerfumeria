@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { serif } from "./styles";
 
 type StepBadgeProps = {
@@ -13,6 +12,11 @@ type StepBadgeProps = {
 /**
  * A numbered, gold-rimmed badge used to mark each step of the journey.
  * Two concentric rings give it a premium, jewellery-like finish.
+ *
+ * Purely presentational now. It used to be a Framer component with its own
+ * `whileInView` scale-in — a third viewport observer inside every card, for a
+ * decoration already nested in a container that reveals. It rides the parent
+ * card's reveal instead.
  */
 export default function StepBadge({
   number,
@@ -22,11 +26,7 @@ export default function StepBadge({
   const dims = size === "lg" ? "w-16 h-16 text-2xl" : "w-12 h-12 text-lg";
 
   return (
-    <motion.div
-      initial={{ scale: 0.6, opacity: 0 }}
-      whileInView={{ scale: 1, opacity: 1 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+    <div
       className={`relative flex items-center justify-center rounded-full ${dims} ${className}`}
       aria-hidden="true"
     >
@@ -42,6 +42,6 @@ export default function StepBadge({
       >
         {String(number).padStart(2, "0")}
       </span>
-    </motion.div>
+    </div>
   );
 }

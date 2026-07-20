@@ -8,7 +8,8 @@ import { formatPrice } from "@/lib/format";
 import CancelledBanner from "./CancelledBanner";
 
 export const metadata: Metadata = {
-  title: "Tu pedido — Aroma Perfumería",
+  robots: { index: false, follow: false },
+  title: "Tu pedido",
   description: "Detalles de tu pedido.",
 };
 

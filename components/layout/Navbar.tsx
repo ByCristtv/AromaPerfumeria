@@ -17,13 +17,6 @@ const NAV_LINKS = [
 
 const SERIF = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
 
-/** Rotating brand promises in the utility bar — a luxury-retail convention. */
-const PROMISES = [
-  "Perfumes 100% originales",
-  "Envío a todo Costa Rica",
-  "Atención personalizada por WhatsApp",
-] as const;
-
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -67,37 +60,24 @@ export default function Navbar() {
         become visible, and fading in the main nav costs perceived performance for
         no real gain. It simply renders.
       */}
+      {/*
+        The header is a single fixed bar pinned flush to the top of the viewport.
+
+        A "utility bar" (rotating brand promises) used to sit ABOVE this nav and
+        collapse on scroll via a max-height transition. Because it was a separate
+        element the nav rode on top of, the collapse animation briefly left a gap
+        above the nav through which page content flashed — the reported glitch.
+        Removing it entirely leaves nothing that can open a gap: the nav is now
+        the topmost element and is always attached to `top: 0`.
+      */}
       <header
         className="fixed top-0 left-0 w-full z-50"
         style={{ fontFamily: SERIF }}
       >
-
-        {/* ──────── Utility bar ──────── */}
-        <div
-          className={`overflow-hidden border-b border-[#c9a96e]/15 bg-black transition-all duration-500 ${
-            scrolled ? "max-h-0 opacity-0" : "max-h-10 opacity-100"
-          }`}
-        >
-          <div className="max-w-7xl mx-auto px-6 lg:px-10 h-9 flex items-center justify-center gap-8">
-            {PROMISES.map((promise, i) => (
-              <span
-                key={promise}
-                className={`text-[9px] tracking-[0.28em] uppercase text-white/40 whitespace-nowrap ${
-                  i === 0 ? "" : "hidden md:inline"
-                }`}
-              >
-                {promise}
-              </span>
-            ))}
-          </div>
-        </div>
-
         {/* ──────── Main bar ──────── */}
         <nav
-          className={`transition-all duration-500 ${
-            scrolled
-              ? "bg-black/95 backdrop-blur-md shadow-[0_2px_30px_rgba(0,0,0,0.6)]"
-              : "bg-black"
+          className={`bg-black transition-shadow duration-500 ${
+            scrolled ? "shadow-[0_2px_30px_rgba(0,0,0,0.6)]" : ""
           }`}
         >
           <div className="max-w-7xl mx-auto px-6 lg:px-10">
@@ -107,7 +87,7 @@ export default function Navbar() {
               right-hand actions get — the editorial layout luxury houses use,
               and the main thing that stops this reading as a stock template.
             */}
-            <div className="grid grid-cols-[auto_1fr_auto] items-center h-[72px] gap-6">
+            <div className="grid grid-cols-[auto_1fr_auto] items-center h-18 gap-6">
               {/* Wordmark */}
               <Link href="/" className="shrink-0 group">
                 <span className="flex flex-col leading-none select-none">
@@ -159,13 +139,13 @@ export default function Navbar() {
           </div>
 
           {/* Hairline */}
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-[#c9a96e]/40 to-transparent" />
+          <div className="h-px w-full bg-linear-to-r from-transparent via-[#c9a96e]/40 to-transparent" />
         </nav>
 
         {/* ──────── Mobile drawer ──────── */}
         <div
-          className={`lg:hidden overflow-hidden bg-black/98 backdrop-blur-md transition-[max-height,opacity] duration-500 ease-in-out ${
-            menuOpen ? "max-h-[32rem] opacity-100" : "max-h-0 opacity-0"
+          className={`lg:hidden overflow-hidden bg-black transition-[max-height,opacity] duration-500 ease-in-out ${
+            menuOpen ? "max-h-128 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <div className="px-6 pt-5 pb-8">
@@ -227,11 +207,11 @@ export default function Navbar() {
         <Link
           href="/cart"
           aria-label={`Carrito, ${cartBadge} artículos`}
-          className="fixed bottom-6 right-6 z-50 lg:hidden flex items-center justify-center w-14 h-14 rounded-full bg-[#c9a96e] shadow-[0_4px_20px_rgba(0,0,0,0.4)] active:scale-95 transition-transform duration-150"
+          className="floating-cart fixed bottom-6 right-6 z-50 lg:hidden flex items-center justify-center w-14 h-14 rounded-full bg-[#c9a96e] shadow-[0_4px_20px_rgba(0,0,0,0.4)] active:scale-95"
         >
           <BagIcon className="w-6 h-6 text-black" />
           {cartBadge > 0 && (
-            <span className="absolute -top-1 -right-1 bg-black text-[#c9a96e] text-[10px] font-bold min-w-[20px] h-5 px-1 rounded-full flex items-center justify-center">
+            <span className="absolute -top-1 -right-1 bg-black text-[#c9a96e] text-[10px] font-bold min-w-5 h-5 px-1 rounded-full flex items-center justify-center">
               {cartBadge}
             </span>
           )}
