@@ -59,7 +59,7 @@ export default function HowToBuyExperience() {
       {/* Subtle vertical texture behind the whole journey */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0c0b0a] via-[#0a0a0a] to-[#080808]"
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-[#0c0b0a] via-[#0a0a0a] to-[#080808]"
       />
 
       <div className="relative">
@@ -95,9 +95,9 @@ export default function HowToBuyExperience() {
             aria-hidden="true"
             className="mx-auto my-20 flex max-w-xs items-center gap-4 md:my-28"
           >
-            <span className="h-px flex-1 bg-gradient-to-r from-transparent to-[#c9a96e]/30" />
+            <span className="h-px flex-1 bg-linear-to-r from-transparent to-[#c9a96e]/30" />
             <span className="h-1.5 w-1.5 rotate-45 bg-[#c9a96e]/60" />
-            <span className="h-px flex-1 bg-gradient-to-l from-transparent to-[#c9a96e]/30" />
+            <span className="h-px flex-1 bg-linear-to-l from-transparent to-[#c9a96e]/30" />
           </div>
 
           {/* Start shopping */}

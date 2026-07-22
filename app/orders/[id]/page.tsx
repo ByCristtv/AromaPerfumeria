@@ -5,7 +5,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { verifyOrderToken } from "@/lib/orders/tokens";
 import { formatPrice } from "@/lib/format";
-import CancelledBanner from "./CancelledBanner";
+import OrderStatusSection from "./OrderStatusSection";
+import PaidCustomerNote from "./PaidCustomerNote";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -90,6 +91,7 @@ export default async function OrderPage({
       total,
       order_status,
       payment_status,
+      payment_provider,
       notes,
       created_at,
       order_items (
@@ -119,50 +121,26 @@ export default async function OrderPage({
 
   const isCancelled = cancelled === "1";
 
+  // Status seed handed to the polling island so its first paint matches what
+  // the server rendered (no flicker), then updates live via React Query.
+  const statusSeed = {
+    payment_status: order.payment_status,
+    order_status: order.order_status,
+    payment_provider: order.payment_provider,
+  };
+
   return (
     <section className="pt-28 pb-16 px-4 bg-gray-50 min-h-screen">
       <div className="max-w-3xl mx-auto">
-        {/* ──────── Cancelled banner (only if Onvo redirected here from cancel) ──────── */}
-        {isCancelled && order.payment_status !== "paid" && (
-          <CancelledBanner orderId={order.id} token={token} />
-        )}
-
-        {/* ──────── Header ──────── */}
-        <header className="text-center mb-8">
-          <div
-            className={`inline-flex items-center justify-center w-14 h-14 rounded-full mb-4 ${
-              order.payment_status === "paid"
-                ? "bg-emerald-100"
-                : isCancelled
-                ? "bg-amber-100"
-                : "bg-gray-100"
-            }`}
-          >
-            {order.payment_status === "paid" ? (
-              <CheckIcon className="w-7 h-7 text-emerald-700" />
-            ) : (
-              <ClockIcon
-                className={`w-7 h-7 ${
-                  isCancelled ? "text-amber-700" : "text-gray-600"
-                }`}
-              />
-            )}
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
-            {order.payment_status === "paid"
-              ? "¡Gracias por tu pedido!"
-              : isCancelled
-              ? "Pago no completado"
-              : "Tu pedido fue recibido"}
-          </h1>
-          <p className="text-sm text-gray-600 mt-2">
-            Pedido <span className="font-mono">#{order.order_number}</span> ·{" "}
-            <StatusBadge
-              orderStatus={order.order_status}
-              paymentStatus={order.payment_status}
-            />
-          </p>
-        </header>
+        {/* ──────── Status header + cancelled banner (client island: polls
+            for webhook confirmation so the customer never refreshes) ──────── */}
+        <OrderStatusSection
+          orderId={order.id}
+          orderNumber={order.order_number}
+          token={token}
+          isCancelled={isCancelled}
+          initial={statusSeed}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-5">
           {/* ──────── Items + delivery ──────── */}
@@ -211,14 +189,12 @@ export default async function OrderPage({
               </dl>
             </Panel>
 
-            {order.payment_status === "paid" && (
-              <p className="text-sm text-gray-500 leading-relaxed">
-                Te enviaremos un correo a{" "}
-                <strong>{order.customer_email}</strong> con los detalles y
-                actualizaciones de tu pedido. Si tienes preguntas, contáctanos
-                por WhatsApp.
-              </p>
-            )}
+            <PaidCustomerNote
+              orderId={order.id}
+              token={token}
+              customerEmail={order.customer_email}
+              initial={statusSeed}
+            />
           </div>
 
           {/* ──────── Totals ──────── */}
@@ -286,73 +262,3 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-function StatusBadge({
-  orderStatus,
-  paymentStatus,
-}: {
-  orderStatus: string;
-  paymentStatus: string;
-}) {
-  let label = "Pago pendiente";
-  let cls = "bg-amber-100 text-amber-800";
-
-  if (orderStatus === "denied") {
-    label = paymentStatus === "failed" ? "Pago fallido" : "Cancelado";
-    cls = "bg-red-100 text-red-800";
-  } else if (orderStatus === "shipped") {
-    label = "Enviado";
-    cls = "bg-blue-100 text-blue-800";
-  } else if (orderStatus === "received" && paymentStatus === "paid") {
-    label = "Confirmado";
-    cls = "bg-emerald-100 text-emerald-800";
-  } else if (paymentStatus === "paid") {
-    label = "Pagado";
-    cls = "bg-emerald-100 text-emerald-800";
-  }
-
-  return (
-    <span
-      className={`inline-block px-2 py-0.5 rounded text-[11px] font-semibold uppercase tracking-wide ${cls}`}
-    >
-      {label}
-    </span>
-  );
-}
-
-function CheckIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M5 13l4 4L19 7"
-      />
-    </svg>
-  );
-}
-
-function ClockIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M12 8v4l3 3M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"
-      />
-    </svg>
-  );
-}

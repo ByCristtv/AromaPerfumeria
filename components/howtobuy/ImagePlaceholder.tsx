@@ -34,7 +34,7 @@ type ImagePlaceholderProps = {
  *     pay nothing for it at all.
  */
 export default function ImagePlaceholder({
-  src,
+  src = "/images/howtobuy/order.avif",
   alt,
   number,
   showBadge = true,

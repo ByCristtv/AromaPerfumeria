@@ -1,23 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  /*
-   * This is a light storefront (white content, black navbar). It is NOT a
-   * dark-themed site, so we pin the color scheme to light.
-   *
-   * Why this matters on real Android hardware: previously a
-   * `@media (prefers-color-scheme: dark)` block flipped the root background to
-   * #0a0a0a. On a phone in dark mode, any area the browser paints with the root
-   * colour — the strip exposed while the URL bar collapses (dynamic viewport),
-   * and elastic overscroll — showed up as a BLACK FLASH behind the light page.
-   * That is the "black block near the bottom during fast scroll".
-   *
-   * `color-scheme: light` also makes the browser's own overscroll/root fill
-   * white, so there is no dark gap even for a single frame.
-   */
-  color-scheme: light;
   --background: #ffffff;
   --foreground: #171717;
+  color-scheme: light;
 }
 
 @theme inline {
@@ -236,16 +222,18 @@ body > * {
 
   .animate-fadeUp {
     animation: fadeUp 500ms cubic-bezier(.22,1,.36,1) forwards;
+    will-change: transform, opacity;
   }
 
   /*
    * ── Section reveal for <ui/Reveal> (About page) ─────────────────────────────
    *
-   * A SEPARATE system from the `.reveal` / `.reveal-in` classes above. It used to
-   * also be named `.reveal`, which was a real bug: two `.reveal { opacity: 0 }`
-   * rules existed and this (later) one overrode the How-to-Buy release rule
-   * `.reveal-in`, leaving that whole page's content stuck invisible. Namespacing
-   * it as `.reveal-fx` removes the collision — each system now owns its own class.
+   * A SEPARATE system from the `.reveal` / `.reveal-in` classes above. It must
+   * NOT be named `.reveal`: two `.reveal { opacity: 0 }` rules in this layer put
+   * the later one after the How-to-Buy release rule `.reveal-in`, which has the
+   * same specificity — the hidden state wins and that whole page's content is
+   * stranded invisible. Namespacing it as `.reveal-fx` keeps each system owning
+   * its own class. Do not "consolidate" these two into one `.reveal`.
    */
   .reveal-fx {
     opacity: 0;

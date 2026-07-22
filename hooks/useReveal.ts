@@ -17,11 +17,21 @@ const REVEAL_CLASS = "reveal-in";
 let sharedObserver: IntersectionObserver | null = null;
 let failsafeArmed = false;
 
+/**
+ * Every element currently waiting to be revealed.
+ *
+ * Tracked explicitly rather than re-queried as `.reveal:not(.reveal-in)`,
+ * because not every reveal target carries the `.reveal` class — StepConnector
+ * is observed but styles its children (`.connector-line` / `.connector-dot`)
+ * off the released parent instead. A selector-based failsafe silently skipped
+ * those and left them stranded.
+ */
+const pending = new Set<Element>();
+
 /** Reveal anything still waiting. Used only by the failsafe below. */
 function revealAllPending(): void {
-  document
-    .querySelectorAll(`.reveal:not(.${REVEAL_CLASS})`)
-    .forEach((el) => el.classList.add(REVEAL_CLASS));
+  for (const el of pending) el.classList.add(REVEAL_CLASS);
+  pending.clear();
 }
 
 /**
@@ -58,6 +68,7 @@ function getObserver(): IntersectionObserver {
         if (!entry.isIntersecting) continue;
         entry.target.classList.add(REVEAL_CLASS);
         // Reveal is one-way; stop paying for anything already shown.
+        pending.delete(entry.target);
         observer.unobserve(entry.target);
       }
     },
@@ -90,10 +101,14 @@ export function useReveal<T extends HTMLElement>() {
     }
 
     const observer = getObserver();
+    pending.add(el);
     observer.observe(el);
     armFailsafe();
 
-    return () => observer.unobserve(el);
+    return () => {
+      pending.delete(el);
+      observer.unobserve(el);
+    };
   }, []);
 
   return ref;

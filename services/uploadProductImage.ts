@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase/client";
+import { compressImage } from "@/services/imageCompression";
 
 const BUCKET = "product-images";
 
@@ -6,13 +7,19 @@ const BUCKET = "product-images";
  * Upload an image to the `product-images` Supabase Storage bucket
  * and return the public URL. Filenames are namespaced with a UUID
  * to avoid collisions.
+ *
+ * Every file is optimized (downscaled + re-encoded) on the client before it
+ * leaves the browser — see `services/imageCompression`. This is the single
+ * chokepoint all product-image flows share, so compression is applied
+ * uniformly without any caller needing to know about it.
  */
 export async function uploadProductImage(file: File): Promise<string> {
-  const filePath = `${BUCKET}/${crypto.randomUUID()}-${file.name}`;
+  const optimized = await compressImage(file);
+  const filePath = `${BUCKET}/${crypto.randomUUID()}-${optimized.name}`;
 
   const { error: uploadError } = await supabase.storage
     .from(BUCKET)
-    .upload(filePath, file);
+    .upload(filePath, optimized);
 
   if (uploadError) {
     throw new Error(`Image upload failed: ${uploadError.message}`);

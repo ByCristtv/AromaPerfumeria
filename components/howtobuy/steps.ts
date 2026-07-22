@@ -134,16 +134,16 @@ export const MAIN_STEPS: StepContent[] = [
  */
 const SCREENSHOTS: Record<FlowView, Record<number, string>> = {
   desktop: {
-    1: "/images/howtobuy/1.png",
-    2: "/images/howtobuy/2.png",
-    3: "/images/howtobuy/3.png",
-    4: "/images/howtobuy/4.png",
-    5: "/images/howtobuy/5.png",
-    6: "/images/howtobuy/6.png",
-    7: "/images/howtobuy/7.png",
-    8: "/images/howtobuy/8.png",
-    9: "/images/howtobuy/9.png",
-    10: "/images/howtobuy/10.png",
+    1: "/images/howtobuy/1pc.avif",
+    2: "/images/howtobuy/2pc.avif",
+    3: "/images/howtobuy/3pc.avif",
+    4: "/images/howtobuy/4pc.avif",
+    5: "/images/howtobuy/5pc.avif",
+    6: "/images/howtobuy/6pc.avif",
+    7: "/images/howtobuy/7pc.avif",
+    8: "/images/howtobuy/8pc.avif",
+    9: "/images/howtobuy/9pc.avif",
+    10: "/images/howtobuy/10pc.avif",
   },
   // e.g. 3: "/images/howtobuy/mobile/3.png"
   mobile: {
