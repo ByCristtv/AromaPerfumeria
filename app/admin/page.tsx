@@ -8,6 +8,7 @@ import {
   ClipboardList,
   FlaskConical,
   ArrowDownToLine,
+  Tags,
   type LucideIcon,
 } from "lucide-react";
 import AdminContainer from "@/components/admin/ui/AdminContainer";
@@ -43,6 +44,13 @@ const SECTIONS: AdminSection[] = [
     description:
       "Gestiona los pedidos pendientes: envíos, actualizaciones de estado y soporte al cliente.",
     Icon: ClipboardList,
+  },
+  {
+    href: "/admin/brands",
+    title: "Administrar Marcas",
+    description:
+      "Crea, edita y elimina las marcas de tu catálogo. Mantén la lista de casas de perfumería organizada.",
+    Icon: Tags,
   },
   {
     href: "/admin/decant-stock",

@@ -104,7 +104,7 @@ export default function SuccessCard() {
             number={11}
             showBadge={false}
             alt="Empaque de fragancia de lujo o ilustración de pedido completado"
-            label="Empaque premium / Pedido completado"
+            
           />
         </div>
       </div>
