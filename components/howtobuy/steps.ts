@@ -147,16 +147,16 @@ const SCREENSHOTS: Record<FlowView, Record<number, string>> = {
   },
   // e.g. 3: "/images/howtobuy/mobile/3.png"
   mobile: {
-    1: "/images/howtobuy/mobile/step2.avif",
-    2: "/images/howtobuy/mobile/step3.avif",
-    3: "/images/howtobuy/mobile/step4.avif",
-    4: "/images/howtobuy/mobile/step5.avif",
-    5: "/images/howtobuy/mobile/step6.avif",
-    6: "/images/howtobuy/mobile/step7.avif",
-    7: "/images/howtobuy/mobile/step8.avif",
-    8: "/images/howtobuy/mobile/step9.avif",
-    9: "/images/howtobuy/mobile/step9v2.avif",
-    10: "/images/howtobuy/mobile/step10.avif",
+    1: "/images/howtobuy/mobile/step2mobile.avif",
+    2: "/images/howtobuy/mobile/step3mobile.avif",
+    3: "/images/howtobuy/mobile/step4mobile.avif",
+    4: "/images/howtobuy/mobile/step5mobile.avif",
+    5: "/images/howtobuy/mobile/step6mobile.avif",
+    6: "/images/howtobuy/mobile/step7mobile.avif",
+    7: "/images/howtobuy/mobile/step8mobile.avif",
+    8: "/images/howtobuy/mobile/step9mobile.avif",
+    9: "/images/howtobuy/mobile/step9v2mobile.avif",
+    10: "/images/howtobuy/mobile/step10mobile.avif",
   },
 };
 
