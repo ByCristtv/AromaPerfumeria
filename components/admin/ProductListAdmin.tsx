@@ -2,9 +2,7 @@
 
 import Swal from "sweetalert2";
 import { supabase } from "@/lib/supabase/client";
-import { useAdminProducts } from "@/hooks/useAdminProducts";
-import { ADMIN_PRODUCTS_QUERY_KEY } from "@/features/admin/getProductsAdmin";
-import { useQueryClient } from "@tanstack/react-query";
+import type { AdminVariantRow } from "@/types/product";
 
 const currency = new Intl.NumberFormat("es-CR", {
   style: "currency",
@@ -13,24 +11,15 @@ const currency = new Intl.NumberFormat("es-CR", {
 });
 
 interface ProductListAdminProps {
-  searchQuery?: string;
+  /** One page of variants, fetched + paginated server-side. */
+  rows: AdminVariantRow[];
   onEdit?: (productId: string, variantId: string) => void;
+  /** Called after a successful mutation so the server page can re-fetch. */
+  onChanged?: () => void;
 }
 
-export default function ProductListAdmin({ searchQuery, onEdit }: ProductListAdminProps) {
-  const { data: allVariants = [], isLoading: loading } = useAdminProducts();
-
-  // Client-side filter: match product name or brand name (case-insensitive).
-  const variants = searchQuery
-    ? allVariants.filter((v) => {
-        const q = searchQuery.toLowerCase();
-        return (
-          v.name.toLowerCase().includes(q) ||
-          v.brand.toLowerCase().includes(q)
-        );
-      })
-    : allVariants;
-  const queryClient = useQueryClient();
+export default function ProductListAdmin({ rows, onEdit, onChanged }: ProductListAdminProps) {
+  const variants = rows;
 
   const toggleActive = async (
     variantId: string,
@@ -65,7 +54,7 @@ export default function ProductListAdmin({ searchQuery, onEdit }: ProductListAdm
       return;
     }
 
-    await queryClient.invalidateQueries({ queryKey: ADMIN_PRODUCTS_QUERY_KEY });
+    onChanged?.();
 
     Swal.fire({
       icon: "success",
@@ -73,14 +62,6 @@ export default function ProductListAdmin({ searchQuery, onEdit }: ProductListAdm
       text: `La variante ha sido ${currentlyActive ? "desactivada" : "reactivada"} exitosamente.`,
     });
   };
-
-  if (loading) {
-    return (
-      <p className="text-[#ececec] text-center py-12">
-        Cargando variantes...
-      </p>
-    );
-  }
 
   if (variants.length === 0) {
     return (

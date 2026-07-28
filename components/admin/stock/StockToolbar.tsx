@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { PackagePlus, Search, X } from "lucide-react";
-import { buildStockQuery } from "@/lib/stockParams";
+import { SEARCH_PARAM, PAGE_PARAM, buildQuery } from "@/lib/pagination";
 import BulkStockModal from "@/components/admin/stock/BulkStockModal";
 
 /**
@@ -37,11 +37,11 @@ export default function StockToolbar({
       return;
     }
     const handle = setTimeout(() => {
-      const current = spRef.current.get("q") ?? "";
+      const current = spRef.current.get(SEARCH_PARAM) ?? "";
       if (search.trim() === current) return;
-      const qs = buildStockQuery(new URLSearchParams(spRef.current.toString()), {
-        query: search.trim() || undefined,
-        page: undefined,
+      const qs = buildQuery(new URLSearchParams(spRef.current.toString()), {
+        [SEARCH_PARAM]: search.trim() || undefined,
+        [PAGE_PARAM]: undefined,
       });
       router.push(`${pathname}${qs}`, { scroll: false });
     }, 400);

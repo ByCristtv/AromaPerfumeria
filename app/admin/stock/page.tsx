@@ -1,12 +1,12 @@
 import { getStockMovements } from "@/features/admin/getStockMovements";
 import {
-  parseStockPage,
-  parseStockSearch,
+  parsePage,
+  parseSearch,
   type RawSearchParams,
-} from "@/lib/stockParams";
+} from "@/lib/pagination";
 import StockToolbar from "@/components/admin/stock/StockToolbar";
 import StockMovementsTable from "@/components/admin/stock/StockMovementsTable";
-import StockPagination from "@/components/admin/stock/StockPagination";
+import Pagination from "@/components/admin/ui/Pagination";
 import AdminContainer from "@/components/admin/ui/AdminContainer";
 import AdminPageHeader from "@/components/admin/ui/AdminPageHeader";
 
@@ -29,8 +29,8 @@ interface AdminStockPageProps {
 
 export default async function AdminStockPage({ searchParams }: AdminStockPageProps) {
   const sp = await searchParams;
-  const search = parseStockSearch(sp);
-  const page = parseStockPage(sp);
+  const search = parseSearch(sp);
+  const page = parsePage(sp);
 
   const { rows, total, currentPage, totalPages, pageSize } =
     await getStockMovements(page, search);
@@ -56,7 +56,11 @@ export default async function AdminStockPage({ searchParams }: AdminStockPagePro
 
       <StockMovementsTable rows={rows} />
 
-      <StockPagination currentPage={currentPage} totalPages={totalPages} />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        label="Paginación de movimientos"
+      />
     </AdminContainer>
   );
 }

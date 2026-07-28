@@ -1,35 +1,62 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { SEARCH_PARAM, PAGE_PARAM, buildQuery } from "@/lib/pagination";
+import { STATUS_PARAM, PAYMENT_PARAM } from "./params";
 import type {
   OrderStatusFilter,
   PaymentStatusFilter,
-} from "@/hooks/useAdminOrdersList";
-import type { Filters } from "./AdminOrdersView";
+} from "@/features/admin/getOrdersAdminPage";
 
 interface Props {
-  value: Filters;
-  onChange: (next: Filters) => void;
+  /** Current filter values, parsed from the URL by the server page. */
+  search: string;
+  orderStatus: OrderStatusFilter;
+  paymentStatus: PaymentStatusFilter;
 }
 
 /**
- * Filter bar: search (debounced 300ms), order status, payment status.
- *
- * Search is debounced internally so the query doesn't refetch on every
- * keystroke — only after the user stops typing. The dropdowns commit
- * immediately since they're discrete choices.
+ * URL-driven filter bar for /admin/orders. Search is debounced (300ms); the
+ * dropdowns commit immediately. Every change writes to the query string and
+ * resets `page` to 1, which re-renders the server-paginated list. Mirrors the
+ * stock panel's toolbar so all admin lists share one interaction model.
  */
-export default function OrdersFilters({ value, onChange }: Props) {
-  // Local input state for the debounced search.
-  const [localSearch, setLocalSearch] = useState(value.search);
+export default function OrdersFilters({ search, orderStatus, paymentStatus }: Props) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
+  const spRef = useRef(searchParams);
   useEffect(() => {
-    if (localSearch === value.search) return;
+    spRef.current = searchParams;
+  }, [searchParams]);
+
+  const [localSearch, setLocalSearch] = useState(search);
+  const firstRun = useRef(true);
+
+  const push = (overrides: Record<string, string | undefined>) => {
+    const qs = buildQuery(new URLSearchParams(spRef.current.toString()), {
+      ...overrides,
+      [PAGE_PARAM]: undefined, // any filter change returns to page 1
+    });
+    router.push(`${pathname}${qs}`, { scroll: false });
+  };
+
+  // Debounced search → URL.
+  useEffect(() => {
+    if (firstRun.current) {
+      firstRun.current = false;
+      return;
+    }
     const t = setTimeout(() => {
-      onChange({ ...value, search: localSearch });
+      const current = spRef.current.get(SEARCH_PARAM) ?? "";
+      if (localSearch.trim() === current) return;
+      push({ [SEARCH_PARAM]: localSearch.trim() || undefined });
     }, 300);
     return () => clearTimeout(t);
-  }, [localSearch, value, onChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [localSearch]);
 
   return (
     <div className="rounded-2xl border border-[#c9a96e]/20 bg-[#1a1a1a] p-4 sm:p-5">
@@ -48,11 +75,10 @@ export default function OrdersFilters({ value, onChange }: Props) {
         <Field id="orderStatus" label="Estado del pedido">
           <select
             id="orderStatus"
-            value={value.orderStatus}
+            value={orderStatus}
             onChange={(e) =>
-              onChange({
-                ...value,
-                orderStatus: e.target.value as OrderStatusFilter,
+              push({
+                [STATUS_PARAM]: e.target.value === "all" ? undefined : e.target.value,
               })
             }
             className={inputCls}
@@ -68,11 +94,10 @@ export default function OrdersFilters({ value, onChange }: Props) {
         <Field id="paymentStatus" label="Pago">
           <select
             id="paymentStatus"
-            value={value.paymentStatus}
+            value={paymentStatus}
             onChange={(e) =>
-              onChange({
-                ...value,
-                paymentStatus: e.target.value as PaymentStatusFilter,
+              push({
+                [PAYMENT_PARAM]: e.target.value === "all" ? undefined : e.target.value,
               })
             }
             className={inputCls}

@@ -312,7 +312,10 @@ function asKnownProvider(value: string | null): PaymentProvider | null {
 function translateRpcError(error: PostgrestError): CheckoutError {
   const msg = error.message ?? "";
 
-  if (/^Insufficient stock/i.test(msg)) {
+  // Full-bottle/set stock ("Insufficient stock …") and the decant ml-pool
+  // ("Insufficient decant liquid …") are the same thing to the customer: an item
+  // in the cart no longer has enough inventory. Map both to one recoverable code.
+  if (/^Insufficient (stock|decant liquid)/i.test(msg)) {
     return new CheckoutError(
       "stock_unavailable",
       "Lo sentimos, ya no hay stock suficiente para uno de los productos del carrito. Por favor actualiza tu carrito.",

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { formatPrice } from "@/lib/format";
-import type { AdminOrderRow } from "@/hooks/useAdminOrdersList";
+import type { AdminOrderRow } from "@/features/admin/getOrdersAdminPage";
 
 interface Props {
   orders: AdminOrderRow[];

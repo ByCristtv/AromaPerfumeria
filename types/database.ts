@@ -861,6 +861,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_list_product_variants: {
+        Args: { p_limit?: number; p_offset?: number; p_search?: string }
+        Returns: {
+          brand: string
+          categories: Json
+          description: string
+          is_active: boolean
+          is_on_offer: boolean
+          name: string
+          offer_price: number
+          price: number
+          product_id: string
+          product_type: Database["public"]["Enums"]["product_type"]
+          size_ml: number
+          sku: string
+          stock: number
+          total_count: number
+          variant_id: string
+        }[]
+      }
       admin_list_stock_movements: {
         Args: { p_limit?: number; p_offset?: number; p_search?: string }
         Returns: {

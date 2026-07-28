@@ -278,7 +278,7 @@ function rpcError<TData>(
       message: "Por favor proporciona una razón para cancelar el pedido.",
     };
   }
-  if (/Insufficient stock|insufficient_stock|stock/i.test(msg)) {
+  if (/Insufficient stock|insufficient_stock|decant liquid|stock/i.test(msg)) {
     return {
       ok: false,
       message:

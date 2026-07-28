@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { buildStockQuery } from "@/lib/stockParams";
+import { PAGE_PARAM, buildQuery } from "@/lib/pagination";
 
 /** Compact page sequence with ellipses: 1 … 4 5 6 … 20 */
 function pageWindow(current: number, total: number): (number | "gap")[] {
@@ -18,13 +18,20 @@ function pageWindow(current: number, total: number): (number | "gap")[] {
   return pages;
 }
 
-/** URL-driven pagination for the admin stock panel (mirrors the catalog UX). */
-export default function StockPagination({
+/**
+ * URL-driven pagination shared by every admin list. Only the `page` param is
+ * rewritten per link — every other query param (search, status filters, …) is
+ * carried through untouched, so paging never resets filters.
+ */
+export default function Pagination({
   currentPage,
   totalPages,
+  label = "Paginación",
 }: {
   currentPage: number;
   totalPages: number;
+  /** Accessible name for the nav (e.g. "Paginación de pedidos"). */
+  label?: string;
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -32,7 +39,9 @@ export default function StockPagination({
   if (totalPages <= 1) return null;
 
   const hrefFor = (page: number) =>
-    `${pathname}${buildStockQuery(new URLSearchParams(searchParams.toString()), { page })}`;
+    `${pathname}${buildQuery(new URLSearchParams(searchParams.toString()), {
+      [PAGE_PARAM]: page,
+    })}`;
 
   const baseBtn =
     "flex h-10 min-w-10 items-center justify-center rounded-lg border px-3 text-sm transition-all duration-300";
@@ -45,10 +54,7 @@ export default function StockPagination({
   const window = pageWindow(currentPage, totalPages);
 
   return (
-    <nav
-      aria-label="Paginación de movimientos"
-      className="mt-8 flex items-center justify-center gap-2"
-    >
+    <nav aria-label={label} className="mt-8 flex items-center justify-center gap-2">
       {hasPrev ? (
         <Link href={hrefFor(currentPage - 1)} className={`${baseBtn} ${idle}`} aria-label="Página anterior">
           <ChevronLeft size={16} />

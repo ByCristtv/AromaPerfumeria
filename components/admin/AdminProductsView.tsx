@@ -1,57 +1,112 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Search, X } from "lucide-react";
 import ProductForm from "./ProductForm";
 import VariantForm from "./VariantForm";
 import ProductEditForm from "./ProductEditForm";
 import ProductListAdmin from "./ProductListAdmin";
-import Searchbar from "../ui/Searchbar";
 import AdminContainer from "./ui/AdminContainer";
 import AdminPageHeader from "./ui/AdminPageHeader";
+import Pagination from "./ui/Pagination";
+import { SEARCH_PARAM, PAGE_PARAM, buildQuery } from "@/lib/pagination";
+import type { AdminVariantRow } from "@/types/product";
+
+interface Props {
+  rows: AdminVariantRow[];
+  initialSearch: string;
+  currentPage: number;
+  totalPages: number;
+  total: number;
+  from: number;
+  to: number;
+}
 
 /**
- * Full-screen admin products view. The variants table is the default
- * surface; the creation form lives in a modal triggered by the
- * "Nuevo Producto" button. Body scroll is locked while a modal is
- * open and Escape / backdrop-click both dismiss it.
+ * Products admin — a client island fed by the server page (`app/admin/products`).
+ * The variants table is server-rendered + paginated (20/page); this component
+ * owns the interactive parts only: the URL-driven search box, the create/variant/
+ * edit modals, and the row actions. After any mutation it calls `router.refresh()`
+ * so the server-rendered page re-fetches the current page.
  */
-export default function AdminProductsView() {
-  const [searchQuery, setSearchQuery] = useState("");
+export default function AdminProductsView({
+  rows,
+  initialSearch,
+  currentPage,
+  totalPages,
+  total,
+  from,
+  to,
+}: Props) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const spRef = useRef(searchParams);
+  useEffect(() => {
+    spRef.current = searchParams;
+  }, [searchParams]);
+
+  const [search, setSearch] = useState(initialSearch);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [variantModalOpen, setVariantModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<{
     productId: string;
     variantId: string;
   } | null>(null);
+  const firstRun = useRef(true);
 
   const anyModalOpen = createModalOpen || variantModalOpen || editTarget !== null;
-
-  useEffect(() => {
-    if (!anyModalOpen) return;
-
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setCreateModalOpen(false);
-        setVariantModalOpen(false);
-        setEditTarget(null);
-      }
-    };
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKey);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [anyModalOpen]);
 
   const closeModal = () => {
     setCreateModalOpen(false);
     setVariantModalOpen(false);
     setEditTarget(null);
   };
+
+  // Re-fetch the current server page after a create/edit/toggle.
+  const refresh = () => router.refresh();
+
+  const onModalSuccess = () => {
+    closeModal();
+    refresh();
+  };
+
+  // Debounced search → URL (always resets to page 1). Writing `?q=` re-renders the
+  // server page with the new filtered/paginated data.
+  useEffect(() => {
+    if (firstRun.current) {
+      firstRun.current = false;
+      return;
+    }
+    const handle = setTimeout(() => {
+      const current = spRef.current.get(SEARCH_PARAM) ?? "";
+      if (search.trim() === current) return;
+      const qs = buildQuery(new URLSearchParams(spRef.current.toString()), {
+        [SEARCH_PARAM]: search.trim() || undefined,
+        [PAGE_PARAM]: undefined,
+      });
+      router.push(`${pathname}${qs}`, { scroll: false });
+    }, 400);
+    return () => clearTimeout(handle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
+  // Body-scroll lock + Escape close while any modal is open.
+  useEffect(() => {
+    if (!anyModalOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeModal();
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [anyModalOpen]);
 
   return (
     <AdminContainer>
@@ -80,40 +135,67 @@ export default function AdminProductsView() {
       />
 
       <div className="mb-6 max-w-md">
-        <Searchbar
-          onSearch={setSearchQuery}
-          placeholder="Buscar por nombre o marca..."
-        />
+        <div className="relative">
+          <Search
+            size={17}
+            aria-hidden
+            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#a5a5a5]"
+          />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Buscar por nombre, marca o SKU…"
+            aria-label="Buscar productos"
+            className="w-full rounded-xl border border-[#c9a96e]/30 bg-[#1a1a1a] py-3 pl-11 pr-10 text-sm text-[#ececec] placeholder:text-[#a5a5a5]/60 outline-none transition-colors focus:border-[#c9a96e] focus:ring-1 focus:ring-[#c9a96e]/40"
+          />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch("")}
+              aria-label="Limpiar búsqueda"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#a5a5a5] hover:text-[#ececec]"
+            >
+              <X size={15} />
+            </button>
+          )}
+        </div>
       </div>
 
+      <p className="mb-4 text-xs uppercase tracking-[0.2em] text-[#a5a5a5]">
+        {total === 0 ? "Sin productos" : `Mostrando ${from}–${to} de ${total}`}
+      </p>
+
       <ProductListAdmin
-        searchQuery={searchQuery}
-        onEdit={(productId, variantId) =>
-          setEditTarget({ productId, variantId })
-        }
+        rows={rows}
+        onEdit={(productId, variantId) => setEditTarget({ productId, variantId })}
+        onChanged={refresh}
       />
 
-      {/* Create modal */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        label="Paginación de productos"
+      />
+
       {createModalOpen && (
         <ModalOverlay onClose={closeModal} label="Crear nuevo producto">
-          <ProductForm onSuccess={closeModal} />
+          <ProductForm onSuccess={onModalSuccess} />
         </ModalOverlay>
       )}
 
-      {/* Variant modal */}
       {variantModalOpen && (
         <ModalOverlay onClose={closeModal} label="Crear nueva variante">
-          <VariantForm onSuccess={closeModal} />
+          <VariantForm onSuccess={onModalSuccess} />
         </ModalOverlay>
       )}
 
-      {/* Edit modal */}
       {editTarget && (
         <ModalOverlay onClose={closeModal} label="Editar producto">
           <ProductEditForm
             productId={editTarget.productId}
             variantId={editTarget.variantId}
-            onSuccess={closeModal}
+            onSuccess={onModalSuccess}
           />
         </ModalOverlay>
       )}
