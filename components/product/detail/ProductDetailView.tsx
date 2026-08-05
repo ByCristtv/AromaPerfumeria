@@ -74,7 +74,7 @@ export default function ProductDetailView({
             </Link>
             <span className="mx-2 text-black/25">/</span>
             <Link
-              href="/#catalog"
+              href="/products"
               className="hover:text-black transition-colors"
             >
               Catálogo

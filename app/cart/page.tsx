@@ -3,6 +3,7 @@
 import Link from "next/link";
 import CartItem from "@/components/cart/CartItem";
 import { useCart } from "@/hooks/useCart";
+import { useCartPricing } from "@/hooks/useCartPricing";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { formatPrice } from "@/lib/format";
 
@@ -12,12 +13,15 @@ export default function CartPage() {
 	const {
 		cart,
 		totalItems,
-		totalPrice,
 		incrementQuantity,
 		decrementQuantity,
 		removeItem,
 		clearCart,
 	} = useCart();
+
+	// Wholesale-aware pricing (retail for everyone else). Display only — the
+	// server recomputes authoritatively at checkout.
+	const { pricing } = useCartPricing(cart);
 
 	if (!mounted) {
   	return null;
@@ -63,6 +67,7 @@ export default function CartPage() {
 								<div key={item.variant_id} className="opacity-0 animate-fadeUp" style={{ animationDelay: `${i * 70}ms` }}>
 									<CartItem
 										item={item}
+										line={pricing.lines[item.variant_id]}
 										onIncrease={incrementQuantity}
 										onDecrease={decrementQuantity}
 										onDelete={removeItem}
@@ -78,9 +83,27 @@ export default function CartPage() {
 									<span>Productos</span>
 									<span>{totalItems}</span>
 								</div>
+
+								{pricing.hasWholesaleApplied && (
+									<>
+										<div className="flex items-center justify-between text-gray-500">
+											<span>Precio regular</span>
+											<span className="tabular-nums line-through">
+												{formatPrice(pricing.retailSubtotal)}
+											</span>
+										</div>
+										<div className="flex items-center justify-between text-[#8a6d3b]">
+											<span>Ahorro mayorista</span>
+											<span className="tabular-nums">
+												−{formatPrice(pricing.wholesaleSavings)}
+											</span>
+										</div>
+									</>
+								)}
+
 								<div className="flex items-center justify-between text-base font-semibold text-gray-900 pt-2 border-t border-gray-200">
 									<span>Total</span>
-									<span>{formatPrice(totalPrice)}</span>
+									<span className="tabular-nums">{formatPrice(pricing.subtotal)}</span>
 								</div>
 							</div>
 

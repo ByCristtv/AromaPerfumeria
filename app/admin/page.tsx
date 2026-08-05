@@ -9,6 +9,7 @@ import {
   FlaskConical,
   ArrowDownToLine,
   Tags,
+  Store,
   type LucideIcon,
 } from "lucide-react";
 import AdminContainer from "@/components/admin/ui/AdminContainer";
@@ -65,6 +66,13 @@ const SECTIONS: AdminSection[] = [
     description:
       "Consulta el historial de inventario y registra entradas de stock en lote para varias variantes.",
     Icon: ArrowDownToLine,
+  },
+  {
+    href: "/admin/wholesale",
+    title: "Cuentas Mayoristas",
+    description:
+      "Revisa y aprueba las solicitudes de cuenta mayorista (B2B). Gestiona el acceso a precios al por mayor.",
+    Icon: Store,
   },
 ];
 

@@ -18,6 +18,13 @@ export interface ProductFilters {
   productType?: ProductTypes | "";
   /** When true, only products with at least one on-offer active variant. */
   onOffer?: boolean;
+  /**
+   * Wholesale-eligible only. When true, restrict the catalog to products whose
+   * FEATURED variant is fully configured for wholesale (enabled + wholesale_price
+   * > 0 + min_wholesale_quantity > 0) — i.e. the products whose card can show a
+   * wholesale price. Surfaced in the UI to approved wholesale buyers only.
+   */
+  wholesaleOnly?: boolean;
   orderBy?: ProductOrderBy;
   query?: string;
 }

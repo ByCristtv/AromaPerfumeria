@@ -23,6 +23,9 @@ export interface UpdateProductPayload {
   is_on_offer: boolean;
   offer_price: number | null;
   is_active: boolean;
+  // Wholesale (B2B) — optional. NULL means "not sold wholesale".
+  wholesale_price: number | null;
+  min_wholesale_quantity: number | null;
 }
 
 /**
@@ -61,6 +64,10 @@ export async function updateProduct(payload: UpdateProductPayload) {
       product_type: payload.product_type,
       is_on_offer: payload.is_on_offer,
       offer_price: payload.is_on_offer ? payload.offer_price : null,
+      // Written on every edit so clearing the inputs persists NULL (removes the
+      // wholesale tier) rather than silently keeping the old values.
+      wholesale_price: payload.wholesale_price,
+      min_wholesale_quantity: payload.min_wholesale_quantity,
       is_active: payload.is_active,
     })
     .eq("id", payload.variant_id);

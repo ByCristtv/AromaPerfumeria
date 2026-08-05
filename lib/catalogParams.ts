@@ -16,6 +16,7 @@ export const CATALOG_PARAM = {
   category: "category",
   type: "type",
   offer: "offer",
+  wholesale: "wholesale",
   sort: "sort",
   page: "page",
 } as const;
@@ -42,6 +43,7 @@ export function parseCatalogFilters(params: RawSearchParams): ProductFilters {
   const category = first(params[CATALOG_PARAM.category]);
   const typeRaw = first(params[CATALOG_PARAM.type]) as ProductTypes;
   const offerRaw = first(params[CATALOG_PARAM.offer]);
+  const wholesaleRaw = first(params[CATALOG_PARAM.wholesale]);
   const sortRaw = first(params[CATALOG_PARAM.sort]) as ProductOrderBy;
 
   return {
@@ -49,6 +51,7 @@ export function parseCatalogFilters(params: RawSearchParams): ProductFilters {
     category: category || undefined,
     productType: TYPE_VALUES.includes(typeRaw) ? typeRaw : undefined,
     onOffer: offerRaw === "1" ? true : undefined,
+    wholesaleOnly: wholesaleRaw === "1" ? true : undefined,
     orderBy: ORDER_VALUES.includes(sortRaw) ? sortRaw : DEFAULT_ORDER,
   };
 }
@@ -62,7 +65,11 @@ export function parseCatalogPage(params: RawSearchParams): number {
 /** Are any narrowing filters (search/category/type) currently active? */
 export function hasActiveFilters(filters: ProductFilters): boolean {
   return Boolean(
-    filters.query || filters.category || filters.productType || filters.onOffer
+    filters.query ||
+      filters.category ||
+      filters.productType ||
+      filters.onOffer ||
+      filters.wholesaleOnly
   );
 }
 

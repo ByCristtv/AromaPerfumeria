@@ -10,6 +10,10 @@ import { useBrands } from "@/hooks/useBrands";
 import { PRODUCTS_QUERY_KEY } from "@/hooks/useProducts";
 import { ADMIN_PRODUCTS_QUERY_KEY } from "@/features/admin/getProductsAdmin";
 import ProductImagesManager from "@/components/admin/ProductImagesManager";
+import {
+  parseWholesaleFields,
+  wholesaleFieldToInput,
+} from "@/lib/wholesale/variantFields";
 import type { ProductTypes } from "@/types/product";
 
 interface ProductEditFormProps {
@@ -35,6 +39,9 @@ type ProductFormState = {
   product_type: ProductTypes;
   is_on_offer: boolean;
   offer_price: string;
+  // Wholesale (B2B) — raw strings; parsed to number|null on submit.
+  wholesale_price: string;
+  min_wholesale_quantity: string;
 };
 
 type Option<V extends string = string> = { value: V; label: string };
@@ -63,6 +70,8 @@ export default function ProductEditForm({
     product_type: "full_size",
     is_on_offer: false,
     offer_price: "",
+    wholesale_price: "",
+    min_wholesale_quantity: "",
   });
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
@@ -103,6 +112,12 @@ export default function ProductEditForm({
           product_type: (variant.product_type as ProductTypes) ?? "full_size",
           is_on_offer: !!variant.is_on_offer,
           offer_price: variant.offer_price != null ? String(variant.offer_price) : "",
+          // Hydrate NULLs to "" so the inputs stay controlled and blank fields
+          // don't render "null"/"0".
+          wholesale_price: wholesaleFieldToInput(variant.wholesale_price),
+          min_wholesale_quantity: wholesaleFieldToInput(
+            variant.min_wholesale_quantity
+          ),
         });
         setSelectedCategories(category_ids);
       } catch (err) {
@@ -126,6 +141,19 @@ export default function ProductEditForm({
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    const wholesale = parseWholesaleFields(
+      form.wholesale_price,
+      form.min_wholesale_quantity
+    );
+    if (!wholesale.ok) {
+      Swal.fire({
+        icon: "warning",
+        title: "Datos mayoristas inválidos",
+        text: wholesale.message,
+      });
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -140,6 +168,8 @@ export default function ProductEditForm({
         stock: form.product_type === "decant" ? 0 : Number(form.stock),
         size_ml: Number(form.size_ml),
         offer_price: form.is_on_offer ? Number(form.offer_price) : null,
+        wholesale_price: wholesale.values.wholesale_price,
+        min_wholesale_quantity: wholesale.values.min_wholesale_quantity,
         category_ids: selectedCategories,
       });
 
@@ -420,6 +450,50 @@ export default function ProductEditForm({
               />
               Activa
             </label>
+          </div>
+        </div>
+
+        {/* SECCIÓN 2b: PRECIOS MAYORISTAS (B2B) */}
+        <div className="space-y-4 bg-[#1a1a1a]/50 p-6 rounded-xl border border-[#c9a96e]/10">
+          <div className="border-b border-[#c9a96e]/20 pb-2">
+            <h3 className="text-[#c9a96e] font-bold">Precios Mayoristas (B2B)</h3>
+            <p className="text-xs text-[#a5a5a5] mt-1">
+              Opcional. Solo se aplican a clientes mayoristas aprobados que compren
+              la cantidad mínima. Déjalos vacíos si esta variante no se vende al por
+              mayor.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-[#c9a96e] uppercase">
+                Precio Mayorista
+              </label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="Opcional"
+                value={form.wholesale_price}
+                onChange={(e) => setField("wholesale_price", e.target.value)}
+                className="input-field-custom"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-[#c9a96e] uppercase">
+                Cantidad Mínima Mayorista
+              </label>
+              <input
+                type="number"
+                min="2"
+                step="1"
+                placeholder="Opcional (mín. 2)"
+                value={form.min_wholesale_quantity}
+                onChange={(e) =>
+                  setField("min_wholesale_quantity", e.target.value)
+                }
+                className="input-field-custom"
+              />
+            </div>
           </div>
         </div>
 

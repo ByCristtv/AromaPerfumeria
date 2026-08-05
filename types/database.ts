@@ -271,6 +271,7 @@ export type Database = {
           sku: string
           unit_price: number
           variant_id: string | null
+          was_wholesale_price: boolean
         }
         Insert: {
           brand_name: string
@@ -285,6 +286,7 @@ export type Database = {
           sku: string
           unit_price: number
           variant_id?: string | null
+          was_wholesale_price?: boolean
         }
         Update: {
           brand_name?: string
@@ -299,6 +301,7 @@ export type Database = {
           sku?: string
           unit_price?: number
           variant_id?: string | null
+          was_wholesale_price?: boolean
         }
         Relationships: [
           {
@@ -319,6 +322,8 @@ export type Database = {
       }
       orders: {
         Row: {
+          billing_company_name: string | null
+          billing_tax_id: string | null
           created_at: string
           created_by_admin_id: string | null
           customer_email: string | null
@@ -326,6 +331,7 @@ export type Database = {
           customer_phone: string
           discount: number
           id: string
+          is_wholesale_order: boolean
           notes: string | null
           order_number: number
           order_status: Database["public"]["Enums"]["order_status"]
@@ -348,6 +354,8 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          billing_company_name?: string | null
+          billing_tax_id?: string | null
           created_at?: string
           created_by_admin_id?: string | null
           customer_email?: string | null
@@ -355,6 +363,7 @@ export type Database = {
           customer_phone: string
           discount?: number
           id?: string
+          is_wholesale_order?: boolean
           notes?: string | null
           order_number?: never
           order_status?: Database["public"]["Enums"]["order_status"]
@@ -377,6 +386,8 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          billing_company_name?: string | null
+          billing_tax_id?: string | null
           created_at?: string
           created_by_admin_id?: string | null
           customer_email?: string | null
@@ -384,6 +395,7 @@ export type Database = {
           customer_phone?: string
           discount?: number
           id?: string
+          is_wholesale_order?: boolean
           notes?: string | null
           order_number?: never
           order_status?: Database["public"]["Enums"]["order_status"]
@@ -527,6 +539,8 @@ export type Database = {
           id: string
           is_active: boolean
           is_on_offer: boolean
+          is_wholesale_enabled: boolean
+          min_wholesale_quantity: number | null
           offer_price: number | null
           position: number
           price: number
@@ -536,12 +550,15 @@ export type Database = {
           sku: string
           stock: number
           updated_at: string
+          wholesale_price: number | null
         }
         Insert: {
           created_at?: string
           id?: string
           is_active?: boolean
           is_on_offer?: boolean
+          is_wholesale_enabled?: boolean
+          min_wholesale_quantity?: number | null
           offer_price?: number | null
           position?: number
           price: number
@@ -551,12 +568,15 @@ export type Database = {
           sku: string
           stock?: number
           updated_at?: string
+          wholesale_price?: number | null
         }
         Update: {
           created_at?: string
           id?: string
           is_active?: boolean
           is_on_offer?: boolean
+          is_wholesale_enabled?: boolean
+          min_wholesale_quantity?: number | null
           offer_price?: number | null
           position?: number
           price?: number
@@ -566,6 +586,7 @@ export type Database = {
           sku?: string
           stock?: number
           updated_at?: string
+          wholesale_price?: number | null
         }
         Relationships: [
           {
@@ -856,6 +877,47 @@ export type Database = {
           },
         ]
       }
+      wholesale_profiles: {
+        Row: {
+          application_status: string
+          business_activity: string | null
+          company_name: string
+          created_at: string
+          tax_id: string
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          application_status?: string
+          business_activity?: string | null
+          company_name: string
+          created_at?: string
+          tax_id: string
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          application_status?: string
+          business_activity?: string | null
+          company_name?: string
+          created_at?: string
+          tax_id?: string
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wholesale_profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -869,6 +931,7 @@ export type Database = {
           description: string
           is_active: boolean
           is_on_offer: boolean
+          min_wholesale_quantity: number
           name: string
           offer_price: number
           price: number
@@ -879,6 +942,7 @@ export type Database = {
           stock: number
           total_count: number
           variant_id: string
+          wholesale_price: number
         }[]
       }
       admin_list_stock_movements: {
@@ -1005,6 +1069,10 @@ export type Database = {
       place_order: { Args: { p_payload: Json }; Returns: Json }
       register_bulk_stock: { Args: { p_payload: Json }; Returns: Json }
       restore_variant_stock: { Args: { p_order_id: string }; Returns: Json }
+      review_wholesale_application: {
+        Args: { p_decision: string; p_user_id: string }
+        Returns: Json
+      }
       search_products: {
         Args: { p_limit?: number; p_offset?: number; p_query: string }
         Returns: {
@@ -1040,7 +1108,7 @@ export type Database = {
         | "correction"
         | "return"
         | "transformed_to_decant"
-      user_role: "customer" | "admin"
+      user_role: "customer" | "admin" | "wholesale"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1183,7 +1251,7 @@ export const Constants = {
         "return",
         "transformed_to_decant",
       ],
-      user_role: ["customer", "admin"],
+      user_role: ["customer", "admin", "wholesale"],
     },
   },
 } as const

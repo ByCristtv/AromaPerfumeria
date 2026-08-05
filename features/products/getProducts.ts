@@ -26,10 +26,19 @@ type CatalogQuery = ReturnType<typeof buildBaseQuery>;
  * prunes products that don't match; otherwise we left-join so uncategorised
  * products still appear.
  */
-function buildSelect(filterByCategory: boolean): string {
+function buildSelect(filterByCategory: boolean, filterByWholesale: boolean): string {
   const categoriesClause = filterByCategory
     ? `categories!inner ( id, name )`
     : `categories ( id, name )`;
+
+  // When filtering to wholesale-eligible products we inner-join the featured
+  // variant so the wholesale predicates in applyFilters actually prune parent
+  // rows (and the exact count stays correct). We deliberately DON'T select the
+  // wholesale price columns here — they're fetched client-side only for approved
+  // buyers (see CatalogWholesaleProvider), so retail visitors never receive them.
+  const featuredJoin = filterByWholesale
+    ? `product_variants!fk_featured_variant!inner`
+    : `product_variants!fk_featured_variant`;
 
   return `
     id,
@@ -40,7 +49,7 @@ function buildSelect(filterByCategory: boolean): string {
     decant_stock_ml,
     brands ( name ),
     ${categoriesClause},
-    featured_variant:product_variants!fk_featured_variant (
+    featured_variant:${featuredJoin} (
       id,
       price,
       offer_price,
@@ -54,10 +63,10 @@ function buildSelect(filterByCategory: boolean): string {
 }
 
 /** Active-products base query with an exact count for precise pagination. */
-function buildBaseQuery(filterByCategory: boolean) {
+function buildBaseQuery(filterByCategory: boolean, filterByWholesale: boolean) {
   return supabase
     .from("products")
-    .select(buildSelect(filterByCategory), { count: "exact" })
+    .select(buildSelect(filterByCategory, filterByWholesale), { count: "exact" })
     .eq("is_active", true);
 }
 
@@ -135,6 +144,16 @@ function applyFilters(
     next = next.eq("categories.id", filters.category);
   }
 
+  if (filters?.wholesaleOnly) {
+    // The featured variant is inner-joined (see buildSelect), so these predicates
+    // prune to products whose CARD can actually show a wholesale price. Mirrors
+    // isWholesaleConfigured() in lib/pricing/wholesale.ts.
+    next = next
+      .eq("featured_variant.is_wholesale_enabled", true)
+      .gt("featured_variant.wholesale_price", 0)
+      .gt("featured_variant.min_wholesale_quantity", 0);
+  }
+
   return next;
 }
 
@@ -182,7 +201,7 @@ async function runCatalogQuery(
     return { items: [], total: 0 };
   }
 
-  let query = buildBaseQuery(!!filters?.category);
+  let query = buildBaseQuery(!!filters?.category, !!filters?.wholesaleOnly);
   query = applyFilters(query, filters, searchIds, typeIds, offerIds);
   query = applyOrder(query, filters?.orderBy);
 

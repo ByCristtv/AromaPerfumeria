@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Search, SlidersHorizontal, Tag, X } from "lucide-react";
+import { BadgeCheck, ChevronDown, Search, SlidersHorizontal, Tag, X } from "lucide-react";
 import { useCategories } from "@/hooks/useCategories";
+import { useWholesaleStatus } from "@/hooks/useWholesaleStatus";
 import { buildCatalogQuery } from "@/lib/catalogParams";
 import type { ProductFilters, ProductOrderBy } from "@/types/productFilter";
 import type { ProductTypes } from "@/types/product";
@@ -59,6 +60,7 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { data: categories = [] } = useCategories();
+  const { isApproved: isWholesale } = useWholesaleStatus();
 
   // Keep latest searchParams without re-subscribing the debounce effect.
   const spRef = useRef(searchParams);
@@ -99,6 +101,7 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
     (filters.category ? 1 : 0) +
     (filters.productType ? 1 : 0) +
     (filters.onOffer ? 1 : 0) +
+    (filters.wholesaleOnly ? 1 : 0) +
     (filters.query ? 1 : 0);
 
   const controls = (
@@ -171,6 +174,31 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
     </label>
   );
 
+  // Only approved wholesale buyers see this — filters to products whose card can
+  // show a wholesale price (featured variant configured for wholesale).
+  const wholesaleToggle = isWholesale ? (
+    <label className="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-[#c9a96e]/25 bg-[#141414] px-4 py-3">
+      <span className="flex items-center gap-2 text-sm text-white/80">
+        <BadgeCheck size={15} aria-hidden className="text-[#c9a96e]" />
+        Solo productos mayoristas
+      </span>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={!!filters.wholesaleOnly}
+        aria-label="Mostrar solo productos con precio mayorista"
+        onClick={() => navigate({ wholesale: filters.wholesaleOnly ? undefined : "1" })}
+        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-300 ${filters.wholesaleOnly ? "bg-[#c9a96e]" : "bg-white/15"
+          }`}
+      >
+        <span
+          className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white transition-transform duration-300 ${filters.wholesaleOnly ? "translate-x-5" : "translate-x-0"
+            }`}
+        />
+      </button>
+    </label>
+  ) : null;
+
   return (
     <div className="lg:sticky lg:top-21 lg:z-30">
       <div className="rounded-2xl border border-white/8 bg-[#0d0d0d]/85 p-4 backdrop-blur-md sm:p-5">
@@ -222,7 +250,10 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
 
         {/* Desktop controls */}
         <div className="mt-4 hidden grid-cols-3 gap-4 lg:grid">{controls}</div>
-        <div className="mt-4 hidden lg:block">{offerToggle}</div>
+        <div className="mt-4 hidden gap-4 lg:grid" style={{ gridTemplateColumns: wholesaleToggle ? "1fr 1fr" : "1fr" }}>
+          {offerToggle}
+          {wholesaleToggle}
+        </div>
 
         {/* Mobile collapsible controls */}
         <AnimatePresence initial={false}>
@@ -235,7 +266,10 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
               className="overflow-hidden lg:hidden"
             >
               <div className="grid gap-4 pt-4 sm:grid-cols-3">{controls}</div>
-              <div className="pt-4">{offerToggle}</div>
+              <div className={`grid gap-4 pt-4 ${wholesaleToggle ? "sm:grid-cols-2" : ""}`}>
+                {offerToggle}
+                {wholesaleToggle}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

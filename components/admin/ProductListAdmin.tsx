@@ -82,6 +82,7 @@ export default function ProductListAdmin({ rows, onEdit, onChanged }: ProductLis
             <th className="px-4 py-3">Tipo</th>
             <th className="px-4 py-3">Tamaño</th>
             <th className="px-4 py-3">Precio</th>
+            <th className="px-4 py-3">Mayorista</th>
             <th className="px-4 py-3">Stock</th>
             <th className="px-4 py-3">Categorías</th>
             <th className="px-4 py-3">Estado</th>
@@ -125,6 +126,22 @@ export default function ProductListAdmin({ rows, onEdit, onChanged }: ProductLis
                     <span className="text-[#c9a96e] font-semibold">
                       {currency.format(effectivePrice)}
                     </span>
+                  )}
+                </td>
+                <td className="px-4 py-3">
+                  {v.wholesale_price != null ? (
+                    <div className="flex flex-col">
+                      <span className="text-[#c9a96e] font-semibold">
+                        {currency.format(v.wholesale_price)}
+                      </span>
+                      {v.min_wholesale_quantity != null && (
+                        <span className="text-xs text-[#a5a5a5]">
+                          mín. {v.min_wholesale_quantity}
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="text-[#a5a5a5]">—</span>
                   )}
                 </td>
                 <td className="px-4 py-3">

@@ -15,6 +15,8 @@ const ADMIN_VARIANT_SELECT = `
   is_on_offer,
   offer_price,
   is_active,
+  wholesale_price,
+  min_wholesale_quantity,
   created_at,
   products!product_variants_product_id_fkey!inner (
     id,
@@ -38,6 +40,8 @@ interface AdminVariantQueryRow {
   is_on_offer: boolean | null;
   offer_price: number | null;
   is_active: boolean | null;
+  wholesale_price: number | null;
+  min_wholesale_quantity: number | null;
   created_at: string;
   products: {
     id: string;
@@ -87,6 +91,8 @@ export const getProductsAdmin = async (): Promise<AdminVariantRow[]> => {
       is_on_offer: !!v.is_on_offer,
       offer_price: v.offer_price ?? null,
       is_active: !!v.is_active,
+      wholesale_price: v.wholesale_price ?? null,
+      min_wholesale_quantity: v.min_wholesale_quantity ?? null,
       name: parent?.name ?? "Sin nombre",
       description: parent?.description ?? null,
       brand: parent?.brands?.name ?? "Sin marca",

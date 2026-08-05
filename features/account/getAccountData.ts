@@ -13,13 +13,17 @@ export type AccountOrderRow = Pick<
   | "created_at"
 >;
 
+export type WholesaleProfileRow = Tables<"wholesale_profiles">;
+
 export interface AccountData {
   profile: ProfileRow | null;
   address: AddressRow | null;
+  /** The user's wholesale application, or null if they never applied. */
+  wholesale: WholesaleProfileRow | null;
 }
 
 export async function getAccountData(userId: string): Promise<AccountData> {
-  const [profileRes, addressRes] = await Promise.all([
+  const [profileRes, addressRes, wholesaleRes] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", userId).single(),
     supabase
       .from("addresses")
@@ -28,11 +32,17 @@ export async function getAccountData(userId: string): Promise<AccountData> {
       .order("updated_at", { ascending: false })
       .limit(1)
       .maybeSingle(),
+    supabase
+      .from("wholesale_profiles")
+      .select("*")
+      .eq("user_id", userId)
+      .maybeSingle(),
   ]);
 
   return {
     profile: profileRes.data,
     address: addressRes.data,
+    wholesale: wholesaleRes.data,
   };
 }
 

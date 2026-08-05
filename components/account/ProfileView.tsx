@@ -164,6 +164,11 @@ export default function ProfileView() {
               address={accountData?.address ?? null}
               onSaved={refreshAccount}
             />
+
+            <WholesaleCard
+              role={accountData?.profile?.role ?? null}
+              wholesale={accountData?.wholesale ?? null}
+            />
           </aside>
 
           {/* ──────── Right: order history ──────── */}
@@ -475,6 +480,82 @@ function AddressCard({
         </div>
       </Modal>
     </Card>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Wholesale (B2B) account
+// ─────────────────────────────────────────────────────────────────────────────
+
+function WholesaleCard({
+  role,
+  wholesale,
+}: {
+  role: NonNullable<AccountData["profile"]>["role"] | null;
+  wholesale: AccountData["wholesale"];
+}) {
+  // Admins have no use for the customer wholesale flow.
+  if (role === "admin") return null;
+
+  const status = wholesale?.application_status ?? null;
+  const isActive = role === "wholesale" || status === "approved";
+
+  return (
+    <Card>
+      <CardHeading title="Cuenta mayorista" />
+
+      {isActive ? (
+        <>
+          <div className="flex items-center gap-2">
+            <span className="inline-block h-2 w-2 rounded-full bg-[#c9a96e]" />
+            <p className="text-sm text-[#c9a96e]">Activa</p>
+          </div>
+          <p className="mt-1.5 text-xs text-white/40">
+            Verás los precios mayoristas en el carrito al alcanzar la cantidad
+            mínima de cada producto.
+          </p>
+          {wholesale?.company_name && (
+            <p className="mt-2 text-xs text-white/50">{wholesale.company_name}</p>
+          )}
+        </>
+      ) : status === "pending" ? (
+        <>
+          <Badge label="En revisión" />
+          <p className="mt-2 text-xs text-white/40">
+            Estamos revisando tu solicitud. Te avisaremos aquí cuando haya una
+            decisión.
+          </p>
+        </>
+      ) : status === "rejected" ? (
+        <>
+          <Badge label="Rechazada" />
+          <p className="mt-2 text-xs text-white/40">
+            Tu solicitud fue rechazada. Puedes corregir los datos y volver a
+            enviarla.
+          </p>
+          <WholesaleCta label="Volver a solicitar" />
+        </>
+      ) : (
+        <>
+          <p className="text-sm text-white/70">
+            ¿Tienes un negocio? Compra al por mayor con precios especiales.
+          </p>
+          <WholesaleCta label="Solicitar cuenta mayorista" />
+        </>
+      )}
+    </Card>
+  );
+}
+
+function WholesaleCta({ label }: { label: string }) {
+  return (
+    <Link
+      href="/wholesale/apply"
+      className="mt-4 inline-block border border-[#c9a96e]/40 px-5 py-2 text-[10px] uppercase tracking-[0.2em] text-[#c9a96e] transition-colors duration-300 hover:bg-[#c9a96e] hover:text-black"
+      style={{ fontFamily: SERIF }}
+    >
+      {label}
+    </Link>
   );
 }
 

@@ -8,6 +8,8 @@ import { useCart } from "@/hooks/useCart";
 import { ProductCardData, ProductTypes } from "@/types/product";
 import { availableUnits } from "@/lib/stock";
 import { formatPrice } from "@/lib/format";
+import { useCatalogWholesale } from "@/components/catalog/CatalogWholesaleContext";
+import { isWholesaleConfigured } from "@/lib/pricing/wholesale";
 
 const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
 const LOW_STOCK_THRESHOLD = 5;
@@ -38,6 +40,7 @@ function Badge({ label, tone }: { label: string; tone: BadgeTone }) {
 
 export default function ProductCard({ product }: { product: ProductCardData }) {
   const { addItem } = useCart();
+  const { eligible, pricingMap } = useCatalogWholesale();
   const variant = product.featured_variant;
 
   const [imgLoaded, setImgLoaded] = useState(false);
@@ -56,6 +59,18 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
   const imageUrl = product.product_images[0]?.url || "/placeholder.png";
   const effectivePrice =
     variant.is_on_offer && variant.offer_price ? variant.offer_price : variant.price;
+
+  // Wholesale dual pricing — shown only to approved buyers, and only when the
+  // featured variant is fully configured for wholesale. Prices come from the
+  // client-side wholesale fetch (see CatalogWholesaleProvider), never the DTO.
+  const wholesale = pricingMap[variant.id];
+  const showWholesale =
+    eligible && !!wholesale && isWholesaleConfigured(wholesale);
+  const wholesalePrice = showWholesale ? (wholesale.wholesale_price as number) : null;
+  const minWholesaleQty = showWholesale
+    ? (wholesale.min_wholesale_quantity as number)
+    : null;
+
   const stock = availableUnits(variant, product.decant_stock_ml);
   const inStock = stock > 0;
   const lowStock = inStock && stock <= LOW_STOCK_THRESHOLD;
@@ -150,16 +165,34 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
 
         {/* Price + stock */}
         <div className="mt-2 flex items-end justify-between gap-2">
-          <div className="flex flex-col">
-            {variant.is_on_offer && variant.offer_price && (
-              <span className="text-xs text-white/35 line-through" style={{ fontFamily: serif }}>
-                {formatPrice(variant.price)}
+          {showWholesale ? (
+            // Wholesale buyer: retail struck-through/muted, wholesale prominent in gold.
+            <div className="flex flex-col">
+              <span
+                className="text-xs text-white/35 line-through"
+                style={{ fontFamily: serif }}
+              >
+                {formatPrice(effectivePrice)}
               </span>
-            )}
-            <span className="text-xl text-white" style={{ fontFamily: serif }}>
-              {formatPrice(effectivePrice)}
-            </span>
-          </div>
+              <span
+                className="text-xl font-semibold text-[#c9a96e]"
+                style={{ fontFamily: serif }}
+              >
+                {formatPrice(wholesalePrice as number)}
+              </span>
+            </div>
+          ) : (
+            <div className="flex flex-col">
+              {variant.is_on_offer && variant.offer_price && (
+                <span className="text-xs text-white/35 line-through" style={{ fontFamily: serif }}>
+                  {formatPrice(variant.price)}
+                </span>
+              )}
+              <span className="text-xl text-white" style={{ fontFamily: serif }}>
+                {formatPrice(effectivePrice)}
+              </span>
+            </div>
+          )}
           <span
             className={`mb-1 text-[10px] uppercase tracking-[0.15em] ${
               inStock ? "text-emerald-400/70" : "text-white/30"
@@ -169,6 +202,16 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
             {inStock ? " ": "Sin stock"}
           </span>
         </div>
+
+        {/* Minimum wholesale quantity badge (no savings % — keep the card clean). */}
+        {showWholesale && (
+          <span
+            className="mt-2 inline-flex w-fit items-center rounded-full border border-[#c9a96e]/40 bg-[#c9a96e]/10 px-2.5 py-0.5 text-[10px] uppercase tracking-[0.15em] text-[#c9a96e]"
+            style={{ fontFamily: serif }}
+          >
+            A partir de {minWholesaleQty} uds.
+          </span>
+        )}
 
         {/* Add to cart */}
         <button

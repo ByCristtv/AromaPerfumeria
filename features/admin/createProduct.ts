@@ -30,12 +30,32 @@ export async function createProduct(formData: CreateProductDTO) {
     p_size_ml: formData.size_ml,
     p_product_type: formData.product_type,
     p_is_on_offer: formData.is_on_offer,
-    p_offer_price: formData.is_on_offer && formData.offer_price !== null 
-      ? Number(formData.offer_price) 
+    p_offer_price: formData.is_on_offer && formData.offer_price !== null
+      ? Number(formData.offer_price)
       : undefined,
   });
 
   if (error) throw error;
+
+  // `create_new_product` predates the wholesale columns and takes no wholesale
+  // params, so persist them in a follow-up update on the just-created variant,
+  // located by its unique SKU. Only runs when at least one value was provided,
+  // leaving retail-only creation completely unchanged.
+  if (
+    formData.wholesale_price !== null ||
+    formData.min_wholesale_quantity !== null
+  ) {
+    const { error: wholesaleError } = await supabase
+      .from("product_variants")
+      .update({
+        wholesale_price: formData.wholesale_price,
+        min_wholesale_quantity: formData.min_wholesale_quantity,
+      })
+      .eq("sku", formData.sku);
+
+    if (wholesaleError) throw wholesaleError;
+  }
+
   return data;
 }
 
@@ -58,6 +78,8 @@ export async function createVariant(variantData: CreateVariantDTO) {
       product_type: variantData.product_type as ProductTypes,
       is_on_offer: variantData.is_on_offer,
       offer_price: variantData.offer_price,
+      wholesale_price: variantData.wholesale_price,
+      min_wholesale_quantity: variantData.min_wholesale_quantity,
       is_active: true,
     })
     .select()

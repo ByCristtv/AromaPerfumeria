@@ -18,6 +18,8 @@ interface RawVariantRow {
   is_on_offer: boolean | null;
   offer_price: number | null;
   is_active: boolean | null;
+  wholesale_price: number | null;
+  min_wholesale_quantity: number | null;
   name: string | null;
   description: string | null;
   brand: string | null;
@@ -77,6 +79,8 @@ export async function getProductsAdminPage(
     is_on_offer: !!v.is_on_offer,
     offer_price: v.offer_price ?? null,
     is_active: !!v.is_active,
+    wholesale_price: v.wholesale_price ?? null,
+    min_wholesale_quantity: v.min_wholesale_quantity ?? null,
     name: v.name ?? "Sin nombre",
     description: v.description ?? null,
     brand: v.brand ?? "Sin marca",

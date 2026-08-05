@@ -25,6 +25,9 @@ export interface AdminVariantRow {
   is_on_offer: boolean;
   offer_price: number | null;
   is_active: boolean;
+  // Wholesale (B2B) — NULL when this variant isn't sold wholesale.
+  wholesale_price: number | null;
+  min_wholesale_quantity: number | null;
   name: string;
   description: string | null;
   brand: string;
@@ -115,6 +118,10 @@ export interface CreateProductDTO {
   product_type: ProductTypes;
   is_on_offer: boolean;
   offer_price: number | null;
+  // Wholesale (B2B) — optional. NULL means "not sold wholesale". Both are
+  // required together for wholesale pricing to apply (see lib/pricing/wholesale).
+  wholesale_price: number | null;
+  min_wholesale_quantity: number | null;
 }
 
 /**
@@ -157,6 +164,9 @@ export interface CreateVariantDTO {
   product_type: ProductTypes;
   is_on_offer: boolean;
   offer_price: number | null;
+  // Wholesale (B2B) — optional. NULL means "not sold wholesale".
+  wholesale_price: number | null;
+  min_wholesale_quantity: number | null;
 }
 
 export type CartLineItem = {
