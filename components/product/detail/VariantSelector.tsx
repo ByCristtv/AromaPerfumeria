@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { ProductVariant } from "@/types/product";
+import type { ProductTypes, ProductVariant } from "@/types/product";
 import { availableUnits } from "@/lib/stock";
 
 interface VariantSelectorProps {
@@ -18,6 +18,17 @@ const TYPE_LABEL: Record<string, string> = {
   set: "Set",
 };
 
+/**
+ * Display order of the presentation groups. Bottles first, then decants, then
+ * any sets — each rendered as its own labelled block, and only when it holds
+ * at least one variant.
+ */
+const GROUP_ORDER: { type: ProductTypes; heading: string; hint: string }[] = [
+  { type: "full_size", heading: "Frasco", hint: "Presentación completa" },
+  { type: "decant", heading: "Decants", hint: "Fracciones del original" },
+  { type: "set", heading: "Sets", hint: "Ediciones especiales" },
+];
+
 export default function VariantSelector({
   variants,
   selectedId,
@@ -26,28 +37,46 @@ export default function VariantSelector({
 }: VariantSelectorProps) {
   if (variants.length === 0) return null;
 
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-[11px] font-medium tracking-[0.28em] uppercase text-black/60">
-          Presentación
-        </h2>
-        <span className="text-[11px] text-black/40">
-          {variants.length} {variants.length === 1 ? "opción" : "opciones"}
-        </span>
-      </div>
+  // Group by presentation type, keeping each group ordered by size ascending.
+  const groups = GROUP_ORDER.map((g) => ({
+    ...g,
+    items: variants
+      .filter((v) => v.product_type === g.type)
+      .sort((a, b) => a.size_ml - b.size_ml),
+  })).filter((g) => g.items.length > 0);
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-        {variants.map((v) => (
-          <VariantCard
-            key={v.id}
-            variant={v}
-            selected={v.id === selectedId}
-            disabled={availableUnits(v, decantPoolMl) <= 0}
-            onClick={() => onSelect(v)}
-          />
-        ))}
-      </div>
+  return (
+    <div className="flex flex-col gap-7">
+      {groups.map((group) => (
+        <section key={group.type} aria-label={group.heading}>
+          <div className="flex items-baseline justify-between mb-3">
+            <div className="flex items-baseline gap-2.5">
+              <h2 className="text-[11px] font-medium tracking-[0.28em] uppercase text-black/60">
+                {group.heading}
+              </h2>
+              <span className="hidden sm:inline text-[11px] text-black/35">
+                {group.hint}
+              </span>
+            </div>
+            <span className="text-[11px] text-black/40">
+              {group.items.length}{" "}
+              {group.items.length === 1 ? "opción" : "opciones"}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+            {group.items.map((v) => (
+              <VariantCard
+                key={v.id}
+                variant={v}
+                selected={v.id === selectedId}
+                disabled={availableUnits(v, decantPoolMl) <= 0}
+                onClick={() => onSelect(v)}
+              />
+            ))}
+          </div>
+        </section>
+      ))}
     </div>
   );
 }

@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useCart } from "@/hooks/useCart";
 import { useProductSelection } from "@/hooks/useProductSelection";
+import { useWholesalePricingMap } from "@/hooks/useWholesalePricingMap";
 import type { ProductCardData, ProductDetailData } from "@/types/product";
 
 import AmbientBackground from "./AmbientBackground";
@@ -35,6 +36,16 @@ export default function ProductDetailView({
 }: ProductDetailViewProps) {
   const { addItem } = useCart();
   const sel = useProductSelection(product, initialVariantId);
+
+  // Wholesale B2B pricing for this product's variants — fetched only for
+  // approved buyers (see hook). The selected variant's row drives the panel.
+  const variantIds = useMemo(
+    () => product.product_variants.map((v) => v.id),
+    [product.product_variants]
+  );
+  const { eligible: wholesaleEligible, pricingMap } =
+    useWholesalePricingMap(variantIds);
+  const wholesalePricing = pricingMap[sel.selectedVariant.id];
 
   // Images belong to the parent product, not the variant — the cart line shows
   // the parent's primary image regardless of the selected variant.
@@ -97,11 +108,14 @@ export default function ProductDetailView({
               quantity={sel.quantity}
               onIncrement={sel.increment}
               onDecrement={sel.decrement}
+              onSetQuantity={sel.setQuantity}
               effectivePrice={sel.effectivePrice}
               hasOffer={sel.hasOffer}
               outOfStock={sel.outOfStock}
               availableStock={sel.availableStock}
               onAddToCart={handleAdd}
+              wholesaleEligible={wholesaleEligible}
+              wholesalePricing={wholesalePricing}
             />
           </section>
 

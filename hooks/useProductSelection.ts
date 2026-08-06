@@ -9,6 +9,7 @@ export interface UseProductSelectionReturn {
   selectedVariant: ProductVariant;
   selectVariant: (v: ProductVariant) => void;
   quantity: number;
+  /** Set the quantity directly (stock-clamped) — powers the wholesale "reach minimum" shortcut. */
   setQuantity: (q: number) => void;
   increment: () => void;
   decrement: () => void;
@@ -27,9 +28,11 @@ export function useProductSelection(
   product: ProductDetailData,
   initialVariantId?: string
 ): UseProductSelectionReturn {
+  // Order by presentation size ascending (numeric) so every consumer — the
+  // grouped selector, the default pick — reads small→large left-to-right.
   const sortedVariants = useMemo(
     () =>
-      [...product.product_variants].sort((a, b) => a.position - b.position),
+      [...product.product_variants].sort((a, b) => a.size_ml - b.size_ml),
     [product.product_variants]
   );
 

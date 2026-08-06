@@ -6,7 +6,13 @@ import StockBadge from "./StockBadge";
 import VariantSelector from "./VariantSelector";
 import QuantityStepper from "./QuantityStepper";
 import AddToCartButton from "./AddToCartButton";
+import WholesalePanel from "./WholesalePanel";
 import type { ProductDetailData, ProductVariant } from "@/types/product";
+import {
+  isWholesaleConfigured,
+  resolveLinePricing,
+  type VariantPricing,
+} from "@/lib/pricing/wholesale";
 
 interface PurchasePanelProps {
   product: ProductDetailData;
@@ -16,12 +22,18 @@ interface PurchasePanelProps {
   quantity: number;
   onIncrement: () => void;
   onDecrement: () => void;
+  /** Set the quantity directly — powers the wholesale "reach minimum" shortcut. */
+  onSetQuantity: (q: number) => void;
   effectivePrice: number;
   hasOffer: boolean;
   outOfStock: boolean;
   /** Sellable units of the selected variant (decant-aware). */
   availableStock: number;
   onAddToCart: () => void;
+  /** Viewer is an approved wholesale buyer. */
+  wholesaleEligible: boolean;
+  /** Wholesale pricing columns for the selected variant (eligible buyers only). */
+  wholesalePricing?: VariantPricing;
 }
 
 export default function PurchasePanel({
@@ -32,12 +44,33 @@ export default function PurchasePanel({
   quantity,
   onIncrement,
   onDecrement,
+  onSetQuantity,
   effectivePrice,
   hasOffer,
   outOfStock,
   availableStock,
   onAddToCart,
+  wholesaleEligible,
+  wholesalePricing,
 }: PurchasePanelProps) {
+  // Wholesale only surfaces for approved buyers on a fully-configured variant.
+  const showWholesale =
+    wholesaleEligible &&
+    !!wholesalePricing &&
+    isWholesaleConfigured(wholesalePricing);
+
+  const line = showWholesale
+    ? resolveLinePricing(wholesalePricing, quantity, true)
+    : null;
+
+  const minQty = line?.minWholesaleQuantity ?? 0;
+  // "Reach minimum" shortcut: only shown when the minimum is actually
+  // stockable AND the buyer hasn't reached it yet. Once quantity >= minimum the
+  // shortcut has served its purpose and disappears — the stepper takes over for
+  // fine adjustments, and there's no way to accidentally overshoot in one tap.
+  const showReachMinimum =
+    showWholesale && minQty > 0 && availableStock >= minQty && quantity < minQty;
+
   return (
     <div className="flex flex-col gap-7">
       <ProductHeader
@@ -56,6 +89,15 @@ export default function PurchasePanel({
         <StockBadge stock={availableStock} />
       </div>
 
+      {showWholesale && line && (
+        <WholesalePanel
+          wholesalePrice={line.wholesalePrice as number}
+          minQuantity={minQty}
+          active={line.wasWholesale}
+          unitsToUnlock={line.unitsToUnlock ?? 0}
+        />
+      )}
+
       <span
         aria-hidden
         className="h-px w-full"
@@ -72,16 +114,35 @@ export default function PurchasePanel({
         decantPoolMl={product.decant_stock_ml}
       />
 
-      <div className="flex items-center justify-between gap-4">
-        <h2 className="text-[11px] font-medium tracking-[0.28em] uppercase text-black/60">
-          Cantidad
-        </h2>
-        <QuantityStepper
-          quantity={quantity}
-          max={Math.max(1, availableStock)}
-          onIncrement={onIncrement}
-          onDecrement={onDecrement}
-        />
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="text-[11px] font-medium tracking-[0.28em] uppercase text-black/60">
+            Cantidad
+          </h2>
+          <QuantityStepper
+            quantity={quantity}
+            max={Math.max(1, availableStock)}
+            onIncrement={onIncrement}
+            onDecrement={onDecrement}
+          />
+        </div>
+
+        {showReachMinimum && (
+          <button
+            type="button"
+            onClick={() => onSetQuantity(minQty)}
+            aria-label={`Fijar la cantidad en el mínimo mayorista de ${minQty} unidades`}
+            className="inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-[11px] font-semibold tracking-[0.18em] uppercase transition-colors hover:bg-[rgba(201,169,110,0.14)]"
+            style={{
+              color: "#7a5e2e",
+              border: "1px solid rgba(201,169,110,0.5)",
+              background:
+                "linear-gradient(180deg, rgba(201,169,110,0.08), transparent)",
+            }}
+          >
+            Alcanzar mínimo mayorista · {minQty} uds.
+          </button>
+        )}
       </div>
 
       <AddToCartButton onAdd={onAddToCart} disabled={outOfStock} />
