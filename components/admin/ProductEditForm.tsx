@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import Swal from "sweetalert2";
-import Select from "react-select";
+import AdminSelect from "@/components/admin/ui/AdminSelect";
 import { useQueryClient } from "@tanstack/react-query";
 import { updateProduct, getProductForEdit } from "@/features/admin/updateProduct";
 import { useCategories } from "@/hooks/useCategories";
@@ -245,7 +245,7 @@ export default function ProductEditForm({
               <label className="text-xs font-bold text-[#c9a96e] uppercase">
                 Marca
               </label>
-              <Select<Option>
+              <AdminSelect<Option>
                 instanceId="edit-brand-select"
                 className="input-field-custom"
                 options={brandOptions}
@@ -299,7 +299,7 @@ export default function ProductEditForm({
               <label className="text-xs font-bold text-[#c9a96e] uppercase">
                 Categorías
               </label>
-              <Select<Option, true>
+              <AdminSelect<Option, true>
                 instanceId="edit-category-select"
                 isMulti
                 className="input-field-custom"

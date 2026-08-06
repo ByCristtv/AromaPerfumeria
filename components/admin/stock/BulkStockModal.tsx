@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import Select from "react-select";
+import AdminSelect from "@/components/admin/ui/AdminSelect";
 import Swal from "sweetalert2";
 import { Plus, Trash2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -170,7 +170,7 @@ export default function BulkStockModal({
                   key={row.key}
                   className="grid grid-cols-[1fr_auto_auto] items-center gap-2"
                 >
-                  <Select<Option>
+                  <AdminSelect<Option>
                     instanceId={`bulk-stock-${row.key}`}
                     placeholder="Buscar variante…"
                     options={optionsForRow(row.key)}

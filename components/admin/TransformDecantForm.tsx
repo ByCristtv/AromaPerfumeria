@@ -2,7 +2,7 @@
 
 import { useMemo, useState, type FormEvent } from "react";
 import Swal from "sweetalert2";
-import Select from "react-select";
+import AdminSelect from "@/components/admin/ui/AdminSelect";
 import { useQueryClient } from "@tanstack/react-query";
 import { transformToDecant } from "@/features/admin/transformToDecant";
 import { useAdminProducts } from "@/hooks/useAdminProducts";
@@ -129,7 +129,7 @@ export default function TransformDecantForm({
           <h3 className="text-[#c9a96e] font-bold border-b border-[#c9a96e]/20 pb-2">
             Variante Full Size de Origen
           </h3>
-          <Select<Option>
+          <AdminSelect<Option>
             instanceId="transform-source-variant"
             className="input-field-custom"
             placeholder="Buscar botella full size..."

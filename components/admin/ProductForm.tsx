@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import Swal from "sweetalert2";
-import Select from "react-select";
+import AdminSelect from "@/components/admin/ui/AdminSelect";
 import { useQueryClient } from "@tanstack/react-query";
 import { createProduct } from "@/features/admin/createProduct";
 import { useCategories } from "@/hooks/useCategories";
@@ -182,7 +182,7 @@ export default function ProductForm({ onSuccess }: ProductFormProps = {}) {
             </div>
             <div className="space-y-2">
               <label className="text-xs font-bold text-[#c9a96e] uppercase">Marca</label>
-              <Select<Option>
+              <AdminSelect<Option>
                 instanceId="brand-select"
                 className="input-field-custom"
                 options={brands.map((b) => ({ value: b.id, label: b.name }))}
@@ -226,7 +226,7 @@ export default function ProductForm({ onSuccess }: ProductFormProps = {}) {
             </div>
             <div className="space-y-2">
               <label className="text-xs font-bold text-[#c9a96e] uppercase">Categorías</label>
-              <Select<Option, true>
+              <AdminSelect<Option, true>
                 instanceId="category-select"
                 isMulti
                 className="input-field-custom"

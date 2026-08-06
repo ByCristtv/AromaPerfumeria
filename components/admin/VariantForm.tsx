@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import Swal from "sweetalert2";
-import Select from "react-select";
+import AdminSelect from "@/components/admin/ui/AdminSelect";
 import { useQueryClient } from "@tanstack/react-query";
 import { createVariant } from "@/features/admin/createProduct";
 import { useAdminProducts } from "@/hooks/useAdminProducts";
@@ -144,7 +144,7 @@ export default function VariantForm({ onSuccess }: VariantFormProps) {
           <h3 className="text-[#c9a96e] font-bold border-b border-[#c9a96e]/20 pb-2">
             Producto Padre
           </h3>
-          <Select
+          <AdminSelect<{ value: string; label: string }>
             instanceId="parent-product-select"
             className="input-field-custom"
             placeholder="Buscar producto..."
