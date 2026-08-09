@@ -69,7 +69,11 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
   }, [searchParams]);
 
   const [search, setSearch] = useState(filters.query ?? "");
-  const [mobileOpen, setMobileOpen] = useState(false);
+  // Filters collapse behind the "Filtros" button at every breakpoint, so the
+  // catalog leads and the filters expand on demand. Default collapsed. Toggling
+  // it never touches the filter values (those live in the URL), so selections
+  // survive open/close.
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const firstRun = useRef(true);
 
   const navigate = (
@@ -230,12 +234,13 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
             )}
           </div>
 
-          {/* Mobile filter toggle */}
+          {/* Filter toggle — collapses the filters at every breakpoint. */}
           <button
             type="button"
-            onClick={() => setMobileOpen((v) => !v)}
-            aria-expanded={mobileOpen}
-            className="relative flex items-center gap-2 rounded-lg border border-[#c9a96e]/40 px-4 py-3 text-xs uppercase tracking-[0.15em] text-[#c9a96e] lg:hidden"
+            onClick={() => setFiltersOpen((v) => !v)}
+            aria-expanded={filtersOpen}
+            aria-controls="catalog-filters"
+            className="relative flex items-center gap-2 rounded-lg border border-[#c9a96e]/40 px-4 py-3 text-xs uppercase tracking-[0.15em] text-[#c9a96e]"
             style={{ fontFamily: serif }}
           >
             <SlidersHorizontal size={15} aria-hidden />
@@ -245,25 +250,24 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
                 {activeCount}
               </span>
             )}
+            <ChevronDown
+              size={15}
+              aria-hidden
+              className={`transition-transform duration-300 ${filtersOpen ? "rotate-180" : ""}`}
+            />
           </button>
         </div>
 
-        {/* Desktop controls */}
-        <div className="mt-4 hidden grid-cols-3 gap-4 lg:grid">{controls}</div>
-        <div className="mt-4 hidden gap-4 lg:grid" style={{ gridTemplateColumns: wholesaleToggle ? "1fr 1fr" : "1fr" }}>
-          {offerToggle}
-          {wholesaleToggle}
-        </div>
-
-        {/* Mobile collapsible controls */}
+        {/* Collapsible controls — shared across breakpoints. */}
         <AnimatePresence initial={false}>
-          {mobileOpen && (
+          {filtersOpen && (
             <motion.div
+              id="catalog-filters"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="overflow-hidden lg:hidden"
+              className="overflow-hidden"
             >
               <div className="grid gap-4 pt-4 sm:grid-cols-3">{controls}</div>
               <div className={`grid gap-4 pt-4 ${wholesaleToggle ? "sm:grid-cols-2" : ""}`}>

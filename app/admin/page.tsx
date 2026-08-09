@@ -10,6 +10,7 @@ import {
   ArrowDownToLine,
   Tags,
   Store,
+  Gift,
   type LucideIcon,
 } from "lucide-react";
 import AdminContainer from "@/components/admin/ui/AdminContainer";
@@ -73,6 +74,13 @@ const SECTIONS: AdminSection[] = [
     description:
       "Revisa y aprueba las solicitudes de cuenta mayorista (B2B). Gestiona el acceso a precios al por mayor.",
     Icon: Store,
+  },
+  {
+    href: "/admin/rewards",
+    title: "Recompensas",
+    description:
+      "Configura las recompensas asociadas a cada rango de cliente. Define beneficios por nivel de fidelidad.",
+    Icon: Gift,
   },
 ];
 

@@ -26,8 +26,6 @@ export default function AboutPage() {
       <Reveal><ArteDecant /></Reveal>
       <Reveal><CasasPerfumistas /></Reveal>
       <Reveal><Identidad /></Reveal>
-      <Reveal><ExperienciaStats /></Reveal>
-      <Reveal><Comunidad /></Reveal>
       <Reveal><CTAFinal /></Reveal>
     </div>
   );

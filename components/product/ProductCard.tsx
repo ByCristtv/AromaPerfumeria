@@ -15,7 +15,7 @@ const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
 const LOW_STOCK_THRESHOLD = 5;
 
 const TYPE_LABEL: Record<ProductTypes, string> = {
-  full_size: "Tamaño completo",
+  full_size: "Botella",
   decant: "Decant",
   set: "Set",
 };

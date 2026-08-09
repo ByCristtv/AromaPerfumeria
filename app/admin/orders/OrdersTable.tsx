@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { formatPrice } from "@/lib/format";
 import type { AdminOrderRow } from "@/features/admin/getOrdersAdminPage";
 
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function OrdersTable({ orders }: Props) {
+  const router = useRouter();
   if (orders.length === 0) {
     return (
       <div className="rounded-2xl border border-[#c9a96e]/20 bg-[#1a1a1a] p-12 text-center text-[#a5a5a5]">
@@ -35,12 +37,21 @@ export default function OrdersTable({ orders }: Props) {
           {orders.map((o) => (
             <tr
               key={o.id}
-              className="text-[#ececec] hover:bg-[#c9a96e]/5 transition"
+              // The whole row navigates to the order for a larger click target.
+              // The <Link> below stays the semantic, keyboard-focusable target;
+              // this handler is a mouse enhancement, and the guard lets any
+              // future interactive control inside the row keep its own action.
+              onClick={(e) => {
+                if ((e.target as HTMLElement).closest("a, button, input, select"))
+                  return;
+                router.push(`/admin/orders/${o.id}`);
+              }}
+              className="cursor-pointer text-[#ececec] transition hover:bg-[#c9a96e]/5 focus-within:bg-[#c9a96e]/5"
             >
               <td className="px-4 py-3">
                 <Link
                   href={`/admin/orders/${o.id}`}
-                  className="font-mono text-[#c9a96e] hover:underline"
+                  className="rounded font-mono text-[#c9a96e] hover:underline focus:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]/70"
                 >
                   #{o.order_number}
                 </Link>

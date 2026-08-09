@@ -411,7 +411,7 @@ function AddressCard({
                   setProvinceOverride(e.target.value);
                   setCantonCode("");
                 }}
-                className={INPUT_CLS}
+                className={SELECT_CLS}
               >
                 <option value="">— Selecciona —</option>
                 {getProvinces().map((p) => (
@@ -427,7 +427,7 @@ function AddressCard({
                 value={cantonCode}
                 onChange={(e) => setCantonCode(e.target.value)}
                 disabled={!selectedProvince}
-                className={INPUT_CLS}
+                className={SELECT_CLS}
               >
                 <option value="">
                   {selectedProvince ? "— Selecciona —" : "Elige provincia"}
@@ -619,6 +619,14 @@ function EmptyOrders() {
 
 const INPUT_CLS =
   "w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-[#c9a96e]/60 focus:border-[#c9a96e]/60 disabled:opacity-40";
+
+// Native <select> reuses INPUT_CLS for its (dark) closed control, but the OS
+// renders the open <option> list on its own surface — with the translucent
+// `bg-white/5` above the options came out white-on-white and unreadable. Pin the
+// options to a light background with near-black text (same treatment the
+// checkout address selects already use) so the menu is legible; the closed
+// control keeps the dark modal styling.
+const SELECT_CLS = `${INPUT_CLS} [&>option]:bg-white [&>option]:text-gray-900`;
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
