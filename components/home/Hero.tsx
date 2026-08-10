@@ -9,7 +9,7 @@ import { ArrowRight, ChevronDown } from "lucide-react";
 const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
 
 const images = [
-  "/hero-image.avif",
+  "/hero-image1.avif",
   "/hero-image2.avif",
   "/hero-image3.avif",
   "/hero-image4.avif",
