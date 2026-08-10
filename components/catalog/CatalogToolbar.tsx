@@ -14,7 +14,7 @@ const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
 
 const TYPE_OPTIONS: { value: ProductTypes; label: string }[] = [
   { value: "full_size", label: "Tamaño completo" },
-  { value: "decant", label: "Decants" },
+  { value: "decant", label: "Disponibles en Decants" },
   { value: "set", label: "Sets" },
 ];
 

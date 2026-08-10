@@ -37,11 +37,7 @@ type FooterLink = { label: string; href: string };
 // Links map to real destinations; filter-backed ones use catalog query params.
 export const SHOP_LINKS: FooterLink[] = [
   { label: "Catálogo Completo", href: "/products" },
-  { label: "Nuevos Ingresos", href: "/products" },
-  { label: "Más Vendidos", href: "/products" },
-  { label: "Perfumes Nicho", href: "/products" },
-  { label: "Perfumes de Diseñador", href: "/products" },
-  { label: "Promociones", href: "/products" },
+  { label: "Nuevos Ingresos", href: "/" },
 ];
 
 // ---- Column 3 — Información ----
