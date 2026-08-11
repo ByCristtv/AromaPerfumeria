@@ -1,4 +1,10 @@
 import { supabase } from "@/lib/supabase/client";
+import {
+  GENDER_CATEGORY_SLUGS,
+  expandCategoryFilter,
+  type GenderCategoryIds,
+  type GenderCategorySlug,
+} from "@/lib/catalogCategoryFilter";
 import type { ProductCardData } from "@/types/product";
 import {
   PRODUCTS_PAGE_SIZE,
@@ -125,13 +131,37 @@ async function resolveOfferIds(onOffer?: boolean): Promise<string[] | null> {
   return [...new Set(((data ?? []) as { product_id: string }[]).map((r) => r.product_id))];
 }
 
+/**
+ * Resolve the selected category id into the id-list the query filters on,
+ * applying the gender rule (Hombre/Mujer also include Unisex; see
+ * `expandCategoryFilter`). Returns `null` when no category filter is active.
+ * The dropdown carries an id, so we look up the gender categories' ids by their
+ * stable slugs and hand both to the pure expansion helper.
+ */
+async function resolveCategoryIds(categoryId?: string): Promise<string[] | null> {
+  if (!categoryId) return null;
+
+  const { data } = await supabase
+    .from("categories")
+    .select("id, slug")
+    .in("slug", [...GENDER_CATEGORY_SLUGS]);
+
+  const genderIds: GenderCategoryIds = {};
+  for (const row of (data ?? []) as { id: string; slug: string }[]) {
+    genderIds[row.slug as GenderCategorySlug] = row.id;
+  }
+
+  return expandCategoryFilter(categoryId, genderIds);
+}
+
 /** Apply the active filters. All id-list filters AND together (intersection). */
 function applyFilters(
   query: CatalogQuery,
   filters: ProductFilters | undefined,
   searchIds: string[] | null,
   typeIds: string[] | null,
-  offerIds: string[] | null
+  offerIds: string[] | null,
+  categoryIds: string[] | null
 ): CatalogQuery {
   let next = query;
 
@@ -139,9 +169,12 @@ function applyFilters(
   if (typeIds) next = next.in("id", typeIds);
   if (offerIds) next = next.in("id", offerIds);
 
-  if (filters?.category) {
+  if (categoryIds && categoryIds.length > 0) {
     // categories!inner makes this prune parent rows, not just the embedded array.
-    next = next.eq("categories.id", filters.category);
+    // The id-list is the gender rule expanded to include Unisex where applicable
+    // (see resolveCategoryIds), so this is (selectedCategory OR Unisex) — an OR
+    // within the list — ANDed with every other filter above.
+    next = next.in("categories.id", categoryIds);
   }
 
   if (filters?.wholesaleOnly) {
@@ -186,10 +219,11 @@ async function runCatalogQuery(
   to: number,
   filters?: ProductFilters
 ): Promise<{ items: ProductCardData[]; total: number }> {
-  const [searchIds, typeIds, offerIds] = await Promise.all([
+  const [searchIds, typeIds, offerIds, categoryIds] = await Promise.all([
     resolveSearchIds(filters?.query),
     resolveTypeIds(filters?.productType),
     resolveOfferIds(filters?.onOffer),
+    resolveCategoryIds(filters?.category),
   ]);
 
   // A non-null but empty id-list means "filtered, matched nothing".
@@ -202,7 +236,7 @@ async function runCatalogQuery(
   }
 
   let query = buildBaseQuery(!!filters?.category, !!filters?.wholesaleOnly);
-  query = applyFilters(query, filters, searchIds, typeIds, offerIds);
+  query = applyFilters(query, filters, searchIds, typeIds, offerIds, categoryIds);
   query = applyOrder(query, filters?.orderBy);
 
   const { data, error, count } = await query.range(from, to);

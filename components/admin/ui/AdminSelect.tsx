@@ -56,17 +56,20 @@ export function adminSelectStyles<
           : "rgba(201, 169, 110, 0.28)",
       },
     }),
-    // Keep multi-select chips legible on the dark control.
+    // Selected chips render on react-select's default white control, so they use
+    // a solid gold fill with near-black text — the same gold/near-black pairing
+    // as a selected option above, which meets WCAG AA on white. (A translucent
+    // gold tint with light text was unreadable here.)
     multiValue: (base) => ({
       ...base,
-      backgroundColor: "rgba(201, 169, 110, 0.18)",
-      border: "1px solid rgba(201, 169, 110, 0.35)",
+      backgroundColor: ADMIN_GOLD,
+      border: "1px solid #a8894f",
     }),
-    multiValueLabel: (base) => ({ ...base, color: "#f3e7cf" }),
+    multiValueLabel: (base) => ({ ...base, color: "#1a1a1a" }),
     multiValueRemove: (base) => ({
       ...base,
-      color: "#f3e7cf",
-      ":hover": { backgroundColor: "rgba(201, 169, 110, 0.4)", color: "#ffffff" },
+      color: "#1a1a1a",
+      ":hover": { backgroundColor: "#a8894f", color: "#ffffff" },
     }),
     noOptionsMessage: (base) => ({ ...base, color: "#6b7280" }),
   };
