@@ -3,7 +3,7 @@ import BackToDashboard from "./BackToDashboard";
 import { adminSerif } from "./styles";
 
 interface AdminPageHeaderProps {
-  /** Small gold eyebrow above the title. Pass `null` to hide it. */
+  /** Small rose eyebrow above the title. Pass `null` to hide it. */
   eyebrow?: string | null;
   title: ReactNode;
   description?: ReactNode;
@@ -18,9 +18,9 @@ interface AdminPageHeaderProps {
 }
 
 /**
- * Unified admin page header. Renders an optional back link, a gold eyebrow, a
+ * Unified admin page header. Renders an optional back link, a rose eyebrow, a
  * serif title that matches the storefront, an optional description, optional
- * right-aligned actions, and a gold divider underline.
+ * right-aligned actions, and a red divider underline.
  *
  * Centralizing this keeps every admin section visually identical and removes
  * the per-page header markup that had drifted apart (different paddings,
@@ -47,22 +47,21 @@ export default function AdminPageHeader({
         <div className="min-w-0">
           {eyebrow && (
             <span
-              className="mb-3 inline-flex items-center rounded-full border border-[#c9a96e]/30 bg-[#c9a96e]/[0.06] px-3.5 py-1.5 text-[10px] uppercase tracking-[0.35em] text-[#c9a96e]"
-              style={{ fontFamily: adminSerif }}
+              className="mb-3 inline-flex items-center rounded-full border border-krov-blood/30 bg-krov-blood/[0.06] px-3.5 py-1.5 text-[10px] uppercase tracking-[0.35em] text-krov-rose"
             >
               {eyebrow}
             </span>
           )}
 
           <h1
-            className="text-3xl leading-tight text-[#ececec] sm:text-4xl"
+            className="text-3xl leading-tight text-krov-bone sm:text-4xl"
             style={{ fontFamily: adminSerif }}
           >
             {title}
           </h1>
 
           {description && (
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#a5a5a5] sm:text-[0.95rem]">
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-krov-ash sm:text-[0.95rem]">
               {description}
             </p>
           )}
@@ -75,7 +74,7 @@ export default function AdminPageHeader({
         )}
       </div>
 
-      <div className="mt-6 h-px w-full bg-gradient-to-r from-[#c9a96e]/40 via-[#c9a96e]/10 to-transparent" />
+      <div className="krov-rule mt-6 h-px w-full" />
     </header>
   );
 }

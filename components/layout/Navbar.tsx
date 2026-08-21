@@ -6,16 +6,15 @@ import { useCartStore } from "@/store/useCartStore";
 import { useAuthUser } from "@/hooks/useAuthUser";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useIsMounted } from "@/hooks/useIsMounted";
+import KrovLogo from "@/components/brand/KrovLogo";
 
 const NAV_LINKS = [
   { label: "Inicio", href: "/" },
-  { label: "Catálogo", href: "/products" },
-  { label: "Contactanos", href: "/contact" },
-  { label: "Como Comprar", href: "/howtobuy" },
-  { label: "Sobre Nosotros", href: "/about" },
+  { label: "Colección", href: "/products" },
+  { label: "Identidad", href: "/about" },
+  { label: "Cómo comprar", href: "/howtobuy" },
+  { label: "Contacto", href: "/contact" },
 ] as const;
-
-const SERIF = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -70,14 +69,19 @@ export default function Navbar() {
         Removing it entirely leaves nothing that can open a gap: the nav is now
         the topmost element and is always attached to `top: 0`.
       */}
-      <header
-        className="fixed top-0 left-0 w-full z-50"
-        style={{ fontFamily: SERIF }}
-      >
+      <header className="fixed top-0 left-0 w-full z-50">
         {/* ──────── Main bar ──────── */}
+        {/*
+          At rest the bar is fully transparent so the hero image runs edge to
+          edge behind the mark — the entrance to the store, not a toolbar over
+          it. On scroll it condenses into an opaque plane. Only the backdrop and
+          height change; the mark never moves horizontally.
+        */}
         <nav
-          className={`bg-black transition-shadow duration-500 ${
-            scrolled ? "shadow-[0_2px_30px_rgba(0,0,0,0.6)]" : ""
+          className={`transition-[background-color,backdrop-filter] duration-500 ${
+            scrolled
+              ? "bg-krov-void/92 backdrop-blur-xl"
+              : "bg-gradient-to-b from-krov-void/85 to-transparent"
           }`}
         >
           <div className="max-w-7xl mx-auto px-6 lg:px-10">
@@ -87,17 +91,23 @@ export default function Navbar() {
               right-hand actions get — the editorial layout luxury houses use,
               and the main thing that stops this reading as a stock template.
             */}
-            <div className="grid grid-cols-[auto_1fr_auto] items-center h-18 gap-6">
-              {/* Wordmark */}
-              <Link href="/" className="shrink-0 group">
-                <span className="flex flex-col leading-none select-none">
-                  <span className="text-white tracking-[0.35em] text-xl sm:text-2xl font-light transition-all duration-500 group-hover:tracking-[0.42em]">
-                    AROMA
-                  </span>
-                  <span className="text-[#c9a96e] text-[9px] tracking-[0.25em] font-light italic mt-0.5">
-                    Luxury Fragrance
-                  </span>
-                </span>
+            <div
+              className={`grid grid-cols-[auto_1fr_auto] items-center gap-6 transition-[height] duration-500 ${
+                scrolled ? "h-16" : "h-20"
+              }`}
+            >
+              {/* Wordmark — the official asset, never type. */}
+              <Link
+                href="/"
+                aria-label="KROV Perfumería — inicio"
+                className="shrink-0 opacity-95 transition-opacity duration-300 hover:opacity-100"
+              >
+                <KrovLogo
+                  tone="light"
+                  width={scrolled ? 118 : 132}
+                  priority
+                  className="transition-[width] duration-500"
+                />
               </Link>
 
               {/* Centred navigation */}
@@ -117,47 +127,70 @@ export default function Navbar() {
               {/* Actions */}
               <div className="hidden lg:flex items-center gap-6 shrink-0">
                 <CartLink count={cartBadge} />
-                <span className="h-5 w-px bg-white/15" />
+                <span className="h-4 w-px bg-krov-smoke" />
                 <AuthActions
                   isAuthenticated={isAuthenticated}
                   isLoading={authLoading}
                 />
               </div>
 
-              {/* Mobile hamburger */}
+              {/* Mobile hamburger — 44px touch target around the 24px rule set. */}
               <button
-                className="lg:hidden justify-self-end flex flex-col gap-1.5 p-2"
+                className="lg:hidden justify-self-end flex h-11 w-11 flex-col items-end justify-center gap-1.5"
                 onClick={() => setMenuOpen((prev) => !prev)}
-                aria-label="Abrir menú"
+                aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
                 aria-expanded={menuOpen}
               >
-                <span className={`block h-px w-6 bg-white transition-all duration-300 ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
-                <span className={`block h-px w-6 bg-white transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`} />
-                <span className={`block h-px w-6 bg-white transition-all duration-300 ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+                <span
+                  className={`block h-px bg-krov-bone transition-all duration-300 ${
+                    menuOpen ? "w-6 rotate-45 translate-y-2" : "w-6"
+                  }`}
+                />
+                <span
+                  className={`block h-px bg-krov-bone transition-all duration-300 ${
+                    menuOpen ? "w-6 opacity-0" : "w-4"
+                  }`}
+                />
+                <span
+                  className={`block h-px bg-krov-bone transition-all duration-300 ${
+                    menuOpen ? "w-6 -rotate-45 -translate-y-2" : "w-6"
+                  }`}
+                />
               </button>
             </div>
           </div>
 
-          {/* Hairline */}
-          <div className="h-px w-full bg-linear-to-r from-transparent via-[#c9a96e]/40 to-transparent" />
+          {/* Hairline — only once the bar has a surface of its own to sit on. */}
+          <div
+            className={`krov-rule h-px w-full transition-opacity duration-500 ${
+              scrolled ? "opacity-100" : "opacity-0"
+            }`}
+          />
         </nav>
 
         {/* ──────── Mobile drawer ──────── */}
         <div
-          className={`lg:hidden overflow-hidden bg-black transition-[max-height,opacity] duration-500 ease-in-out ${
+          className={`lg:hidden overflow-hidden bg-krov-void transition-[max-height,opacity] duration-500 ease-in-out ${
             menuOpen ? "max-h-128 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          <div className="px-6 pt-5 pb-8">
+          <div className="px-6 pt-4 pb-9">
             <ul className="flex flex-col">
-              {NAV_LINKS.map((link) => (
+              {NAV_LINKS.map((link, i) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
                     onClick={() => setMenuOpen(false)}
-                    className="block py-3.5 text-white/70 hover:text-white text-xs tracking-[0.22em] uppercase border-b border-white/5 transition-colors duration-200"
+                    className="group flex items-center gap-4 border-b border-krov-smoke/70 py-4 text-krov-ash transition-colors duration-200 hover:text-krov-bone"
                   >
-                    {link.label}
+                    {/* Editorial index numbering — the drawer reads as a
+                        contents page rather than a list of buttons. */}
+                    <span className="w-6 text-[10px] tracking-[0.2em] text-krov-dust transition-colors duration-200 group-hover:text-krov-rose">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="text-xs uppercase tracking-[0.24em]">
+                      {link.label}
+                    </span>
                   </Link>
                 </li>
               ))}
@@ -166,9 +199,14 @@ export default function Navbar() {
                   <Link
                     href="/admin"
                     onClick={() => setMenuOpen(false)}
-                    className="block py-3.5 text-[#c9a96e] text-xs tracking-[0.22em] uppercase border-b border-white/5"
+                    className="flex items-center gap-4 border-b border-krov-smoke/70 py-4 text-krov-rose"
                   >
-                    Administrar
+                    <span className="w-6 text-[10px] tracking-[0.2em] text-krov-rose/60">
+                      ··
+                    </span>
+                    <span className="text-xs uppercase tracking-[0.24em]">
+                      Administrar
+                    </span>
                   </Link>
                 </li>
               )}
@@ -178,22 +216,22 @@ export default function Navbar() {
               {authLoading ? null : isAuthenticated ? (
                 <MobileAction
                   href="/profile"
-                  label="Mi Perfil"
+                  label="Mi perfil"
                   onClick={() => setMenuOpen(false)}
                   primary
                 />
               ) : (
                 <>
                   <MobileAction
+                    href="/register"
+                    label="Crear cuenta"
+                    onClick={() => setMenuOpen(false)}
+                    primary
+                  />
+                  <MobileAction
                     href="/login"
                     label="Iniciar sesión"
                     onClick={() => setMenuOpen(false)}
-                  />
-                  <MobileAction
-                    href="/register"
-                    label="Registrarse"
-                    onClick={() => setMenuOpen(false)}
-                    primary
                   />
                 </>
               )}
@@ -207,11 +245,11 @@ export default function Navbar() {
         <Link
           href="/cart"
           aria-label={`Carrito, ${cartBadge} artículos`}
-          className="floating-cart fixed bottom-6 right-6 z-50 lg:hidden flex items-center justify-center w-14 h-14 rounded-full bg-[#c9a96e] shadow-[0_4px_20px_rgba(0,0,0,0.4)] active:scale-95"
+          className="floating-cart fixed bottom-6 right-6 z-50 lg:hidden flex h-14 w-14 items-center justify-center bg-krov-blood text-krov-void shadow-[0_10px_40px_-8px_rgba(255,11,85,0.55)] transition-transform active:scale-95"
         >
-          <BagIcon className="w-6 h-6 text-black" />
+          <BagIcon className="h-5 w-5" />
           {cartBadge > 0 && (
-            <span className="absolute -top-1 -right-1 bg-black text-[#c9a96e] text-[10px] font-bold min-w-5 h-5 px-1 rounded-full flex items-center justify-center">
+            <span className="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center border border-krov-blood bg-krov-void px-1 text-[10px] font-medium text-krov-blush">
               {cartBadge}
             </span>
           )}
@@ -244,26 +282,26 @@ function AuthActions({
     return (
       <Link
         href="/profile"
-        className="px-5 py-2.5 border border-[#c9a96e]/60 text-[#c9a96e] text-[10px] tracking-[0.2em] uppercase transition-all duration-300 hover:bg-[#c9a96e] hover:text-black"
+        className="border border-krov-edge px-5 py-2.5 text-[10px] uppercase tracking-[0.22em] text-krov-bone transition-colors duration-300 hover:border-krov-blood hover:text-krov-rose"
       >
-        Mi Perfil
+        Mi perfil
       </Link>
     );
   }
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-5">
       <Link
         href="/login"
-        className="text-[10px] tracking-[0.2em] uppercase text-white/60 hover:text-white transition-colors duration-300"
+        className="krov-underline text-[10px] uppercase tracking-[0.22em] text-krov-ash transition-colors duration-300 hover:text-krov-bone"
       >
-        Iniciar sesión
+        Entrar
       </Link>
       <Link
         href="/register"
-        className="px-5 py-2.5 border border-[#c9a96e]/60 text-[#c9a96e] text-[10px] tracking-[0.2em] uppercase transition-all duration-300 hover:bg-[#c9a96e] hover:text-black"
+        className="border border-krov-edge px-5 py-2.5 text-[10px] uppercase tracking-[0.22em] text-krov-bone transition-colors duration-300 hover:border-krov-blood hover:text-krov-rose"
       >
-        Registrarse
+        Crear cuenta
       </Link>
     </div>
   );
@@ -281,12 +319,11 @@ function NavLink({
   return (
     <Link
       href={href}
-      className={`relative text-[10px] tracking-[0.22em] uppercase transition-colors duration-300 group py-1 ${
-        accent ? "text-[#c9a96e]" : "text-white/65 hover:text-white"
+      className={`krov-underline py-1 text-[10px] uppercase tracking-[0.22em] transition-colors duration-300 ${
+        accent ? "text-krov-rose" : "text-krov-ash hover:text-krov-bone"
       }`}
     >
       {label}
-      <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-[#c9a96e] transition-all duration-300 group-hover:w-full" />
     </Link>
   );
 }
@@ -296,11 +333,11 @@ function CartLink({ count }: { count: number }) {
     <Link
       href="/cart"
       aria-label={`Carrito, ${count} artículos`}
-      className="relative text-white/65 hover:text-white transition-colors duration-200"
+      className="relative text-krov-ash transition-colors duration-200 hover:text-krov-bone"
     >
-      <BagIcon className="w-5 h-5" />
+      <BagIcon className="h-5 w-5" />
       {count > 0 && (
-        <span className="absolute -top-1.5 -right-2 bg-[#c9a96e] text-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+        <span className="absolute -top-2 -right-2.5 flex h-4 min-w-4 items-center justify-center bg-krov-blood px-1 text-[9px] font-medium text-krov-void">
           {count}
         </span>
       )}
@@ -323,10 +360,10 @@ function MobileAction({
     <Link
       href={href}
       onClick={onClick}
-      className={`w-full text-center py-3 text-[10px] tracking-[0.22em] uppercase transition-all duration-300 ${
+      className={`w-full py-3.5 text-center text-[10px] uppercase tracking-[0.24em] transition-colors duration-300 ${
         primary
-          ? "bg-[#c9a96e] text-black hover:bg-[#c9a96e]/90"
-          : "border border-white/20 text-white/75 hover:border-[#c9a96e]/60 hover:text-[#c9a96e]"
+          ? "bg-krov-blood text-krov-void"
+          : "border border-krov-edge text-krov-ash"
       }`}
     >
       {label}

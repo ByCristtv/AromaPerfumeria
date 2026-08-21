@@ -41,11 +41,11 @@ export default function OrderSummary({ cantonCode }: OrderSummaryProps) {
   // ──────── Empty cart ────────
   if (cart.length === 0) {
     return (
-      <aside className="rounded-2xl border border-gray-200 bg-white p-5 text-center">
-        <p className="text-sm text-gray-600">Tu carrito está vacío.</p>
+      <aside className="rounded-none border border-krov-smoke bg-krov-coal p-5 text-center">
+        <p className="text-sm text-krov-ash">Tu carrito está vacío.</p>
         <Link
           href="/"
-          className="inline-block mt-4 text-sm font-medium text-black underline"
+          className="inline-block mt-4 text-sm text-krov-rose underline underline-offset-4 hover:text-krov-blush"
         >
           Seguir comprando
         </Link>
@@ -62,14 +62,14 @@ export default function OrderSummary({ cantonCode }: OrderSummaryProps) {
       : 0;
 
   return (
-    <aside className="rounded-2xl border border-gray-200 bg-white p-5 h-fit lg:sticky lg:top-28">
-      <h2 className="text-lg font-semibold text-gray-900">Resumen</h2>
-      <p className="text-xs text-gray-500 mt-0.5">
+    <aside className="rounded-none border border-krov-smoke bg-krov-coal p-5 h-fit lg:sticky lg:top-28">
+      <h2 className="text-lg font-semibold text-krov-bone">Resumen</h2>
+      <p className="text-xs text-krov-dust mt-0.5">
         {totalItems} {totalItems === 1 ? "producto" : "productos"}
       </p>
 
       {/* ──────── Items list ──────── */}
-      <ul className="mt-4 space-y-2 text-sm border-b border-gray-100 pb-4">
+      <ul className="mt-4 space-y-2 text-sm border-b border-krov-smoke/70 pb-4">
         {cart.map((item) => {
           const line = pricing.lines[item.variant_id];
           const lineTotal = line?.lineTotal ?? item.price * item.quantity;
@@ -79,17 +79,17 @@ export default function OrderSummary({ cantonCode }: OrderSummaryProps) {
               className="flex items-start justify-between gap-3"
             >
               <div className="min-w-0">
-                <p className="text-gray-900 truncate">{item.product_name}</p>
-                <p className="text-xs text-gray-500">
+                <p className="text-krov-bone truncate">{item.product_name}</p>
+                <p className="text-xs text-krov-dust">
                   {item.size_ml} ml · cant. {item.quantity}
                   {line?.wasWholesale && (
-                    <span className="ml-2 rounded bg-[#c9a96e]/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#8a6d3b]">
+                    <span className="ml-2 border border-krov-blood/40 bg-krov-blood/10 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.14em] text-krov-rose">
                       Mayorista
                     </span>
                   )}
                 </p>
               </div>
-              <span className="text-gray-900 shrink-0 tabular-nums">
+              <span className="text-krov-bone shrink-0 tabular-nums">
                 {formatPrice(lineTotal)}
               </span>
             </li>
@@ -100,18 +100,18 @@ export default function OrderSummary({ cantonCode }: OrderSummaryProps) {
       {/* ──────── Totals ──────── */}
       <dl className="mt-4 space-y-2 text-sm">
         {pricing.hasWholesaleApplied && (
-          <div className="flex items-center justify-between text-[#8a6d3b]">
+          <div className="flex items-center justify-between text-krov-rose">
             <dt>Ahorro mayorista</dt>
             <dd className="tabular-nums">−{formatPrice(pricing.wholesaleSavings)}</dd>
           </div>
         )}
 
-        <div className="flex items-center justify-between text-gray-600">
+        <div className="flex items-center justify-between text-krov-ash">
           <dt>Subtotal</dt>
           <dd className="tabular-nums">{formatPrice(goodsSubtotal)}</dd>
         </div>
 
-        <div className="flex items-center justify-between text-gray-600">
+        <div className="flex items-center justify-between text-krov-ash">
           <dt>Envío</dt>
           <dd className="tabular-nums text-right">
             {renderShippingValue({
@@ -124,19 +124,19 @@ export default function OrderSummary({ cantonCode }: OrderSummaryProps) {
         </div>
 
         {thresholdRemaining > 0 && (
-          <p className="text-xs text-emerald-700 bg-emerald-50 rounded-md px-3 py-2 leading-snug">
+          <p className="text-xs text-emerald-300 bg-emerald-500/10 rounded-none px-3 py-2 leading-snug">
             Te faltan <strong>{formatPrice(thresholdRemaining)}</strong> para
             envío gratis en {shipping?.zone_name}.
           </p>
         )}
 
-        <div className="flex items-center justify-between text-base font-semibold text-gray-900 pt-3 border-t border-gray-200">
+        <div className="flex items-center justify-between text-base font-semibold text-krov-bone pt-3 border-t border-krov-smoke">
           <dt>Total</dt>
           <dd className="tabular-nums">{formatPrice(total)}</dd>
         </div>
       </dl>
 
-      <p className="mt-3 text-[11px] text-gray-500 leading-relaxed">
+      <p className="mt-3 text-[11px] text-krov-dust leading-relaxed">
         Precios incluyen IVA. El envío se confirma con el cantón seleccionado.
       </p>
     </aside>
@@ -162,15 +162,15 @@ function renderShippingValue({
 }: RenderShippingArgs) {
   if (!cantonCode) {
     return (
-      <span className="text-xs text-gray-400">Selecciona un cantón</span>
+      <span className="text-xs text-krov-dust">Selecciona un cantón</span>
     );
   }
   if (loading && !shipping) {
-    return <span className="text-xs text-gray-400">Calculando…</span>;
+    return <span className="text-xs text-krov-dust">Calculando…</span>;
   }
   if (error) {
     return (
-      <span className="text-xs text-red-600">Error al calcular envío</span>
+      <span className="text-xs text-red-400">Error al calcular envío</span>
     );
   }
   if (!shipping) return null;
@@ -178,7 +178,7 @@ function renderShippingValue({
   if (shipping.free_shipping_applied) {
     return (
       <span className="inline-flex items-center gap-2">
-        <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[11px] font-semibold uppercase tracking-wide">
+        <span className="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-200 text-[11px] font-semibold uppercase tracking-wide">
           Gratis
         </span>
       </span>

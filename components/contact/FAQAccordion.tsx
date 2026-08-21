@@ -43,8 +43,8 @@ function FAQItem({
       variants={fadeUp}
       className={`overflow-hidden rounded-2xl border backdrop-blur-sm transition-colors duration-500 ${
         isOpen
-          ? "border-[#c9a96e]/35 bg-white/[0.04]"
-          : "border-white/5 bg-white/[0.025] hover:border-[#c9a96e]/20"
+          ? "border-krov-blood/35 bg-white/[0.04]"
+          : "border-white/5 bg-white/[0.025] hover:border-krov-smoke"
       }`}
     >
       <h3>
@@ -62,7 +62,7 @@ function FAQItem({
           <motion.span
             animate={{ rotate: isOpen ? 135 : 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#c9a96e]/40 text-[#c9a96e]"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-krov-blood/40 text-krov-rose"
             aria-hidden="true"
           >
             <Plus size={16} />

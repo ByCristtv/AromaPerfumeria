@@ -55,37 +55,30 @@ export default function StickyPurchaseBar({
   return (
     <div
       aria-hidden={!visible}
-      className={`md:hidden fixed inset-x-0 bottom-0 z-40 px-3 pb-3 transition-transform duration-300 ease-out motion-reduce:transition-none ${
+      className={`md:hidden fixed inset-x-0 bottom-0 z-40 transition-transform duration-300 ease-out motion-reduce:transition-none ${
         visible ? "translate-y-0" : "translate-y-[130%] pointer-events-none"
       }`}
     >
-      <div
-        className="flex items-center gap-3 rounded-full bg-white px-3 py-2.5"
-        style={{
-          border: "1px solid rgba(0,0,0,0.08)",
-          boxShadow:
-            "0 -10px 40px -20px rgba(0,0,0,0.18), 0 0 0 1px rgba(201,169,110,0.18)",
-        }}
-      >
-        <div className="min-w-0 flex-1 pl-2">
-          <p className="text-[11px] text-black/50 truncate">{productName}</p>
-          <p className="text-sm font-semibold tabular-nums leading-tight">
+      {/* Squared and flush to the screen edges rather than a floating pill: at
+          the foot of a phone this bar IS the base of the layout, and a pill
+          hovering above the home indicator wastes the safest tap zone there is.
+          The CTA keeps a 48px height so it clears the touch-target minimum with
+          room to spare. */}
+      <div className="flex items-center gap-3 border-t border-krov-smoke bg-krov-coal px-4 py-3">
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[10px] uppercase tracking-[0.16em] text-krov-dust">
+            {productName}
+          </p>
+          <p className="text-sm leading-tight tabular-nums text-krov-bone">
             {formatPrice(price)}{" "}
-            <span className="text-[11px] font-normal text-black/45">
-              · {variantLabel}
-            </span>
+            <span className="text-[10px] text-krov-dust">· {variantLabel}</span>
           </p>
         </div>
         <button
           type="button"
           onClick={onAdd}
           disabled={disabled}
-          className="px-5 py-2.5 text-[11px] font-semibold tracking-[0.18em] uppercase rounded-full text-white disabled:opacity-40"
-          style={{
-            background: "linear-gradient(135deg, #0a0a0a, #1a1a1a)",
-            boxShadow:
-              "0 8px 22px -10px rgba(201,169,110,0.6), 0 0 0 1px rgba(201,169,110,0.3)",
-          }}
+          className="shrink-0 bg-krov-blood px-6 py-3.5 text-[10px] uppercase tracking-[0.2em] text-krov-void transition-colors disabled:bg-krov-graphite disabled:text-krov-dust"
         >
           {disabled ? "Agotado" : "Agregar"}
         </button>

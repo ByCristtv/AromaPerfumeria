@@ -291,25 +291,25 @@ function PaymentPhase({
   return (
     <div className="space-y-6">
       {/* ──────── Shipping recap ──────── */}
-      <section className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6">
+      <section className="rounded-none border border-krov-smoke bg-krov-coal p-5 sm:p-6">
         <header className="mb-4 flex items-start justify-between gap-3">
           <div>
-            <h3 className="text-base font-semibold text-gray-900">
+            <h3 className="text-base font-semibold text-krov-bone">
               Datos de envío
             </h3>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <p className="text-xs text-krov-dust mt-0.5">
               Revisa que todo esté correcto antes de pagar.
             </p>
           </div>
           <button
             type="button"
             onClick={onEdit}
-            className="shrink-0 text-sm font-medium text-black underline"
+            className="shrink-0 text-sm text-krov-rose underline underline-offset-4 hover:text-krov-blush"
           >
             Editar
           </button>
         </header>
-        <dl className="text-sm text-gray-700 space-y-1.5">
+        <dl className="text-sm text-krov-ash space-y-1.5">
           <RecapRow label="Nombre" value={values.customer.name} />
           <RecapRow label="Correo" value={values.customer.email} />
           <RecapRow label="Teléfono" value={values.customer.phone} />
@@ -329,10 +329,10 @@ function PaymentPhase({
       </section>
 
       {/* ──────── Payment ──────── */}
-      <section className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6">
+      <section className="rounded-none border border-krov-smoke bg-krov-coal p-5 sm:p-6">
         <header className="mb-4">
-          <h3 className="text-base font-semibold text-gray-900">Pago</h3>
-          <p className="text-xs text-gray-500 mt-0.5">
+          <h3 className="text-base font-semibold text-krov-bone">Pago</h3>
+          <p className="text-xs text-krov-dust mt-0.5">
             Ingresa los datos de tu tarjeta. El pago es seguro y procesado por
             ONVO.
           </p>
@@ -354,8 +354,8 @@ function PaymentPhase({
 function RecapRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col sm:flex-row sm:gap-3">
-      <dt className="text-gray-500 sm:w-36 shrink-0">{label}</dt>
-      <dd className="text-gray-900 break-words">{value}</dd>
+      <dt className="text-krov-dust sm:w-36 shrink-0">{label}</dt>
+      <dd className="text-krov-bone break-words">{value}</dd>
     </div>
   );
 }

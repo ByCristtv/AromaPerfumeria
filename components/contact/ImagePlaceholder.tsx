@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ImageOff } from "lucide-react";
-import { serif } from "./styles";
 
 type ImagePlaceholderProps = {
   /** Optional future photography. When omitted the luxury skeleton shows. */
@@ -16,7 +15,7 @@ type ImagePlaceholderProps = {
 
 /**
  * 16:9 luxury media slot. Renders real photography when `src` is provided,
- * otherwise a refined dashed-border skeleton with a slow gold shimmer.
+ * otherwise a refined dashed-border skeleton with a slow red shimmer.
  * A future upload drops in without changing the layout.
  */
 export default function ImagePlaceholder({
@@ -32,9 +31,9 @@ export default function ImagePlaceholder({
       transition={{ type: "spring", stiffness: 220, damping: 22 }}
       className={`group/img relative w-full ${className}`}
     >
-      <div className="pointer-events-none absolute -inset-1 rounded-[1.4rem] bg-[#c9a96e]/0 blur-2xl transition-all duration-700 group-hover/img:bg-[#c9a96e]/10" />
+      <div className="pointer-events-none absolute -inset-1 rounded-[1.4rem] bg-krov-blood/0 blur-2xl transition-all duration-700 group-hover/img:bg-krov-blood/10" />
 
-      <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-[#c9a96e]/15 bg-[#0e0e0e] shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)] transition-all duration-500 group-hover/img:border-[#c9a96e]/40 group-hover/img:shadow-[0_30px_80px_-30px_rgba(201,169,110,0.25)]">
+      <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-krov-smoke/85 bg-krov-ink shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)] transition-all duration-500 group-hover/img:border-krov-blood/40 group-hover/img:shadow-[0_30px_80px_-30px_rgba(255,11,85,0.25)]">
         {src ? (
           <Image
             src={src}
@@ -46,7 +45,7 @@ export default function ImagePlaceholder({
           />
         ) : (
           <div role="img" aria-label={`${label}: ${alt}`} className="absolute inset-0">
-            <div className="absolute inset-3 rounded-xl border border-dashed border-[#c9a96e]/25" />
+            <div className="absolute inset-3 rounded-xl border border-dashed border-krov-smoke" />
 
             <motion.div
               aria-hidden="true"
@@ -58,16 +57,15 @@ export default function ImagePlaceholder({
                 repeatDelay: 1.4,
                 ease: "easeInOut",
               }}
-              className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-[#c9a96e]/10 to-transparent"
+              className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-krov-blood/10 to-transparent"
             />
 
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[#c9a96e]/30 text-[#c9a96e]/70 transition-colors duration-500 group-hover/img:text-[#c9a96e]">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full border border-krov-blood/30 text-krov-rose/70 transition-colors duration-500 group-hover/img:text-krov-rose">
                 <ImageOff size={20} strokeWidth={1.3} aria-hidden="true" />
               </span>
               <span
                 className="text-xs uppercase tracking-[0.3em] text-white/45"
-                style={{ fontFamily: serif }}
               >
                 {label}
               </span>

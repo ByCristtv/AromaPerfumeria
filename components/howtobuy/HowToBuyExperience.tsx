@@ -55,11 +55,11 @@ export default function HowToBuyExperience() {
   const mainSteps = useMemo(() => resolveSteps(MAIN_STEPS, view), [view]);
 
   return (
-    <div className="relative bg-[#0a0a0a]">
+    <div className="relative bg-krov-void">
       {/* Subtle vertical texture behind the whole journey */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-linear-to-b from-[#0c0b0a] via-[#0a0a0a] to-[#080808]"
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-krov-ink via-krov-void to-krov-void"
       />
 
       <div className="relative">
@@ -95,9 +95,9 @@ export default function HowToBuyExperience() {
             aria-hidden="true"
             className="mx-auto my-20 flex max-w-xs items-center gap-4 md:my-28"
           >
-            <span className="h-px flex-1 bg-linear-to-r from-transparent to-[#c9a96e]/30" />
-            <span className="h-1.5 w-1.5 rotate-45 bg-[#c9a96e]/60" />
-            <span className="h-px flex-1 bg-linear-to-l from-transparent to-[#c9a96e]/30" />
+            <span className="h-px flex-1 bg-linear-to-r from-transparent to-krov-blood/30" />
+            <span className="h-1.5 w-1.5 rotate-45 bg-krov-blood/60" />
+            <span className="h-px flex-1 bg-linear-to-l from-transparent to-krov-blood/30" />
           </div>
 
           {/* Start shopping */}

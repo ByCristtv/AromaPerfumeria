@@ -39,9 +39,9 @@ export default function Searchbar({
 
   return (
     <div className="w-full">
-      <div className="flex items-center gap-2 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300 focus-within:ring-2 focus-within:ring-black focus-within:ring-offset-1">
+      <div className="flex items-center gap-2 bg-krov-coal rounded-none shadow-md overflow-hidden border border-krov-smoke hover:shadow-lg transition-shadow duration-300 focus-within:ring-2 focus-within:ring-krov-blood focus-within:ring-offset-1">
         {/* Search Icon (decorative) */}
-        <div className="pl-4 text-gray-400">
+        <div className="pl-4 text-krov-dust">
           <svg
             width="20"
             height="20"
@@ -63,7 +63,7 @@ export default function Searchbar({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={placeholder}
-          className="flex-1 px-2 py-3 text-sm text-gray-900 placeholder-gray-500 outline-none bg-transparent"
+          className="flex-1 px-2 py-3 text-sm text-krov-bone placeholder-krov-dust outline-none bg-transparent"
         />
 
         {/* Clear button — visible only when there's text */}
@@ -71,7 +71,7 @@ export default function Searchbar({
           <button
             type="button"
             onClick={() => setQuery("")}
-            className="flex items-center justify-center px-3 py-3 text-gray-400 hover:text-gray-700 transition-colors"
+            className="flex items-center justify-center px-3 py-3 text-krov-dust hover:text-krov-ash transition-colors"
             aria-label="Limpiar búsqueda"
           >
             <svg

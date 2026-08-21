@@ -52,7 +52,7 @@ export default function PaymentMethodSelector({
         {OPTIONS.map((option) => (
           <label
             key={option.value}
-            className="relative flex cursor-pointer rounded-lg border border-gray-300 bg-white p-4 transition has-[:checked]:border-black has-[:checked]:ring-1 has-[:checked]:ring-black has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-gray-400 has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50"
+            className="relative flex cursor-pointer rounded-none border border-krov-smoke bg-krov-coal p-4 transition has-[:checked]:border-krov-blood has-[:checked]:ring-1 has-[:checked]:ring-krov-blood has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-krov-blood has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50"
           >
             <input
               type="radio"
@@ -63,10 +63,10 @@ export default function PaymentMethodSelector({
               className="sr-only"
             />
             <span className="min-w-0">
-              <span className="block text-sm font-medium text-gray-900">
+              <span className="block text-sm font-medium text-krov-bone">
                 {option.label}
               </span>
-              <span className="block text-xs text-gray-500 mt-0.5">
+              <span className="block text-xs text-krov-dust mt-0.5">
                 {option.description}
               </span>
             </span>

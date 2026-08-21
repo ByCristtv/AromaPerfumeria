@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 type LegalDoc = {
   title: string;
@@ -19,7 +19,7 @@ const DOCS: Record<string, LegalDoc> = {
   privacidad: {
     title: "Política de Privacidad",
     intro:
-      "En Aroma Perfumería respetamos tu privacidad y protegemos los datos personales que compartes con nosotros. Este documento describe, de forma general, cómo recopilamos y utilizamos tu información.",
+      "En KROV Perfumería respetamos tu privacidad y protegemos los datos personales que compartes con nosotros. Este documento describe, de forma general, cómo recopilamos y utilizamos tu información.",
     sections: [
       {
         heading: "Datos que recopilamos",
@@ -38,7 +38,7 @@ const DOCS: Record<string, LegalDoc> = {
   terminos: {
     title: "Términos y Condiciones",
     intro:
-      "Al utilizar el sitio de Aroma Perfumería y realizar compras, aceptas los siguientes términos generales. Te recomendamos leerlos antes de finalizar tu pedido.",
+      "Al utilizar el sitio de KROV Perfumería y realizar compras, aceptas los siguientes términos generales. Te recomendamos leerlos antes de finalizar tu pedido.",
     sections: [
       {
         heading: "Productos y autenticidad",
@@ -69,8 +69,8 @@ export async function generateMetadata({
   const data = DOCS[doc];
   return {
     title: data
-      ? `${data.title} · Aroma Perfumería`
-      : "Documento no encontrado · Aroma Perfumería",
+      ? `${data.title} · KROV Perfumería`
+      : "Documento no encontrado · KROV Perfumería",
   };
 }
 
@@ -84,18 +84,17 @@ export default async function LegalPage({
   if (!data) notFound();
 
   return (
-    <div className="relative min-h-screen bg-[#0a0a0a]">
+    <div className="relative min-h-screen bg-krov-void">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-linear-to-b from-[#0c0b0a] via-[#0a0a0a] to-[#080808]"
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-krov-ink via-krov-void to-krov-void"
       />
 
       <div className="relative mx-auto max-w-3xl px-6 pt-32 pb-24 md:pt-40">
         <p
-          className="mb-5 text-xs uppercase tracking-[0.4em] text-[#c9a96e]"
-          style={{ fontFamily: serif }}
+          className="mb-5 text-xs uppercase tracking-[0.4em] text-krov-rose"
         >
-          Aroma Perfumería
+          KROV Perfumería
         </p>
         <h1
           className="text-4xl leading-tight text-white md:text-5xl"
@@ -133,7 +132,7 @@ export default async function LegalPage({
         <div className="mt-16 border-t border-white/10 pt-8">
           <p className="text-sm text-white/45" style={{ fontFamily: serif }}>
             ¿Tienes preguntas sobre este documento?{" "}
-            <Link href="/contact" className="text-[#c9a96e] underline-offset-4 hover:underline">
+            <Link href="/contact" className="text-krov-rose underline-offset-4 hover:underline">
               Contáctanos
             </Link>
             .

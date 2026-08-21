@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
   title: "Crear cuenta",
   description:
-    "Crea tu cuenta en Aroma Perfumería para gestionar pedidos, direcciones y favoritos.",
+    "Crea tu cuenta en KROV Perfumería para gestionar pedidos, direcciones y favoritos.",
 };
 
 export default function RegisterPage() {

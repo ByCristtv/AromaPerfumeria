@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
   title: "Contacto",
   description:
-    "Ponte en contacto con Aroma Perfumería. Te ayudamos con productos, pedidos, envíos y recomendaciones por WhatsApp, Instagram y Facebook. Atención personalizada y cercana.",
+    "Ponte en contacto con KROV Perfumería. Te ayudamos con productos, pedidos, envíos y recomendaciones por WhatsApp, Instagram y Facebook. Atención personalizada y cercana.",
 };
 
 export default function ContactPage() {

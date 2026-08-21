@@ -1,30 +1,27 @@
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
+
 interface ProductDescriptionProps {
   description: string;
 }
 
+/**
+ * The description, set as a pull quote.
+ *
+ * Copy about a fragrance is the closest thing the page has to writing, so it is
+ * given the display serif at reading size on a narrow measure, opened by a red
+ * rule. Left-aligned rather than centred: centred body text is decorative at
+ * one line and genuinely harder to read at five.
+ */
 export default function ProductDescription({
   description,
 }: ProductDescriptionProps) {
   return (
-    <section className="relative max-w-3xl mx-auto text-center">
+    <section className="relative mx-auto max-w-3xl">
+      <p className="krov-eyebrow">Descripción</p>
+      <span aria-hidden className="mt-5 block h-px w-16 bg-krov-blood" />
       <p
-        className="text-[11px] tracking-[0.32em] uppercase"
-        style={{ color: "#c9a96e" }}
-      >
-        Descripción
-      </p>
-      <div className="mt-4 flex justify-center">
-        <span
-          className="h-px w-12"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent, #c9a96e, transparent)",
-          }}
-        />
-      </div>
-      <p
-        className="mt-6 text-lg sm:text-xl leading-relaxed text-black/70 whitespace-pre-line"
-        style={{ fontFamily: '"Cormorant Garamond", "Garamond", serif' }}
+        className="mt-7 whitespace-pre-line text-xl leading-relaxed text-krov-ash sm:text-2xl"
+        style={{ fontFamily: serif }}
       >
         {description}
       </p>

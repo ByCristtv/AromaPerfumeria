@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { ImageOff } from "lucide-react";
 import StepBadge from "./StepBadge";
-import { serif } from "./styles";
 
 type ImagePlaceholderProps = {
   /** Optional screenshot. When omitted the elegant skeleton shows instead. */
@@ -19,7 +18,7 @@ type ImagePlaceholderProps = {
 
 /**
  * 16:9 media slot for every step. Renders a real image when `src` is provided,
- * otherwise a refined dashed-border skeleton with a slow gold shimmer — which is
+ * otherwise a refined dashed-border skeleton with a slow red shimmer — which is
  * the mobile journey's default state until captures are added.
  *
  * Two performance fixes live here:
@@ -43,10 +42,10 @@ export default function ImagePlaceholder({
 }: ImagePlaceholderProps) {
   return (
     <div className="group/img hover-lift relative w-full">
-      {/* Soft gold glow that intensifies on hover */}
-      <div className="pointer-events-none absolute -inset-1 rounded-[1.4rem] bg-[#c9a96e]/0 blur-2xl transition-colors duration-700 group-hover/img:bg-[#c9a96e]/10" />
+      {/* Soft red glow that intensifies on hover */}
+      <div className="pointer-events-none absolute -inset-1 rounded-[1.4rem] bg-krov-blood/0 blur-2xl transition-colors duration-700 group-hover/img:bg-krov-blood/10" />
 
-      <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-[#c9a96e]/15 bg-[#0e0e0e] shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)] transition-colors duration-500 group-hover/img:border-[#c9a96e]/40">
+      <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-krov-smoke/85 bg-krov-ink shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)] transition-colors duration-500 group-hover/img:border-krov-blood/40">
         {showBadge && (
           <div className="absolute left-4 top-4 z-20">
             <StepBadge number={number} />
@@ -69,22 +68,21 @@ export default function ImagePlaceholder({
             className="absolute inset-0"
           >
             {/* Dashed elegant frame */}
-            <div className="absolute inset-3 rounded-xl border border-dashed border-[#c9a96e]/25" />
+            <div className="absolute inset-3 rounded-xl border border-dashed border-krov-smoke" />
 
             {/* Slow shimmer sweep — CSS, compositor-only */}
             <div
               aria-hidden="true"
-              className="shimmer-sweep absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-[#c9a96e]/10 to-transparent"
+              className="shimmer-sweep absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-krov-blood/10 to-transparent"
             />
 
             {/* Centre label */}
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[#c9a96e]/30 text-[#c9a96e]/70 transition-colors duration-500 group-hover/img:text-[#c9a96e]">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full border border-krov-blood/30 text-krov-rose/70 transition-colors duration-500 group-hover/img:text-krov-rose">
                 <ImageOff size={20} strokeWidth={1.3} aria-hidden="true" />
               </span>
               <span
                 className="text-xs uppercase tracking-[0.3em] text-white/45"
-                style={{ fontFamily: serif }}
               >
                 {label}
               </span>

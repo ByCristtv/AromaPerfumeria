@@ -96,7 +96,7 @@ export default function AdminOrderDetail({ order }: Props) {
         showCancelButton: true,
         confirmButtonText: "Marcar pagado",
         cancelButtonText: "Cancelar",
-        confirmButtonColor: "#c9a96e",
+        confirmButtonColor: "#ff4d74",
         preConfirm: () => ({
           reference:
             (document.getElementById("swal-ref") as HTMLInputElement | null)?.value ?? "",
@@ -219,7 +219,7 @@ export default function AdminOrderDetail({ order }: Props) {
           <span className="flex flex-wrap items-center gap-3">
             <span>
               Pedido{" "}
-              <span className="font-mono text-[#c9a96e]">
+              <span className="font-mono text-krov-rose">
                 #{order.order_number}
               </span>
             </span>
@@ -228,7 +228,7 @@ export default function AdminOrderDetail({ order }: Props) {
           </span>
         }
         actions={
-          <span className="text-xs text-[#a5a5a5]">
+          <span className="text-xs text-krov-ash">
             {formatDate(order.created_at)}
           </span>
         }
@@ -238,23 +238,23 @@ export default function AdminOrderDetail({ order }: Props) {
           {/* ──────── Left column: details ──────── */}
           <div className="space-y-5">
             <Panel title="Productos" index={nextIndex()} visible={pageMounted}>
-              <ul className="divide-y divide-[#c9a96e]/10">
+              <ul className="divide-y divide-krov-smoke/70">
                 {(order.order_items ?? []).map((item) => (
                   <li
                     key={item.id}
                     className="py-3 flex items-start justify-between gap-3"
                   >
                     <div className="min-w-0">
-                      <p className="text-sm text-[#ececec] truncate">
+                      <p className="text-sm text-krov-bone truncate">
                         {item.brand_name} — {item.product_name}
                       </p>
-                      <p className="text-xs text-[#a5a5a5]">
+                      <p className="text-xs text-krov-ash">
                         {item.size_ml} ml · cant. {item.quantity} ·{" "}
                         <span className="font-mono">{item.sku}</span> ·{" "}
                         {formatPrice(item.unit_price)} c/u
                       </p>
                     </div>
-                    <span className="text-sm text-[#ececec] shrink-0 tabular-nums">
+                    <span className="text-sm text-krov-bone shrink-0 tabular-nums">
                       {formatPrice(item.line_total)}
                     </span>
                   </li>
@@ -263,7 +263,7 @@ export default function AdminOrderDetail({ order }: Props) {
             </Panel>
 
             <Panel title="Cliente" index={nextIndex()} visible={pageMounted}>
-              <dl className="text-sm text-[#ececec] space-y-1.5">
+              <dl className="text-sm text-krov-bone space-y-1.5">
                 <Row label="Nombre" value={order.customer_name} />
                 <Row label="Teléfono" value={order.customer_phone} />
                 <Row label="Correo" value={order.customer_email ?? "—"} />
@@ -271,7 +271,7 @@ export default function AdminOrderDetail({ order }: Props) {
             </Panel>
 
             <Panel title="Entrega" index={nextIndex()} visible={pageMounted}>
-              <dl className="text-sm text-[#ececec] space-y-1.5">
+              <dl className="text-sm text-krov-bone space-y-1.5">
                 <Row
                   label="Provincia / Cantón"
                   value={`${order.shipping_province} / ${order.shipping_canton}`}
@@ -290,7 +290,7 @@ export default function AdminOrderDetail({ order }: Props) {
             </Panel>
 
             <Panel title="Pago" index={nextIndex()} visible={pageMounted}>
-              <dl className="text-sm text-[#ececec] space-y-1.5">
+              <dl className="text-sm text-krov-bone space-y-1.5">
                 <Row label="Estado" value={paymentStatusLabel(order.payment_status)} />
                 <Row label="Proveedor" value={order.payment_provider ?? "—"} />
                 <Row
@@ -314,7 +314,7 @@ export default function AdminOrderDetail({ order }: Props) {
 
             {order.notes && (
               <Panel title="Notas" index={nextIndex()} visible={pageMounted}>
-                <p className="text-sm text-[#ececec] whitespace-pre-wrap">
+                <p className="text-sm text-krov-bone whitespace-pre-wrap">
                   {order.notes}
                 </p>
               </Panel>
@@ -325,31 +325,31 @@ export default function AdminOrderDetail({ order }: Props) {
           <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
             <Panel title="Total" index={nextIndex()} visible={pageMounted}>
               <dl className="text-sm space-y-2">
-                <div className="flex justify-between text-[#a5a5a5]">
+                <div className="flex justify-between text-krov-ash">
                   <dt>Subtotal</dt>
-                  <dd className="tabular-nums text-[#ececec]">
+                  <dd className="tabular-nums text-krov-bone">
                     {formatPrice(order.subtotal)}
                   </dd>
                 </div>
-                <div className="flex justify-between text-[#a5a5a5]">
+                <div className="flex justify-between text-krov-ash">
                   <dt>Envío</dt>
-                  <dd className="tabular-nums text-[#ececec]">
+                  <dd className="tabular-nums text-krov-bone">
                     {order.shipping_cost > 0
                       ? formatPrice(order.shipping_cost)
                       : "Gratis"}
                   </dd>
                 </div>
                 {order.discount > 0 && (
-                  <div className="flex justify-between text-[#a5a5a5]">
+                  <div className="flex justify-between text-krov-ash">
                     <dt>Descuento</dt>
                     <dd className="tabular-nums text-emerald-300">
                       −{formatPrice(order.discount)}
                     </dd>
                   </div>
                 )}
-                <div className="flex justify-between text-base font-semibold pt-3 border-t border-[#c9a96e]/20">
-                  <dt className="text-[#ececec]">Total</dt>
-                  <dd className="tabular-nums text-[#c9a96e]">
+                <div className="flex justify-between text-base font-semibold pt-3 border-t border-krov-smoke">
+                  <dt className="text-krov-bone">Total</dt>
+                  <dd className="tabular-nums text-krov-rose">
                     {formatPrice(order.total)}
                   </dd>
                 </div>
@@ -383,7 +383,7 @@ export default function AdminOrderDetail({ order }: Props) {
                   />
                 )}
                 {awaitingPaymentBeforeConfirm && (
-                  <p className="text-xs text-[#a5a5a5] leading-relaxed border-l-2 border-[#c9a96e]/40 pl-3 py-1">
+                  <p className="text-xs text-krov-ash leading-relaxed border-l-2 border-krov-blood/40 pl-3 py-1">
                     Registra el pago antes de confirmar el pedido. Una vez
                     confirmado, el cobro ya no puede marcarse como pagado.
                   </p>
@@ -406,7 +406,7 @@ export default function AdminOrderDetail({ order }: Props) {
                   </p>
                 )}
                 {!canMarkPaid && !canConfirm && !canShip && !canDeny && (
-                  <p className="text-xs text-[#a5a5a5] py-2">
+                  <p className="text-xs text-krov-ash py-2">
                     No hay acciones disponibles para este estado.
                   </p>
                 )}
@@ -414,8 +414,8 @@ export default function AdminOrderDetail({ order }: Props) {
             </Panel>
 
             <Panel title="Origen" index={nextIndex()} visible={pageMounted}>
-              <p className="text-xs text-[#a5a5a5]">
-                <span className="text-[#ececec]">{order.source}</span>
+              <p className="text-xs text-krov-ash">
+                <span className="text-krov-bone">{order.source}</span>
                 <br />
                 Creado: {formatDate(order.created_at)}
                 <br />
@@ -452,8 +452,8 @@ function Panel({
   };
 
   return (
-    <section style={style} className="rounded-2xl border border-[#c9a96e]/20 bg-[#1a1a1a] p-4 sm:p-5">
-      <h2 className="text-xs uppercase tracking-wider text-[#a5a5a5] mb-3">
+    <section style={style} className="rounded-none border border-krov-smoke bg-krov-graphite p-4 sm:p-5">
+      <h2 className="text-xs uppercase tracking-wider text-krov-ash mb-3">
         {title}
       </h2>
       {children}
@@ -470,8 +470,8 @@ function Row({
 }) {
   return (
     <div className="flex flex-col sm:flex-row sm:gap-3">
-      <dt className="text-[#a5a5a5] sm:w-32 shrink-0">{label}</dt>
-      <dd className="text-[#ececec] break-words">{value}</dd>
+      <dt className="text-krov-ash sm:w-32 shrink-0">{label}</dt>
+      <dd className="text-krov-bone break-words">{value}</dd>
     </div>
   );
 }
@@ -489,14 +489,14 @@ function ActionButton({
 }) {
   const variantCls =
     variant === "primary"
-      ? "bg-[#c9a96e] text-black hover:bg-[#b8a060]"
+      ? "bg-krov-blood text-black hover:bg-krov-crimson"
       : "bg-red-600/90 text-white hover:bg-red-600 border border-red-600";
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`w-full rounded-lg px-4 py-2.5 text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed ${variantCls}`}
+      className={`w-full rounded-none px-4 py-2.5 text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed ${variantCls}`}
     >
       {disabled ? "Procesando…" : label}
     </button>
@@ -510,10 +510,10 @@ function StatusBadge({ status }: { status: string }) {
     shipped: ["Enviado", "bg-emerald-500/20 text-emerald-200"],
     denied: ["Cancelado", "bg-red-500/20 text-red-200"],
   };
-  const [label, cls] = map[status] ?? [status, "bg-gray-500/20 text-gray-200"];
+  const [label, cls] = map[status] ?? [status, "bg-krov-smoke text-krov-ash"];
   return (
     <span
-      className={`inline-block px-2 py-0.5 rounded text-[11px] font-semibold ${cls}`}
+      className={`inline-block px-2 py-0.5 rounded-none text-[11px] font-semibold ${cls}`}
     >
       {label}
     </span>
@@ -527,10 +527,10 @@ function PaymentBadge({ status }: { status: string }) {
     failed: ["Pago fallido", "bg-red-500/20 text-red-200"],
     refunded: ["Reembolsado", "bg-purple-500/20 text-purple-200"],
   };
-  const [label, cls] = map[status] ?? [status, "bg-gray-500/20 text-gray-200"];
+  const [label, cls] = map[status] ?? [status, "bg-krov-smoke text-krov-ash"];
   return (
     <span
-      className={`inline-block px-2 py-0.5 rounded text-[11px] font-semibold ${cls}`}
+      className={`inline-block px-2 py-0.5 rounded-none text-[11px] font-semibold ${cls}`}
     >
       {label}
     </span>

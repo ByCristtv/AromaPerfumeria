@@ -29,7 +29,7 @@ export default function StepCard({ step, index }: StepCardProps) {
   return (
     <article
       ref={ref}
-      className="reveal group relative overflow-hidden rounded-[1.6rem] border border-white/5 bg-white/[0.025] p-5 backdrop-blur-sm transition-colors duration-500 hover:border-[#c9a96e]/25 hover:bg-white/[0.04] sm:p-7 lg:p-9"
+      className="reveal group relative overflow-hidden rounded-[1.6rem] border border-white/5 bg-white/[0.025] p-5 backdrop-blur-sm transition-colors duration-500 hover:border-krov-smoke hover:bg-white/[0.04] sm:p-7 lg:p-9"
     >
       {/* Faint oversized ghost number for editorial depth */}
       <span
@@ -55,12 +55,11 @@ export default function StepCard({ step, index }: StepCardProps) {
           className={`flex flex-col ${imageRight ? "lg:order-1" : "lg:order-2"}`}
         >
           <div className="reveal reveal-d1 mb-5 flex items-center gap-4">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#c9a96e]/40 text-[#c9a96e] transition-colors duration-500 group-hover:bg-[#c9a96e] group-hover:text-black">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-krov-blood/40 text-krov-rose transition-colors duration-500 group-hover:bg-krov-blood group-hover:text-black">
               <Icon size={20} strokeWidth={1.4} aria-hidden="true" />
             </span>
             <span
-              className="text-xs uppercase tracking-[0.35em] text-[#c9a96e]/80"
-              style={{ fontFamily: serif }}
+              className="text-xs uppercase tracking-[0.35em] text-krov-rose/80"
             >
               Paso {String(step.number).padStart(2, "0")}
             </span>
@@ -81,10 +80,10 @@ export default function StepCard({ step, index }: StepCardProps) {
           </p>
 
           {step.note && (
-            <div className="reveal reveal-d4 mt-6 flex gap-3 rounded-xl border border-[#c9a96e]/20 bg-[#c9a96e]/[0.06] px-5 py-4">
+            <div className="reveal reveal-d4 mt-6 flex gap-3 rounded-xl border border-krov-smoke bg-krov-blood/[0.06] px-5 py-4">
               <span
                 aria-hidden="true"
-                className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#c9a96e]"
+                className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-krov-blood"
               />
               <p
                 className="text-sm leading-relaxed text-white/70"

@@ -4,23 +4,32 @@ interface StockBadgeProps {
   stock: number;
 }
 
+/**
+ * Availability, told with a dot and a word.
+ *
+ * The traffic-light palette (green / amber / red) is deliberately gone: on the
+ * KROV ground it read as a system alert, and the red state was indistinguishable
+ * from the brand's own accent. Availability is now carried by the dot's
+ * intensity — a live pulse when stock is healthy, a static rose when it is
+ * running out, and an unlit grey when it is gone.
+ */
 export default function StockBadge({ stock }: StockBadgeProps) {
   if (stock <= 0) {
     return (
-      <Badge color="#b91c1c" bg="rgba(185,28,28,0.08)" border="rgba(185,28,28,0.25)">
+      <Badge tone="text-krov-dust" dot="bg-krov-dust">
         Sin existencias
       </Badge>
     );
   }
   if (stock <= 5) {
     return (
-      <Badge color="#92400e" bg="rgba(217,119,6,0.10)" border="rgba(217,119,6,0.30)">
+      <Badge tone="text-krov-blush" dot="bg-krov-blood">
         Últimas {stock} unidades
       </Badge>
     );
   }
   return (
-    <Badge color="#166534" bg="rgba(22,101,52,0.08)" border="rgba(22,101,52,0.22)">
+    <Badge tone="text-krov-ash" dot="bg-krov-blood krov-pulse">
       En existencia
     </Badge>
   );
@@ -28,24 +37,18 @@ export default function StockBadge({ stock }: StockBadgeProps) {
 
 function Badge({
   children,
-  color,
-  bg,
-  border,
+  tone,
+  dot,
 }: {
   children: React.ReactNode;
-  color: string;
-  bg: string;
-  border: string;
+  tone: string;
+  dot: string;
 }) {
   return (
     <span
-      className="inline-flex items-center gap-1.5 text-[10.5px] font-medium tracking-[0.18em] uppercase px-2.5 py-1 rounded-full"
-      style={{ color, background: bg, border: `1px solid ${border}` }}
+      className={`inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] ${tone}`}
     >
-      <span
-        className="h-1.5 w-1.5 rounded-full"
-        style={{ background: color }}
-      />
+      <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${dot}`} />
       {children}
     </span>
   );

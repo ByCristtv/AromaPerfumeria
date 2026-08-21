@@ -22,15 +22,15 @@ export default function RankProgress({ experiencePoints }: RankProgressProps) {
   const isMaxRank = info.nextRank === null;
 
   return (
-    <div className="rounded-2xl border border-[#c9a96e]/30 bg-gradient-to-br from-[#c9a96e]/10 to-transparent p-5">
+    <div className="rounded-2xl border border-krov-blood/30 bg-gradient-to-br from-krov-blood/10 to-transparent p-5">
       <div className="flex items-end justify-between gap-3">
         <div>
           <p className="text-white/50 text-[11px] uppercase tracking-wider mb-1">
             Rango actual
           </p>
           <p
-            className="text-[#c9a96e] text-2xl font-semibold leading-none"
-            style={{ fontFamily: "'Cormorant Garamond', 'Garamond', serif" }}
+            className="text-krov-rose text-2xl font-semibold leading-none"
+            style={{ fontFamily: "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif" }}
           >
             {info.currentRank}
           </p>
@@ -54,7 +54,7 @@ export default function RankProgress({ experiencePoints }: RankProgressProps) {
         }
       >
         <motion.div
-          className="h-full rounded-full bg-gradient-to-r from-[#c9a96e]/70 to-[#c9a96e]"
+          className="h-full rounded-full bg-gradient-to-r from-krov-blood/70 to-krov-blood"
           initial={{ width: 0 }}
           animate={{ width: `${info.progressPercent}%` }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
@@ -63,7 +63,7 @@ export default function RankProgress({ experiencePoints }: RankProgressProps) {
 
       {/* Next-rank caption */}
       {isMaxRank ? (
-        <p className="mt-3 text-center text-xs font-medium tracking-wide text-[#c9a96e]">
+        <p className="mt-3 text-center text-xs font-medium tracking-wide text-krov-rose">
           Rango máximo alcanzado
         </p>
       ) : (

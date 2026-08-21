@@ -1,7 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
-
 interface ProductHeaderProps {
   brand: string;
   name: string;
@@ -15,6 +13,17 @@ const GENDER_LABEL: Record<ProductHeaderProps["gender"], string> = {
   unisex: "Unisex",
 };
 
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
+
+/**
+ * Brand line, name, and the two facts that classify a fragrance.
+ *
+ * The per-element entrance animations are gone. Three staggered Framer nodes
+ * meant the product's own name faded in after the page had already painted —
+ * on a slow connection the most important text on the screen was the last thing
+ * to arrive. It renders immediately now; the page's motion budget is spent on
+ * scroll reveals further down, where nothing is waiting on it.
+ */
 export default function ProductHeader({
   brand,
   name,
@@ -23,50 +32,30 @@ export default function ProductHeader({
 }: ProductHeaderProps) {
   return (
     <div>
-      <motion.p
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="text-[11px] font-medium tracking-[0.32em] uppercase"
-        style={{ color: "#c9a96e" }}
-      >
-        {brand}
-      </motion.p>
+      {brand && (
+        <p className="text-[10px] uppercase tracking-[0.34em] text-krov-rose">
+          {brand}
+        </p>
+      )}
 
-      <motion.h1
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.75, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-        className="mt-3 text-4xl sm:text-5xl font-light text-black leading-[1.05] tracking-tight"
-        style={{ fontFamily: '"Cormorant Garamond", "Garamond", serif' }}
+      <h1
+        className="mt-4 text-4xl leading-[1.02] text-krov-bone sm:text-5xl"
+        style={{ fontFamily: serif }}
       >
         {name}
-      </motion.h1>
+      </h1>
 
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-        className="mt-5 flex items-center gap-3"
-      >
+      <div className="mt-5 flex flex-wrap items-center gap-2.5">
         <Chip>{concentration}</Chip>
-        <span className="h-px w-6 bg-black/15" />
         <Chip>{GENDER_LABEL[gender]}</Chip>
-      </motion.div>
+      </div>
     </div>
   );
 }
 
 function Chip({ children }: { children: React.ReactNode }) {
   return (
-    <span
-      className="inline-flex items-center text-[11px] font-medium tracking-[0.18em] uppercase text-black/60 px-3 py-1.5 rounded-full"
-      style={{
-        border: "1px solid rgba(201,169,110,0.35)",
-        background:
-          "linear-gradient(180deg, rgba(201,169,110,0.06), rgba(201,169,110,0.02))",
-      }}
-    >
+    <span className="inline-flex items-center border border-krov-smoke px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] text-krov-ash">
       {children}
     </span>
   );

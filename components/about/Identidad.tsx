@@ -1,4 +1,4 @@
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 const valores = [
   { title: "Autenticidad", desc: "Cada fragancia, garantizada como original." },
@@ -23,14 +23,13 @@ export default function Identidad() {
       className="relative py-24 md:py-32 px-6 overflow-hidden"
       style={{
         backgroundImage:
-          "radial-gradient(ellipse at top, #1a1410 0%, #0a0a0a 60%), repeating-linear-gradient(45deg, transparent 0 40px, rgba(201,169,110,0.03) 40px 41px)",
+          "radial-gradient(ellipse at top, #1d1020 0%, #08060a 60%), repeating-linear-gradient(45deg, transparent 0 40px, rgba(255,11,85,0.03) 40px 41px)",
       }}
     >
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20">
           <p
-            className="text-[#c9a96e] tracking-[0.4em] text-xs mb-6 uppercase"
-            style={{ fontFamily: serif }}
+            className="text-krov-rose tracking-[0.4em] text-xs mb-6 uppercase"
           >
             Identidad
           </p>
@@ -39,15 +38,14 @@ export default function Identidad() {
             className="text-3xl md:text-5xl text-white leading-tight"
             style={{ fontFamily: serif }}
           >
-            Quiénes <span className="italic text-[#c9a96e]">somos</span>
+            Quiénes <span className="italic text-krov-rose">somos</span>
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-20">
-          <article className="border border-[#c9a96e]/25 p-10 bg-black/40 backdrop-blur-sm">
+          <article className="border border-krov-smoke p-10 bg-black/40 backdrop-blur-sm">
             <h3
-              className="text-[#c9a96e] tracking-[0.3em] text-xs mb-5 uppercase"
-              style={{ fontFamily: serif }}
+              className="text-krov-rose tracking-[0.3em] text-xs mb-5 uppercase"
             >
               Misión
             </h3>
@@ -61,10 +59,9 @@ export default function Identidad() {
             </p>
           </article>
 
-          <article className="border border-[#c9a96e]/25 p-10 bg-black/40 backdrop-blur-sm">
+          <article className="border border-krov-smoke p-10 bg-black/40 backdrop-blur-sm">
             <h3
-              className="text-[#c9a96e] tracking-[0.3em] text-xs mb-5 uppercase"
-              style={{ fontFamily: serif }}
+              className="text-krov-rose tracking-[0.3em] text-xs mb-5 uppercase"
             >
               Visión
             </h3>
@@ -84,22 +81,22 @@ export default function Identidad() {
             className="text-center text-2xl md:text-3xl text-white mb-12"
             style={{ fontFamily: serif }}
           >
-            Nuestros <span className="italic text-[#c9a96e]">valores</span>
+            Nuestros <span className="italic text-krov-rose">valores</span>
           </h3>
-          <ul className="grid grid-cols-2 md:grid-cols-5 gap-px bg-[#c9a96e]/15">
+          <ul className="grid grid-cols-2 md:grid-cols-5 gap-px bg-krov-blood/15">
             {valores.map((v) => (
               <li
                 key={v.title}
-                className="bg-[#0a0a0a] p-8 text-center hover:bg-[#111] transition-colors duration-500"
+                className="bg-krov-void p-8 text-center hover:bg-krov-ink transition-colors duration-500"
               >
                 <div
-                  className="w-10 h-10 mx-auto mb-5 border border-[#c9a96e]/50 rotate-45 flex items-center justify-center"
+                  className="w-10 h-10 mx-auto mb-5 border border-krov-blood/50 rotate-45 flex items-center justify-center"
                   aria-hidden="true"
                 >
-                  <div className="w-2 h-2 bg-[#c9a96e]" />
+                  <div className="w-2 h-2 bg-krov-blood" />
                 </div>
                 <h4
-                  className="text-[#c9a96e] text-lg mb-3"
+                  className="text-krov-rose text-lg mb-3"
                   style={{ fontFamily: serif }}
                 >
                   {v.title}
@@ -115,10 +112,9 @@ export default function Identidad() {
           </ul>
         </div>
 
-        <div className="max-w-3xl mx-auto border border-[#c9a96e]/30 p-10 bg-black/40 backdrop-blur-sm">
+        <div className="max-w-3xl mx-auto border border-krov-blood/30 p-10 bg-black/40 backdrop-blur-sm">
           <h3
-            className="text-[#c9a96e] tracking-[0.3em] text-xs mb-8 uppercase text-center"
-            style={{ fontFamily: serif }}
+            className="text-krov-rose tracking-[0.3em] text-xs mb-8 uppercase text-center"
           >
             Nuestra promesa
           </h3>
@@ -130,7 +126,7 @@ export default function Identidad() {
                 style={{ fontFamily: serif }}
               >
                 <span
-                  className="text-[#c9a96e] flex-shrink-0 mt-1"
+                  className="text-krov-rose flex-shrink-0 mt-1"
                   aria-hidden="true"
                 >
                   ✓

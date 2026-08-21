@@ -9,11 +9,11 @@ import { CONTACT } from "@/components/contact/contactData";
  * it, Next emits relative OG image paths, which every social scraper rejects.
  */
 export const SITE = {
-  name: "Aroma Perfumería",
+  name: "KROV Perfumería",
   /** Used in <title> templates. Kept short so titles don't get truncated in SERPs. */
-  shortName: "Aroma",
+  shortName: "KROV",
   description:
-    "Perfumería de lujo en Costa Rica. Fragancias originales, nicho y de diseñador, además de decants. Envío a todo el país y pago seguro con tarjeta o SINPE Móvil.",
+    "KROV — perfumería en Costa Rica. Fragancias originales de nicho y diseñador, además de decants. Una fragancia no se compra: se elige. Envío a todo el país y pago con tarjeta o SINPE Móvil.",
   locale: "es_CR",
   lang: "es-CR",
   country: "CR",

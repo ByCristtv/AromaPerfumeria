@@ -220,7 +220,7 @@ export default function AdminOrderCreateView() {
         description={
           <>
             Para clientes que escriben por WhatsApp, redes o teléfono. El pedido
-            queda <span className="text-[#c9a96e]">pendiente de pago</span>.
+            queda <span className="text-krov-rose">pendiente de pago</span>.
           </>
         }
         backHref="/admin/orders"
@@ -311,7 +311,7 @@ export default function AdminOrderCreateView() {
                   disabled={variantsLoading}
                 />
                 {searchFocused && results.length > 0 && (
-                  <ul className="absolute z-20 mt-1 max-h-72 w-full overflow-y-auto rounded-lg border border-[#c9a96e]/30 bg-[#111] shadow-2xl">
+                  <ul className="absolute z-20 mt-1 max-h-72 w-full overflow-y-auto rounded-none border border-krov-blood/30 bg-krov-ink shadow-2xl">
                     {results.map((v) => (
                       <li key={v.variant_id}>
                         <button
@@ -320,16 +320,16 @@ export default function AdminOrderCreateView() {
                           className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left hover:bg-[#1f1f1f]"
                         >
                           <span className="min-w-0">
-                            <span className="block truncate text-sm text-[#ececec]">
-                              {v.name} <span className="text-[#a5a5a5]">· {v.brand}</span>
+                            <span className="block truncate text-sm text-krov-bone">
+                              {v.name} <span className="text-krov-ash">· {v.brand}</span>
                             </span>
-                            <span className="block text-[11px] text-[#a5a5a5]">
+                            <span className="block text-[11px] text-krov-ash">
                               {v.size_ml} ml · {TYPE_LABEL[v.product_type] ?? v.product_type} ·{" "}
                               <span className="font-mono">{v.sku}</span>
                               {v.product_type !== "decant" && ` · stock ${v.stock}`}
                             </span>
                           </span>
-                          <span className="shrink-0 text-sm font-semibold text-[#c9a96e] tabular-nums">
+                          <span className="shrink-0 text-sm font-semibold text-krov-rose tabular-nums">
                             {formatPrice(effectivePrice(v))}
                           </span>
                         </button>
@@ -338,7 +338,7 @@ export default function AdminOrderCreateView() {
                   </ul>
                 )}
                 {searchFocused && search.trim() && results.length === 0 && (
-                  <div className="absolute z-20 mt-1 w-full rounded-lg border border-[#c9a96e]/20 bg-[#111] px-3 py-3 text-sm text-[#a5a5a5]">
+                  <div className="absolute z-20 mt-1 w-full rounded-none border border-krov-smoke bg-krov-ink px-3 py-3 text-sm text-krov-ash">
                     Sin coincidencias disponibles.
                   </div>
                 )}
@@ -347,11 +347,11 @@ export default function AdminOrderCreateView() {
               {/* Cart lines */}
               <div className="mt-4">
                 {lines.length === 0 ? (
-                  <p className="py-6 text-center text-sm text-[#a5a5a5]">
+                  <p className="py-6 text-center text-sm text-krov-ash">
                     Aún no has agregado productos.
                   </p>
                 ) : (
-                  <ul className="divide-y divide-[#c9a96e]/10">
+                  <ul className="divide-y divide-krov-smoke/70">
                     {lines.map((l) => {
                       const lineTotal = effectivePrice(l.variant) * l.quantity;
                       const overStock =
@@ -360,11 +360,11 @@ export default function AdminOrderCreateView() {
                       return (
                         <li key={l.variant.variant_id} className="flex items-center gap-3 py-3">
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm text-[#ececec]">
+                            <p className="truncate text-sm text-krov-bone">
                               {l.variant.name}{" "}
-                              <span className="text-[#a5a5a5]">· {l.variant.size_ml} ml</span>
+                              <span className="text-krov-ash">· {l.variant.size_ml} ml</span>
                             </p>
-                            <p className="text-[11px] text-[#a5a5a5]">
+                            <p className="text-[11px] text-krov-ash">
                               <span className="font-mono">{l.variant.sku}</span> ·{" "}
                               {formatPrice(effectivePrice(l.variant))} c/u
                               {overStock && (
@@ -377,14 +377,14 @@ export default function AdminOrderCreateView() {
                             max={maxQtyFor(l.variant) || 99}
                             onChange={(q) => setQty(l.variant.variant_id, q)}
                           />
-                          <span className="w-24 shrink-0 text-right text-sm font-medium text-[#ececec] tabular-nums">
+                          <span className="w-24 shrink-0 text-right text-sm font-medium text-krov-bone tabular-nums">
                             {formatPrice(lineTotal)}
                           </span>
                           <button
                             type="button"
                             onClick={() => removeLine(l.variant.variant_id)}
                             aria-label="Quitar"
-                            className="shrink-0 rounded p-1 text-[#a5a5a5] hover:bg-white/10 hover:text-red-300"
+                            className="shrink-0 rounded-none p-1 text-krov-ash hover:bg-white/10 hover:text-red-300"
                           >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
                               <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -441,7 +441,7 @@ export default function AdminOrderCreateView() {
                   }
                 />
                 <div className="flex items-center justify-between gap-3">
-                  <dt className="text-[#a5a5a5]">Descuento</dt>
+                  <dt className="text-krov-ash">Descuento</dt>
                   <input
                     className="adm-input w-28 text-right py-1.5"
                     value={discount}
@@ -450,9 +450,9 @@ export default function AdminOrderCreateView() {
                     placeholder="0"
                   />
                 </div>
-                <div className="flex justify-between border-t border-[#c9a96e]/20 pt-3 text-base font-semibold">
-                  <dt className="text-[#ececec]">Total</dt>
-                  <dd className="tabular-nums text-[#c9a96e]">{formatPrice(total)}</dd>
+                <div className="flex justify-between border-t border-krov-smoke pt-3 text-base font-semibold">
+                  <dt className="text-krov-bone">Total</dt>
+                  <dd className="tabular-nums text-krov-rose">{formatPrice(total)}</dd>
                 </div>
               </dl>
 
@@ -460,11 +460,11 @@ export default function AdminOrderCreateView() {
                 type="button"
                 onClick={handleSubmit}
                 disabled={submitting || lines.length === 0}
-                className="mt-5 w-full rounded-lg bg-[#c9a96e] py-3 text-sm font-semibold text-black transition hover:bg-[#b8a060] disabled:opacity-50"
+                className="mt-5 w-full rounded-none bg-krov-blood py-3 text-sm font-semibold text-black transition hover:bg-krov-crimson disabled:opacity-50"
               >
                 {submitting ? "Creando pedido…" : "Crear pedido"}
               </button>
-              <p className="mt-2 text-center text-[11px] text-[#a5a5a5]">
+              <p className="mt-2 text-center text-[11px] text-krov-ash">
                 Se creará como pendiente de pago.
               </p>
             </Panel>
@@ -476,19 +476,19 @@ export default function AdminOrderCreateView() {
           width: 100%;
           padding: 0.6rem 0.85rem;
           background-color: #111;
-          border: 1px solid rgba(201, 169, 110, 0.25);
+          border: 1px solid rgba(255,11,85, 0.25);
           border-radius: 0.5rem;
-          color: #ececec;
+          color: #f4eef0;
           font-size: 0.875rem;
           transition: border-color 0.15s, box-shadow 0.15s;
         }
         .adm-input::placeholder {
-          color: #6b6b6b;
+          color: #6f656c;
         }
         .adm-input:focus {
-          border-color: #c9a96e;
+          border-color: #ff4d74;
           outline: none;
-          box-shadow: 0 0 0 1px #c9a96e;
+          box-shadow: 0 0 0 1px #ff4d74;
         }
         .adm-input:disabled {
           opacity: 0.5;
@@ -502,8 +502,8 @@ export default function AdminOrderCreateView() {
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-[#c9a96e]/20 bg-[#1a1a1a] p-4 sm:p-5">
-      <h2 className="mb-4 text-xs uppercase tracking-wider text-[#c9a96e]">{title}</h2>
+    <section className="rounded-none border border-krov-smoke bg-krov-graphite p-4 sm:p-5">
+      <h2 className="mb-4 text-xs uppercase tracking-wider text-krov-rose">{title}</h2>
       {children}
     </section>
   );
@@ -520,7 +520,7 @@ function Field({
 }) {
   return (
     <label className={`block ${className}`}>
-      <span className="mb-1 block text-[11px] font-medium uppercase tracking-wide text-[#a5a5a5]">
+      <span className="mb-1 block text-[11px] font-medium uppercase tracking-wide text-krov-ash">
         {label}
       </span>
       {children}
@@ -530,9 +530,9 @@ function Field({
 
 function Line({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between text-[#a5a5a5]">
+    <div className="flex justify-between text-krov-ash">
       <dt>{label}</dt>
-      <dd className="tabular-nums text-[#ececec]">{value}</dd>
+      <dd className="tabular-nums text-krov-bone">{value}</dd>
     </div>
   );
 }
@@ -547,12 +547,12 @@ function QtyStepper({
   onChange: (q: number) => void;
 }) {
   return (
-    <div className="flex shrink-0 items-center rounded-lg border border-[#c9a96e]/25">
+    <div className="flex shrink-0 items-center rounded-none border border-krov-smoke">
       <button
         type="button"
         onClick={() => onChange(value - 1)}
         disabled={value <= 1}
-        className="px-2 py-1 text-[#c9a96e] disabled:opacity-30"
+        className="px-2 py-1 text-krov-rose disabled:opacity-30"
         aria-label="Restar"
       >
         −
@@ -561,14 +561,14 @@ function QtyStepper({
         value={value}
         onChange={(e) => onChange(Number(e.target.value.replace(/[^0-9]/g, "")) || 1)}
         inputMode="numeric"
-        className="w-9 bg-transparent text-center text-sm text-[#ececec] outline-none"
+        className="w-9 bg-transparent text-center text-sm text-krov-bone outline-none"
         aria-label="Cantidad"
       />
       <button
         type="button"
         onClick={() => onChange(value + 1)}
         disabled={value >= max}
-        className="px-2 py-1 text-[#c9a96e] disabled:opacity-30"
+        className="px-2 py-1 text-krov-rose disabled:opacity-30"
         aria-label="Sumar"
       >
         +

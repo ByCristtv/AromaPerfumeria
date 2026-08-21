@@ -22,7 +22,7 @@ export default function BackToDashboard({
   return (
     <Link
       href={href}
-      className={`group inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-[#a5a5a5] transition-colors hover:text-[#c9a96e] ${className}`}
+      className={`group inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-krov-ash transition-colors hover:text-krov-rose ${className}`}
     >
       <ArrowLeft
         size={15}

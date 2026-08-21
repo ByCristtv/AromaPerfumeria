@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Check, Eye, ShoppingBag } from "lucide-react";
+import { Check, Plus } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { ProductCardData, ProductTypes } from "@/types/product";
 import { availableUnits } from "@/lib/stock";
@@ -11,7 +11,7 @@ import { formatPrice } from "@/lib/format";
 import { useCatalogWholesale } from "@/components/catalog/CatalogWholesaleContext";
 import { isWholesaleConfigured } from "@/lib/pricing/wholesale";
 
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 const LOW_STOCK_THRESHOLD = 5;
 
 const TYPE_LABEL: Record<ProductTypes, string> = {
@@ -20,18 +20,39 @@ const TYPE_LABEL: Record<ProductTypes, string> = {
   set: "Set",
 };
 
-type BadgeTone = "gold" | "outline" | "muted";
+/**
+ * ── The card ────────────────────────────────────────────────────────────────
+ *
+ * Rebuilt from a rounded, bordered, shadowed box into a plate: a luminous image
+ * niche with the type set beneath it on the page's own ground. There is no
+ * container — the photograph and the words are the card.
+ *
+ * Two deliberate calls:
+ *
+ * · The niche stays LIGHT. Product photography is shot on white, so a dark
+ *   tile would either show a white rectangle or need every asset re-cut. A
+ *   linen plate in a black grid also reads as gallery lighting, which is
+ *   exactly the register KROV wants.
+ *
+ * · The add-to-cart control is a small square that only fills with red on
+ *   hover, and on touch it is permanently visible. Hiding a primary action
+ *   behind hover is a desktop-only affordance and would strand every phone.
+ *
+ * All commerce behaviour — variant resolution, wholesale gating, stock maths,
+ * `addItem` payload — is unchanged from the previous version.
+ */
+
+type BadgeTone = "blood" | "outline" | "muted";
 
 function Badge({ label, tone }: { label: string; tone: BadgeTone }) {
   const styles: Record<BadgeTone, string> = {
-    gold: "bg-[#c9a96e] text-black border-transparent",
-    outline: "bg-black/50 text-[#c9a96e] border-[#c9a96e]/40 backdrop-blur-sm",
-    muted: "bg-black/60 text-white/70 border-white/15 backdrop-blur-sm",
+    blood: "bg-krov-blood text-krov-void",
+    outline: "bg-krov-void/80 text-krov-blush backdrop-blur-sm",
+    muted: "bg-krov-void/85 text-krov-ash backdrop-blur-sm",
   };
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] ${styles[tone]}`}
-      style={{ fontFamily: serif }}
+      className={`inline-flex items-center px-2.5 py-1 text-[9px] uppercase tracking-[0.2em] ${styles[tone]}`}
     >
       {label}
     </span>
@@ -92,19 +113,20 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
   };
 
   return (
-    <div className="animate-fadeIn group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/8 bg-[#101010] transition-[border-color,box-shadow] duration-300 hover:border-[#c9a96e]/40 hover:shadow-[0_30px_70px_-35px_rgba(201,169,110,0.4)]">
-      {/* ---- Visual niche ---- */}
+    <article className="animate-fadeIn group flex h-full flex-col">
+      {/* ── The niche ──────────────────────────────────────────────────────── */}
       <div className="relative">
         <Link
           href={`/products/${product.slug}`}
-          className="relative block aspect-4/5 overflow-hidden bg-linear-to-b from-white to-[#f1ece3]"
+          className="relative block aspect-4/5 overflow-hidden bg-gradient-to-b from-krov-linen to-krov-linen-deep"
           aria-label={`Ver ${product.name}`}
         >
-          {/* Skeleton shimmer until the image decodes */}
+          {/* Skeleton until the image decodes — same plate, one shade darker,
+              so nothing shifts in tone when the photograph lands. */}
           {!imgLoaded && (
             <span
               aria-hidden
-              className="absolute inset-0 animate-pulse bg-linear-to-br from-[#efe9df] to-[#e2dccf]"
+              className="absolute inset-0 animate-pulse bg-krov-linen-deep"
             />
           )}
           <Image
@@ -113,132 +135,114 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             onLoad={() => setImgLoaded(true)}
-            className={`object-contain p-6 transition-all duration-700 ease-out group-hover:scale-[1.07] ${
+            className={`object-contain p-7 transition-[transform,opacity] duration-700 ease-out group-hover:scale-[1.05] ${
               imgLoaded ? "opacity-100" : "opacity-0"
             }`}
           />
 
-          {/* Desktop hover quick-action: View Details */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden translate-y-3 justify-center pb-4 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 sm:flex">
-            <span
-              className="inline-flex items-center gap-2 rounded-full bg-black/85 px-5 py-2 text-[11px] uppercase tracking-[0.2em] text-[#c9a96e] backdrop-blur-sm"
-              style={{ fontFamily: serif }}
-            >
-              <Eye size={13} aria-hidden /> Ver detalles
-            </span>
-          </div>
+          {/* A red edge lights along the foot of the plate on hover. Cheaper to
+              read than a shadow and it belongs to the palette. */}
+          <span
+            aria-hidden
+            className="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-krov-blood transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100"
+          />
         </Link>
 
-        {/* Badges */}
-        <div className="pointer-events-none absolute left-3 top-3 flex flex-col items-start gap-1.5">
-          {variant.is_on_offer && <Badge label="Oferta" tone="gold" />}
-          {variant.product_type === "decant" && <Badge label="Decant" tone="outline" />}
+        {/* Badges — square, flush to the corner, stacked. */}
+        <div className="pointer-events-none absolute left-0 top-0 flex flex-col items-start">
+          {variant.is_on_offer && <Badge label="Oferta" tone="blood" />}
+          {variant.product_type === "decant" && (
+            <Badge label="Decant" tone="outline" />
+          )}
           {lowStock && <Badge label="Últimas unidades" tone="muted" />}
           {!inStock && <Badge label="Agotado" tone="muted" />}
         </div>
 
-        
-      </div>
-
-      {/* ---- Info ---- */}
-      <div className="flex flex-1 flex-col gap-1 px-4 pb-4 pt-4">
-        <p
-          className="text-[10px] uppercase tracking-[0.28em] text-[#c9a96e]/80"
-          style={{ fontFamily: serif }}
-        >
-          {product.brands?.name ?? "Aroma"}
-        </p>
-
-        <Link href={`/products/${product.slug}`}>
-          <h3
-            className="line-clamp-1 text-lg text-white transition-colors duration-300 group-hover:text-[#c9a96e]"
-            style={{ fontFamily: serif }}
-            title={product.name}
-          >
-            {product.name}
-          </h3>
-        </Link>
-
-        <p className="text-xs text-white/45" style={{ fontFamily: serif }}>
-          {TYPE_LABEL[variant.product_type]} · {variant.size_ml} ml
-        </p>
-
-        {/* Price + stock */}
-        <div className="mt-2 flex items-end justify-between gap-2">
-          {showWholesale ? (
-            // Wholesale buyer: retail struck-through/muted, wholesale prominent in gold.
-            <div className="flex flex-col">
-              <span
-                className="text-xs text-white/35 line-through"
-                style={{ fontFamily: serif }}
-              >
-                {formatPrice(effectivePrice)}
-              </span>
-              <span
-                className="text-xl font-semibold text-[#c9a96e]"
-                style={{ fontFamily: serif }}
-              >
-                {formatPrice(wholesalePrice as number)}
-              </span>
-            </div>
-          ) : (
-            <div className="flex flex-col">
-              {variant.is_on_offer && variant.offer_price && (
-                <span className="text-xs text-white/35 line-through" style={{ fontFamily: serif }}>
-                  {formatPrice(variant.price)}
-                </span>
-              )}
-              <span className="text-xl text-white" style={{ fontFamily: serif }}>
-                {formatPrice(effectivePrice)}
-              </span>
-            </div>
-          )}
-          <span
-            className={`mb-1 text-[10px] uppercase tracking-[0.15em] ${
-              inStock ? "text-emerald-400/70" : "text-white/30"
-            }`}
-            style={{ fontFamily: serif }}
-          >
-            {inStock ? " ": "Sin stock"}
-          </span>
-        </div>
-
-        {/* Minimum wholesale quantity badge (no savings % — keep the card clean). */}
-        {showWholesale && (
-          <span
-            className="mt-2 inline-flex w-fit items-center rounded-full border border-[#c9a96e]/40 bg-[#c9a96e]/10 px-2.5 py-0.5 text-[10px] uppercase tracking-[0.15em] text-[#c9a96e]"
-            style={{ fontFamily: serif }}
-          >
-            A partir de {minWholesaleQty} uds.
-          </span>
-        )}
-
-        {/* Add to cart */}
+        {/*
+          Add to cart. Anchored to the plate's bottom-right corner as a square
+          that fills red on hover/focus. Always visible on touch (`sm:` gates
+          only the opacity fade, not the control itself), and it keeps a 44px
+          target on phones.
+        */}
         <button
           onClick={handleAddToCart}
           disabled={!inStock}
-          aria-label={inStock ? `Agregar ${product.name} al carrito` : "Sin stock"}
-          className={`mt-4 inline-flex items-center justify-center gap-2 border px-4 py-2.5 text-[11px] uppercase tracking-[0.22em] transition-all duration-500 ${
+          aria-label={
+            inStock ? `Agregar ${product.name} al carrito` : "Sin stock"
+          }
+          className={`absolute bottom-0 right-0 flex h-11 w-11 items-center justify-center transition-all duration-300 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100 ${
             !inStock
-              ? "cursor-not-allowed border-white/10 text-white/30"
+              ? "cursor-not-allowed bg-krov-void/70 text-krov-dust"
               : added
-                ? "border-[#c9a96e] bg-[#c9a96e] text-black"
-                : "border-[#c9a96e]/50 text-[#c9a96e] hover:bg-[#c9a96e] hover:text-black"
+                ? "bg-krov-blood text-krov-void sm:opacity-100"
+                : "bg-krov-void/90 text-krov-blush hover:bg-krov-blood hover:text-krov-void"
           }`}
-          style={{ fontFamily: serif }}
         >
           {added ? (
-            <>
-              <Check size={14} aria-hidden /> Agregado
-            </>
+            <Check size={16} aria-hidden />
           ) : (
-            <>
-              <ShoppingBag size={14} aria-hidden />
-              {inStock ? "Agregar" : "Sin stock"}
-            </>
+            <Plus size={16} aria-hidden />
           )}
         </button>
       </div>
-    </div>
+
+      {/* ── The type ───────────────────────────────────────────────────────── */}
+      <div className="flex flex-1 flex-col pt-4">
+        <p className="text-[9px] uppercase tracking-[0.28em] text-krov-rose">
+          {product.brands?.name ?? "KROV"}
+        </p>
+
+        <h3
+          className="mt-2 text-lg leading-snug text-krov-bone"
+          style={{ fontFamily: serif }}
+          title={product.name}
+        >
+          <Link
+            href={`/products/${product.slug}`}
+            className="line-clamp-1 transition-colors duration-300 hover:text-krov-blush"
+          >
+            {product.name}
+          </Link>
+        </h3>
+
+        <p className="mt-1 text-[11px] tracking-[0.06em] text-krov-dust">
+          {TYPE_LABEL[variant.product_type]} · {variant.size_ml} ml
+        </p>
+
+        {/* Price sits on its own line at the foot of the card so every card in a
+            row aligns its price regardless of how long the name wrapped. */}
+        <div className="mt-auto flex items-baseline gap-2.5 pt-3">
+          {showWholesale ? (
+            // Wholesale buyer: retail struck through, wholesale leads in rose.
+            <>
+              <span className="text-base text-krov-rose">
+                {formatPrice(wholesalePrice as number)}
+              </span>
+              <span className="text-[11px] text-krov-dust line-through">
+                {formatPrice(effectivePrice)}
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="text-base text-krov-bone">
+                {formatPrice(effectivePrice)}
+              </span>
+              {variant.is_on_offer && variant.offer_price && (
+                <span className="text-[11px] text-krov-dust line-through">
+                  {formatPrice(variant.price)}
+                </span>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Minimum wholesale quantity (no savings % — keep the card clean). */}
+        {showWholesale && (
+          <span className="mt-2 text-[9px] uppercase tracking-[0.2em] text-krov-dust">
+            Desde {minWholesaleQty} uds.
+          </span>
+        )}
+      </div>
+    </article>
   );
 }

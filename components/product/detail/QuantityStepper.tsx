@@ -1,7 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
-
 interface QuantityStepperProps {
   quantity: number;
   max: number;
@@ -9,38 +7,35 @@ interface QuantityStepperProps {
   onDecrement: () => void;
 }
 
+/**
+ * Square stepper, identical in build to the one in the cart so the control
+ * behaves and looks the same on both sides of the add-to-cart action.
+ *
+ * The spring-scale animation on the number was removed: it re-ran on every tap
+ * of a control users often tap several times quickly, and a number that bounces
+ * while you are still counting is harder to read, not more delightful.
+ */
 export default function QuantityStepper({
   quantity,
   max,
   onIncrement,
   onDecrement,
 }: QuantityStepperProps) {
-  const disabledMinus = quantity <= 1;
-  const disabledPlus = quantity >= max;
-
   return (
-    <div className="inline-flex items-center rounded-full bg-white"
-      style={{ border: "1px solid rgba(0,0,0,0.10)" }}
-    >
+    <div className="inline-flex items-center border border-krov-edge">
       <StepBtn
         onClick={onDecrement}
-        disabled={disabledMinus}
+        disabled={quantity <= 1}
         label="Disminuir cantidad"
       >
         −
       </StepBtn>
-      <motion.span
-        key={quantity}
-        initial={{ scale: 0.9, opacity: 0.4 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 400, damping: 24 }}
-        className="w-10 text-center text-sm font-semibold tabular-nums"
-      >
+      <span className="w-10 text-center text-sm tabular-nums text-krov-bone">
         {quantity}
-      </motion.span>
+      </span>
       <StepBtn
         onClick={onIncrement}
-        disabled={disabledPlus}
+        disabled={quantity >= max}
         label="Aumentar cantidad"
       >
         +
@@ -66,7 +61,7 @@ function StepBtn({
       onClick={onClick}
       disabled={disabled}
       aria-label={label}
-      className="h-10 w-10 grid place-items-center text-lg text-black/70 hover:text-black disabled:opacity-30 transition-colors"
+      className="grid h-11 w-11 place-items-center text-base text-krov-ash transition-colors hover:bg-krov-graphite hover:text-krov-bone disabled:opacity-25 disabled:hover:bg-transparent"
     >
       {children}
     </button>

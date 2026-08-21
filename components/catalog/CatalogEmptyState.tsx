@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { SearchX } from "lucide-react";
 
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 /** Luxury empty state shown when no products match the active filters. */
 export default function CatalogEmptyState({ filtered }: { filtered: boolean }) {
   return (
     <div className="animate-fadeIn mx-auto flex max-w-md flex-col items-center px-6 py-20 text-center">
       {/* Illustration placeholder */}
-      <div className="relative mb-8 flex aspect-video w-full max-w-xs items-center justify-center overflow-hidden rounded-2xl border border-dashed border-[#c9a96e]/25 bg-white/[0.02]">
-        <span className="flex h-14 w-14 items-center justify-center rounded-full border border-[#c9a96e]/30 text-[#c9a96e]/70">
+      <div className="relative mb-8 flex aspect-video w-full max-w-xs items-center justify-center overflow-hidden rounded-2xl border border-dashed border-krov-smoke bg-white/[0.02]">
+        <span className="flex h-14 w-14 items-center justify-center rounded-full border border-krov-blood/30 text-krov-rose/70">
           <SearchX size={24} strokeWidth={1.3} aria-hidden />
         </span>
       </div>
@@ -26,8 +26,7 @@ export default function CatalogEmptyState({ filtered }: { filtered: boolean }) {
       {filtered && (
         <Link
           href="/products"
-          className="mt-8 inline-block border border-[#c9a96e] px-8 py-3 text-xs uppercase tracking-[0.25em] text-[#c9a96e] transition-all duration-500 hover:bg-[#c9a96e] hover:text-black"
-          style={{ fontFamily: serif }}
+          className="mt-8 inline-block border border-krov-blood px-8 py-3 text-xs uppercase tracking-[0.25em] text-krov-rose transition-all duration-500 hover:bg-krov-blood hover:text-black"
         >
           Limpiar filtros
         </Link>

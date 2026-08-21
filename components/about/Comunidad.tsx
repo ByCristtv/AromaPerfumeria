@@ -1,12 +1,12 @@
 import Image from "next/image";
 
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 const collage = [
   { src: "/about/comunidad-1.jpg", alt: "Cliente abriendo su pedido envuelto en empaque dorado", span: "md:col-span-2 md:row-span-2" },
   { src: "/about/comunidad-2.jpg", alt: "Detalle de decants premium con etiquetas personalizadas", span: "" },
   { src: "/about/comunidad-3.jpg", alt: "Botella nicho sobre superficie de mármol oscuro", span: "" },
-  { src: "/about/comunidad-4.jpg", alt: "Packaging premium con sello dorado de Aroma Perfumería", span: "" },
+  { src: "/about/comunidad-4.jpg", alt: "Packaging premium con sello dorado de KROV Perfumería", span: "" },
   { src: "/about/comunidad-5.jpg", alt: "Cliente sosteniendo un perfume recién recibido", span: "" },
   { src: "/about/comunidad-6.jpg", alt: "Detalle de atomizador junto a tarjeta de presentación", span: "md:col-span-2" },
 ];
@@ -23,13 +23,12 @@ export default function Comunidad() {
   return (
     <section
       aria-labelledby="comunidad-title"
-      className="bg-[#080808] py-24 md:py-32 px-6"
+      className="bg-krov-void py-24 md:py-32 px-6"
     >
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <p
-            className="text-[#c9a96e] tracking-[0.4em] text-xs mb-6 uppercase"
-            style={{ fontFamily: serif }}
+            className="text-krov-rose tracking-[0.4em] text-xs mb-6 uppercase"
           >
             Comunidad
           </p>
@@ -39,7 +38,7 @@ export default function Comunidad() {
             style={{ fontFamily: serif }}
           >
             Una comunidad apasionada por los{" "}
-            <span className="italic text-[#c9a96e]">perfumes</span>
+            <span className="italic text-krov-rose">perfumes</span>
           </h2>
         </div>
 
@@ -56,7 +55,7 @@ export default function Comunidad() {
                 className="object-cover transition-transform duration-700 group-hover:scale-110"
                 sizes="(min-width: 768px) 25vw, 50vw"
               />
-              <div className="absolute inset-0 ring-1 ring-inset ring-[#c9a96e]/15" />
+              <div className="absolute inset-0 ring-1 ring-inset ring-krov-blood/15" />
             </div>
           ))}
         </div>
@@ -64,8 +63,7 @@ export default function Comunidad() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           <div>
             <p
-              className="text-[#c9a96e] tracking-[0.4em] text-xs mb-6 uppercase"
-              style={{ fontFamily: serif }}
+              className="text-krov-rose tracking-[0.4em] text-xs mb-6 uppercase"
             >
               Compromiso con la calidad
             </p>
@@ -73,7 +71,7 @@ export default function Comunidad() {
               className="text-3xl md:text-4xl text-white leading-tight mb-8"
               style={{ fontFamily: serif }}
             >
-              Cada detalle, <span className="italic text-[#c9a96e]">cuidado</span>
+              Cada detalle, <span className="italic text-krov-rose">cuidado</span>
             </h3>
             <ul className="space-y-4">
               {compromiso.map((c) => (
@@ -83,7 +81,7 @@ export default function Comunidad() {
                   style={{ fontFamily: serif }}
                 >
                   <span
-                    className="text-[#c9a96e] mt-2 flex-shrink-0"
+                    className="text-krov-rose mt-2 flex-shrink-0"
                     aria-hidden="true"
                   >
                     —
@@ -94,7 +92,7 @@ export default function Comunidad() {
             </ul>
           </div>
 
-          <blockquote className="border-l-2 border-[#c9a96e] pl-8 md:pl-12">
+          <blockquote className="border-l-2 border-krov-blood pl-8 md:pl-12">
             <p
               className="text-white text-2xl md:text-4xl italic leading-snug"
               style={{ fontFamily: serif }}
@@ -103,10 +101,9 @@ export default function Comunidad() {
               cómo te hace sentir.&rdquo;
             </p>
             <footer
-              className="text-[#c9a96e] tracking-[0.3em] text-xs mt-6 uppercase"
-              style={{ fontFamily: serif }}
+              className="text-krov-rose tracking-[0.3em] text-xs mt-6 uppercase"
             >
-              — Aroma Perfumería
+              — KROV Perfumería
             </footer>
           </blockquote>
         </div>

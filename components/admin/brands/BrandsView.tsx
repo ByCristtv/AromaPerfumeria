@@ -82,7 +82,7 @@ export default function BrandsView() {
           <button
             type="button"
             onClick={() => setModal("new")}
-            className="rounded-lg bg-[#c9a96e] px-5 py-2.5 text-sm font-semibold uppercase tracking-wider text-black transition-colors hover:bg-[#b8a060]"
+            className="rounded-none bg-krov-blood px-5 py-2.5 text-sm font-semibold uppercase tracking-wider text-black transition-colors hover:bg-krov-crimson"
           >
             + Nueva Marca
           </button>
@@ -94,13 +94,13 @@ export default function BrandsView() {
       </div>
 
       {isLoading ? (
-        <p className="py-12 text-center text-[#a5a5a5]">Cargando marcas…</p>
+        <p className="py-12 text-center text-krov-ash">Cargando marcas…</p>
       ) : isError ? (
         <p className="py-12 text-center text-red-400">
           {error instanceof Error ? error.message : "Error al cargar las marcas"}
         </p>
       ) : filtered.length === 0 ? (
-        <p className="py-12 text-center text-[#a5a5a5]">
+        <p className="py-12 text-center text-krov-ash">
           {searchQuery
             ? "No hay marcas que coincidan con tu búsqueda."
             : "No hay marcas todavía. Crea la primera con el botón superior."}
@@ -155,7 +155,7 @@ function ModalOverlay({
           type="button"
           aria-label="Cerrar"
           onClick={onClose}
-          className="absolute left-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-[#c9a96e]/40 bg-black/80 text-[#c9a96e] shadow-lg transition-colors hover:bg-[#c9a96e] hover:text-black"
+          className="absolute left-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-krov-blood/40 bg-black/80 text-krov-rose shadow-lg transition-colors hover:bg-krov-blood hover:text-black"
         >
           <svg
             width="18"

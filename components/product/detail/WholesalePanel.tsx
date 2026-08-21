@@ -19,6 +19,10 @@ interface WholesalePanelProps {
  * unit price and the minimum quantity — plus a live status line telling them
  * whether the current quantity already qualifies. Retail pricing stays visible
  * above (this panel supplements, never replaces it).
+ *
+ * Marked out by a red rule down its left edge rather than by a tinted box: this
+ * is an aside addressed to one kind of visitor, and it should read as a margin
+ * note against the main panel, not as a competing surface.
  */
 export default function WholesalePanel({
   wholesalePrice,
@@ -27,52 +31,27 @@ export default function WholesalePanel({
   unitsToUnlock,
 }: WholesalePanelProps) {
   return (
-    <div
-      className="rounded-2xl p-4 sm:p-5"
-      style={{
-        border: "1px solid rgba(201,169,110,0.35)",
-        background:
-          "linear-gradient(180deg, rgba(201,169,110,0.10), rgba(201,169,110,0.03))",
-      }}
-    >
-      <div className="flex items-center gap-2">
-        <span
-          className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-[0.18em] uppercase"
-          style={{
-            color: "#7a5e2e",
-            background: "rgba(201,169,110,0.18)",
-            border: "1px solid rgba(201,169,110,0.4)",
-          }}
-        >
-          Mayorista
-        </span>
-        <p className="text-[11px] tracking-[0.14em] uppercase text-black/45">
-          Tu precio B2B
-        </p>
-      </div>
+    <div className="border-l-2 border-krov-blood bg-krov-blood/[0.06] py-4 pl-5 pr-4">
+      <p className="text-[10px] uppercase tracking-[0.28em] text-krov-rose">
+        Tu precio mayorista
+      </p>
 
-      <dl className="mt-3 flex flex-wrap items-end gap-x-8 gap-y-3">
+      <dl className="mt-4 flex flex-wrap items-end gap-x-10 gap-y-4">
         <div>
-          <dt className="text-[11px] tracking-[0.14em] uppercase text-black/45">
-            Precio mayorista
+          <dt className="text-[10px] uppercase tracking-[0.16em] text-krov-dust">
+            Por unidad
           </dt>
-          <dd
-            className="mt-1 text-2xl font-semibold tabular-nums"
-            style={{ color: "#8a7341" }}
-          >
+          <dd className="mt-1 text-2xl tabular-nums text-krov-blush">
             {formatPrice(wholesalePrice)}
-            <span className="ml-1 text-[11px] font-normal text-black/45">
-              / unidad
-            </span>
           </dd>
         </div>
         <div>
-          <dt className="text-[11px] tracking-[0.14em] uppercase text-black/45">
+          <dt className="text-[10px] uppercase tracking-[0.16em] text-krov-dust">
             Cantidad mínima
           </dt>
-          <dd className="mt-1 text-2xl font-semibold tabular-nums text-black">
+          <dd className="mt-1 text-2xl tabular-nums text-krov-bone">
             {minQuantity}
-            <span className="ml-1 text-[11px] font-normal text-black/45">
+            <span className="ml-1.5 text-[11px] text-krov-dust">
               {minQuantity === 1 ? "unidad" : "unidades"}
             </span>
           </dd>
@@ -80,20 +59,20 @@ export default function WholesalePanel({
       </dl>
 
       <p
-        className="mt-3 flex items-center gap-2 text-[12px] font-medium"
-        style={{ color: active ? "#166534" : "#7a5e2e" }}
+        className="mt-4 flex items-center gap-2 text-xs text-krov-ash"
         aria-live="polite"
       >
         <span
           aria-hidden
-          className="h-1.5 w-1.5 rounded-full"
-          style={{ background: active ? "#166534" : "#c9a96e" }}
+          className={`h-1.5 w-1.5 rounded-full ${
+            active ? "bg-krov-blood krov-pulse" : "bg-krov-dust"
+          }`}
         />
         {active
           ? "Precio mayorista activo en tu cantidad actual"
-          : `Agrega ${unitsToUnlock} ${
+          : `Agregá ${unitsToUnlock} ${
               unitsToUnlock === 1 ? "unidad más" : "unidades más"
-            } para el precio mayorista`}
+            } para activarlo`}
       </p>
     </div>
   );

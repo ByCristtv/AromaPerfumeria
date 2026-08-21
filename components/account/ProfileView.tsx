@@ -20,7 +20,7 @@ import {
   type AccountOrderRow,
 } from "@/features/account/getAccountData";
 
-const SERIF = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+const SERIF = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 const ORDERS_PREVIEW_COUNT = 4;
 
 /**
@@ -89,14 +89,13 @@ export default function ProfileView() {
   const fullName = user.user_metadata?.full_name ?? "Sin nombre";
 
   return (
-    <section className="min-h-screen pt-28 pb-16 px-4 bg-[radial-gradient(circle_at_12%_8%,#1e1e1e_0%,#111_45%,#000_100%)]">
+    <section className="min-h-screen pt-28 pb-16 px-4 bg-[radial-gradient(circle_at_12%_8%,#191420_0%,#111_45%,#000_100%)]">
       <div className="max-w-6xl mx-auto">
         {/* ──────── Header ──────── */}
-        <header className="mb-10 flex flex-wrap items-end justify-between gap-6 border-b border-[#c9a96e]/20 pb-8">
+        <header className="mb-10 flex flex-wrap items-end justify-between gap-6 border-b border-krov-smoke pb-8">
           <div>
             <p
-              className="text-[#c9a96e] text-[10px] tracking-[0.35em] uppercase mb-3"
-              style={{ fontFamily: SERIF }}
+              className="text-krov-rose text-[10px] tracking-[0.35em] uppercase mb-3"
             >
               Mi cuenta
             </p>
@@ -112,8 +111,7 @@ export default function ProfileView() {
           <button
             type="button"
             onClick={handleLogout}
-            className="text-[10px] tracking-[0.2em] uppercase text-white/50 border border-white/15 px-5 py-2.5 transition-colors duration-300 hover:border-[#c9a96e]/60 hover:text-[#c9a96e]"
-            style={{ fontFamily: SERIF }}
+            className="text-[10px] tracking-[0.2em] uppercase text-white/50 border border-white/15 px-5 py-2.5 transition-colors duration-300 hover:border-krov-blood/60 hover:text-krov-rose"
           >
             Cerrar sesión
           </button>
@@ -125,8 +123,8 @@ export default function ProfileView() {
             <Card>
               <div className="flex flex-col items-center text-center">
                 <div className="relative">
-                  {/* Gold ring — the one decorative flourish, kept subtle. */}
-                  <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-[#c9a96e]/60 via-transparent to-[#c9a96e]/30" />
+                  {/* Red ring — the one decorative flourish, kept subtle. */}
+                  <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-krov-blood/60 via-transparent to-krov-blood/30" />
                   <Image
                     width={96}
                     height={96}
@@ -146,7 +144,7 @@ export default function ProfileView() {
                 </p>
               </div>
 
-              <div className="mt-6 pt-6 border-t border-[#c9a96e]/15">
+              <div className="mt-6 pt-6 border-t border-krov-smoke/85">
                 <RankProgress
                   experiencePoints={accountData?.profile?.experience_points ?? 0}
                 />
@@ -191,7 +189,7 @@ export default function ProfileView() {
                 <EmptyOrders />
               ) : (
                 <>
-                  <ul className="divide-y divide-[#c9a96e]/10">
+                  <ul className="divide-y divide-krov-smoke/70">
                     {(showAllOrders
                       ? orders
                       : orders.slice(0, ORDERS_PREVIEW_COUNT)
@@ -204,8 +202,7 @@ export default function ProfileView() {
                     <button
                       type="button"
                       onClick={() => setShowAllOrders((prev) => !prev)}
-                      className="mt-5 w-full border border-[#c9a96e]/30 py-3 text-[10px] tracking-[0.2em] uppercase text-[#c9a96e] transition-colors duration-300 hover:bg-[#c9a96e] hover:text-black"
-                      style={{ fontFamily: SERIF }}
+                      className="mt-5 w-full border border-krov-blood/30 py-3 text-[10px] tracking-[0.2em] uppercase text-krov-rose transition-colors duration-300 hover:bg-krov-blood hover:text-black"
                     >
                       {showAllOrders
                         ? "Ver menos"
@@ -507,8 +504,8 @@ function WholesaleCard({
       {isActive ? (
         <>
           <div className="flex items-center gap-2">
-            <span className="inline-block h-2 w-2 rounded-full bg-[#c9a96e]" />
-            <p className="text-sm text-[#c9a96e]">Activa</p>
+            <span className="inline-block h-2 w-2 rounded-full bg-krov-blood" />
+            <p className="text-sm text-krov-rose">Activa</p>
           </div>
           <p className="mt-1.5 text-xs text-white/40">
             Verás los precios mayoristas en el carrito al alcanzar la cantidad
@@ -551,8 +548,7 @@ function WholesaleCta({ label }: { label: string }) {
   return (
     <Link
       href="/wholesale/apply"
-      className="mt-4 inline-block border border-[#c9a96e]/40 px-5 py-2 text-[10px] uppercase tracking-[0.2em] text-[#c9a96e] transition-colors duration-300 hover:bg-[#c9a96e] hover:text-black"
-      style={{ fontFamily: SERIF }}
+      className="mt-4 inline-block border border-krov-blood/40 px-5 py-2 text-[10px] uppercase tracking-[0.2em] text-krov-rose transition-colors duration-300 hover:bg-krov-blood hover:text-black"
     >
       {label}
     </Link>
@@ -573,7 +569,7 @@ function OrderRow({ order }: { order: AccountOrderRow }) {
         <div className="min-w-0">
           <p className="text-sm text-white">
             Pedido{" "}
-            <span className="font-mono text-[#c9a96e]">
+            <span className="font-mono text-krov-rose">
               #{order.order_number}
             </span>
           </p>
@@ -589,7 +585,7 @@ function OrderRow({ order }: { order: AccountOrderRow }) {
           <p className="text-sm text-white tabular-nums">
             {formatPrice(order.total)}
           </p>
-          <span className="text-[10px] tracking-[0.15em] uppercase text-white/30 group-hover:text-[#c9a96e] transition-colors duration-200">
+          <span className="text-[10px] tracking-[0.15em] uppercase text-white/30 group-hover:text-krov-rose transition-colors duration-200">
             Ver detalle
           </span>
         </div>
@@ -604,8 +600,7 @@ function EmptyOrders() {
       <p className="text-white/50 text-sm">Todavía no tienes pedidos.</p>
       <Link
         href="/products"
-        className="inline-block mt-5 border border-[#c9a96e]/50 px-6 py-2.5 text-[10px] tracking-[0.2em] uppercase text-[#c9a96e] transition-colors duration-300 hover:bg-[#c9a96e] hover:text-black"
-        style={{ fontFamily: SERIF }}
+        className="inline-block mt-5 border border-krov-blood/50 px-6 py-2.5 text-[10px] tracking-[0.2em] uppercase text-krov-rose transition-colors duration-300 hover:bg-krov-blood hover:text-black"
       >
         Explorar la colección
       </Link>
@@ -618,7 +613,7 @@ function EmptyOrders() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const INPUT_CLS =
-  "w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-[#c9a96e]/60 focus:border-[#c9a96e]/60 disabled:opacity-40";
+  "w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-krov-blood/60 focus:border-krov-blood/60 disabled:opacity-40";
 
 // Native <select> reuses INPUT_CLS for its (dark) closed control, but the OS
 // renders the open <option> list on its own surface — with the translucent
@@ -630,7 +625,7 @@ const SELECT_CLS = `${INPUT_CLS} [&>option]:bg-white [&>option]:text-gray-900`;
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-[#c9a96e]/20 bg-black/50 backdrop-blur-sm p-5 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
+    <section className="rounded-2xl border border-krov-smoke bg-black/50 backdrop-blur-sm p-5 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
       {children}
     </section>
   );
@@ -650,7 +645,6 @@ function CardHeading({
       <div className="flex items-baseline gap-3">
         <h2
           className="text-[10px] tracking-[0.25em] uppercase text-white/45"
-          style={{ fontFamily: SERIF }}
         >
           {title}
         </h2>
@@ -660,7 +654,7 @@ function CardHeading({
         <button
           type="button"
           onClick={action.onClick}
-          className="text-[#c9a96e] text-xs hover:underline shrink-0"
+          className="text-krov-rose text-xs hover:underline shrink-0"
         >
           {action.label}
         </button>
@@ -707,7 +701,7 @@ function ModalActions({
         type="button"
         onClick={onSave}
         disabled={saving}
-        className="flex-1 rounded-lg bg-[#c9a96e] py-2.5 text-sm font-medium text-black transition hover:bg-[#c9a96e]/90 disabled:opacity-50"
+        className="flex-1 rounded-lg bg-krov-blood py-2.5 text-sm font-medium text-black transition hover:bg-krov-crimson disabled:opacity-50"
       >
         {saving ? "Guardando…" : "Guardar"}
       </button>
@@ -725,7 +719,7 @@ function Badge({ label }: { label: string }) {
 
 function ProfileSkeleton() {
   return (
-    <section className="min-h-screen pt-28 pb-16 px-4 bg-[radial-gradient(circle_at_12%_8%,#1e1e1e_0%,#111_45%,#000_100%)]">
+    <section className="min-h-screen pt-28 pb-16 px-4 bg-[radial-gradient(circle_at_12%_8%,#191420_0%,#111_45%,#000_100%)]">
       <div className="max-w-6xl mx-auto animate-pulse">
         <div className="h-10 w-64 bg-white/5 rounded mb-4" />
         <div className="h-4 w-40 bg-white/5 rounded mb-10" />

@@ -18,13 +18,16 @@ interface Particle {
 }
 
 /**
- * Premium CTA. On click:
- *  - subtle scale pulse
- *  - gold shimmer sweep across the button
- *  - 8 floating gold particles burst upward
- *  - momentary "Agregado" confirmation label
+ * The page's one saturated element: solid KROV red, square, full width.
  *
- * Particles auto-clean to avoid stale DOM nodes.
+ * This used to be a dark gradient pill ringed with a red glow. On the old white
+ * page that read as premium; on the void it vanishes into the background. The
+ * relationship is inverted now — the ground is dark and the commitment is red.
+ *
+ * On click it releases a short burst of pale sparks. It is the only decorative
+ * animation left on the page, and it is attached to the single most important
+ * action, which is the only kind of moment that earns one. Particles clear
+ * themselves so nothing accumulates across repeated adds.
  */
 export default function AddToCartButton({
   onAdd,
@@ -33,25 +36,22 @@ export default function AddToCartButton({
   disabledLabel = "Sin stock",
 }: AddToCartButtonProps) {
   const [particles, setParticles] = useState<Particle[]>([]);
-  const [pulsing, setPulsing] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
 
   const handleClick = () => {
     if (disabled) return;
     onAdd();
 
-    setPulsing(true);
     setConfirmed(true);
 
-    const burst: Particle[] = Array.from({ length: 8 }).map((_, i) => ({
+    const burst: Particle[] = Array.from({ length: 6 }).map((_, i) => ({
       id: Date.now() + i,
-      dx: (Math.random() - 0.5) * 120,
-      dy: -40 - Math.random() * 80,
-      size: 4 + Math.random() * 4,
+      dx: (Math.random() - 0.5) * 110,
+      dy: -36 - Math.random() * 70,
+      size: 3 + Math.random() * 3,
     }));
     setParticles((p) => [...p, ...burst]);
 
-    window.setTimeout(() => setPulsing(false), 500);
     window.setTimeout(() => setConfirmed(false), 1600);
     window.setTimeout(
       () =>
@@ -62,48 +62,25 @@ export default function AddToCartButton({
 
   return (
     <div className="relative">
-      <motion.button
+      <button
         type="button"
         onClick={handleClick}
         disabled={disabled}
-        animate={pulsing ? { scale: [1, 0.97, 1.02, 1] } : { scale: 1 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        whileHover={disabled ? undefined : { y: -1 }}
-        className="group relative w-full overflow-hidden rounded-full px-8 py-4 text-sm font-semibold tracking-[0.22em] uppercase text-white disabled:cursor-not-allowed disabled:opacity-40"
-        style={{
-          background:
-            "linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%)",
-          boxShadow:
-            "0 18px 40px -18px rgba(201,169,110,0.55), 0 0 0 1px rgba(201,169,110,0.25), inset 0 1px 0 rgba(255,255,255,0.06)",
-        }}
+        className={`relative w-full overflow-hidden px-8 py-4 text-[11px] font-medium uppercase tracking-[0.24em] transition-colors duration-300 ${
+          disabled
+            ? "cursor-not-allowed border border-krov-smoke text-krov-dust"
+            : confirmed
+              ? "bg-krov-blush text-krov-void"
+              : "bg-krov-blood text-krov-void hover:bg-krov-blush"
+        }`}
       >
-        {/* Gold glow on hover */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-          style={{
-            background:
-              "radial-gradient(circle at 50% 120%, rgba(201,169,110,0.55), transparent 60%)",
-          }}
-        />
-
-        {/* Shimmer sweep */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-[1400ms] ease-out"
-          style={{
-            background:
-              "linear-gradient(110deg, transparent 30%, rgba(201,169,110,0.35) 50%, transparent 70%)",
-          }}
-        />
-
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={confirmed ? "confirmed" : disabled ? "out" : "default"}
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.25 }}
             className="relative inline-flex items-center justify-center gap-2"
           >
             {confirmed ? (
@@ -117,29 +94,23 @@ export default function AddToCartButton({
             )}
           </motion.span>
         </AnimatePresence>
-      </motion.button>
+      </button>
 
-      {/* Particle burst */}
+      {/* Spark burst */}
       <div className="pointer-events-none absolute inset-0 overflow-visible">
         <AnimatePresence>
           {particles.map((p) => (
             <motion.span
               key={p.id}
               initial={{ x: 0, y: 0, opacity: 0.9, scale: 1 }}
-              animate={{
-                x: p.dx,
-                y: p.dy,
-                opacity: 0,
-                scale: 0.4,
-              }}
+              animate={{ x: p.dx, y: p.dy, opacity: 0, scale: 0.4 }}
               transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
               className="absolute left-1/2 top-1/2 rounded-full"
               style={{
                 width: p.size,
                 height: p.size,
                 background:
-                  "radial-gradient(circle, #f3dfb0 0%, #c9a96e 60%, transparent 100%)",
-                boxShadow: "0 0 10px rgba(201,169,110,0.7)",
+                  "radial-gradient(circle, #ffdede 0%, #ff0b55 60%, transparent 100%)",
               }}
             />
           ))}
@@ -152,12 +123,12 @@ export default function AddToCartButton({
 function CheckIcon() {
   return (
     <svg
-      width="14"
-      height="14"
+      width="13"
+      height="13"
       viewBox="0 0 24 24"
       fill="none"
       aria-hidden
-      style={{ color: "#c9a96e" }}
+      className="text-krov-void"
     >
       <path
         d="M5 12.5l4.5 4.5L19 7"

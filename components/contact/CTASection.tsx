@@ -16,18 +16,17 @@ export default function CTASection() {
       whileInView="show"
       viewport={{ once: true, margin: "-80px" }}
       aria-labelledby="cta-heading"
-      className="relative overflow-hidden rounded-[2rem] border border-[#c9a96e]/25 bg-gradient-to-b from-[#121110] to-[#0a0a0a] p-7 shadow-[0_60px_140px_-60px_rgba(201,169,110,0.4)] sm:p-12"
+      className="relative overflow-hidden rounded-[2rem] border border-krov-smoke bg-gradient-to-b from-krov-coal to-krov-void p-7 shadow-[0_60px_140px_-60px_rgba(255,11,85,0.4)] sm:p-12"
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-32 right-1/4 h-72 w-72 translate-x-1/2 rounded-full bg-[#c9a96e]/10 blur-[100px]"
+        className="pointer-events-none absolute -top-32 right-1/4 h-72 w-72 translate-x-1/2 rounded-full bg-krov-blood/10 blur-[100px]"
       />
 
       <div className="relative grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <motion.div variants={fadeUp} className="order-2 lg:order-1">
           <p
-            className="mb-4 text-xs uppercase tracking-[0.4em] text-[#c9a96e]"
-            style={{ fontFamily: serif }}
+            className="mb-4 text-xs uppercase tracking-[0.4em] text-krov-rose"
           >
             Tu próxima firma
           </p>
@@ -38,7 +37,7 @@ export default function CTASection() {
           >
             Tu próxima firma olfativa
             <br />
-            <span className="italic text-[#c9a96e]">te espera</span>
+            <span className="italic text-krov-rose">te espera</span>
           </h2>
           <p
             className="mb-9 max-w-md text-base leading-relaxed text-white/65 md:text-lg"
@@ -50,8 +49,7 @@ export default function CTASection() {
           <div className="flex flex-col gap-4 sm:flex-row">
             <Link
               href="/products"
-              className="inline-flex items-center justify-center gap-2 border border-[#c9a96e] bg-[#c9a96e] px-9 py-4 text-sm uppercase tracking-[0.25em] text-black transition-all duration-500 hover:bg-transparent hover:text-[#c9a96e]"
-              style={{ fontFamily: serif }}
+              className="inline-flex items-center justify-center gap-2 border border-krov-blood bg-krov-blood px-9 py-4 text-sm uppercase tracking-[0.25em] text-black transition-all duration-500 hover:bg-transparent hover:text-krov-rose"
             >
               Explorar catálogo
               <ArrowRight size={16} aria-hidden="true" />
@@ -60,8 +58,7 @@ export default function CTASection() {
               href={CONTACT.whatsapp}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center gap-2 border border-[#c9a96e]/40 px-9 py-4 text-sm uppercase tracking-[0.25em] text-[#c9a96e] transition-all duration-500 hover:border-[#c9a96e] hover:bg-[#c9a96e]/10"
-              style={{ fontFamily: serif }}
+              className="inline-flex items-center justify-center gap-2 border border-krov-blood/40 px-9 py-4 text-sm uppercase tracking-[0.25em] text-krov-rose transition-all duration-500 hover:border-krov-blood hover:bg-krov-blood/10"
             >
               <MessageCircle size={16} aria-hidden="true" />
               Contáctanos

@@ -1,13 +1,20 @@
 // Shared design tokens for the admin area.
 //
-// Mirrors the storefront's premium identity (gold on charcoal, Cormorant
-// serif headings) so the administration panel reads as an extension of the
-// public site rather than a separate internal tool. Import these instead of
-// hard-coding the values per page.
+// The panel belongs to KROV: same void ground, same Didone headings, same red.
+// What differs is density and restraint — an operator works here for an hour at
+// a time, so the storefront's editorial air is traded for information density,
+// and red is reserved even more tightly than on the storefront (destructive and
+// primary actions only, never decoration).
+//
+// Import these instead of hard-coding values per page.
 
-/** Serif stack used for admin headings — same family as the storefront. */
+/** Display serif used for admin headings — same family as the storefront. */
 export const adminSerif =
-  "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+  "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
-/** Primary gold accent. */
-export const ADMIN_GOLD = "#c9a96e";
+/**
+ * The brand red, for the handful of places an inline style is unavoidable
+ * (react-select, SweetAlert2). Prefer the `krov-*` Tailwind tokens everywhere
+ * a class can be used.
+ */
+export const ADMIN_ACCENT = "#ff0b55";

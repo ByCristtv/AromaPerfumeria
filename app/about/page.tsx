@@ -14,12 +14,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "/about" },
   title: "Sobre Nosotros",
   description:
-    "Aroma Perfumería: perfumes nicho, diseñadores de lujo y decants originales en Costa Rica. Descubre nuestra historia, filosofía y compromiso con la excelencia olfativa.",
+    "KROV Perfumería: perfumes nicho, diseñadores de lujo y decants originales en Costa Rica. Descubre nuestra historia, filosofía y compromiso con la excelencia olfativa.",
 };
 
 export default function AboutPage() {
   return (
-    <div className="bg-[#0a0a0a]">
+    <div className="bg-krov-void">
       <Reveal><AboutHero /></Reveal>
       <Reveal><Historia /></Reveal>
       <Reveal><Diferenciadores /></Reveal>

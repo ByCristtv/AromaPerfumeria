@@ -10,7 +10,7 @@ type StepBadgeProps = {
 };
 
 /**
- * A numbered, gold-rimmed badge used to mark each step of the journey.
+ * A numbered, red-rimmed badge used to mark each step of the journey.
  * Two concentric rings give it a premium, jewellery-like finish.
  *
  * Purely presentational now. It used to be a Framer component with its own
@@ -31,13 +31,13 @@ export default function StepBadge({
       aria-hidden="true"
     >
       {/* Outer halo */}
-      <span className="absolute inset-0 rounded-full bg-[#c9a96e]/10 blur-[2px]" />
+      <span className="absolute inset-0 rounded-full bg-krov-blood/10 blur-[2px]" />
       {/* Ring */}
-      <span className="absolute inset-0 rounded-full border border-[#c9a96e]/50" />
-      <span className="absolute inset-[3px] rounded-full border border-[#c9a96e]/20" />
+      <span className="absolute inset-0 rounded-full border border-krov-blood/50" />
+      <span className="absolute inset-[3px] rounded-full border border-krov-smoke" />
       {/* Number */}
       <span
-        className="relative z-10 text-[#c9a96e] tabular-nums"
+        className="relative z-10 text-krov-rose tabular-nums"
         style={{ fontFamily: serif }}
       >
         {String(number).padStart(2, "0")}

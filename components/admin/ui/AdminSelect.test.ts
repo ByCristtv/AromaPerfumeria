@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import type { CSSObjectWithLabel, OptionProps } from "react-select";
 import { adminSelectStyles } from "./AdminSelect";
-import { ADMIN_GOLD } from "./styles";
+import { ADMIN_ACCENT } from "./styles";
 
 type Option = { value: string; label: string };
 
@@ -23,25 +23,25 @@ describe("adminSelectStyles option contrast", () => {
 
   it("uses near-black text on the white menu for a resting option", () => {
     const s = optionColor({});
-    expect(s.color).toBe("#1a1a1a");
+    expect(s.color).toBe("#191420");
     expect(s.backgroundColor).toBe("#ffffff");
   });
 
-  it("keeps near-black text when the option is focused (gold tint bg)", () => {
+  it("keeps near-black text when the option is focused (red tint bg)", () => {
     const s = optionColor({ isFocused: true });
-    expect(s.color).toBe("#1a1a1a");
-    expect(s.backgroundColor).toBe("rgba(201, 169, 110, 0.16)");
+    expect(s.color).toBe("#191420");
+    expect(s.backgroundColor).toBe("rgba(255,11,85, 0.16)");
   });
 
-  it("keeps dark text on the gold background for the selected option", () => {
+  it("keeps dark text on the red background for the selected option", () => {
     const s = optionColor({ isSelected: true });
-    expect(s.color).toBe("#1a1a1a");
-    expect(s.backgroundColor).toBe(ADMIN_GOLD);
+    expect(s.color).toBe("#191420");
+    expect(s.backgroundColor).toBe(ADMIN_ACCENT);
   });
 
   it("mutes a disabled option rather than leaving it to inherit", () => {
     const s = optionColor({ isDisabled: true });
-    expect(s.color).toBe("#9ca3af");
+    expect(s.color).toBe("#a2969d");
   });
 
   it("renders the menu on a solid white surface", () => {

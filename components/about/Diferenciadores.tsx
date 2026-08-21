@@ -1,4 +1,4 @@
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 const items = [
   {
@@ -64,33 +64,32 @@ export default function Diferenciadores() {
   return (
     <section
       aria-labelledby="diferenciadores-title"
-      className="bg-[#080808] py-24 md:py-32 px-6 relative"
+      className="bg-krov-void py-24 md:py-32 px-6 relative"
     >
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20">
           <p
-            className="text-[#c9a96e] tracking-[0.4em] text-xs mb-6 uppercase"
-            style={{ fontFamily: serif }}
+            className="text-krov-rose tracking-[0.4em] text-xs mb-6 uppercase"
           >
-            Aroma Perfumeria
+            KROV Perfumería
           </p>
           <h2
             id="diferenciadores-title"
             className="text-3xl md:text-5xl text-white leading-tight"
             style={{ fontFamily: serif }}
           >
-            Lo que nos <span className="italic text-[#c9a96e]">diferencia</span>
+            Lo que nos <span className="italic text-krov-rose">diferencia</span>
           </h2>
         </div>
 
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#c9a96e]/15">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-krov-blood/15">
           {items.map((it) => (
             <li
               key={it.title}
-              className="bg-[#0a0a0a] p-10 group hover:bg-[#111] transition-colors duration-500"
+              className="bg-krov-void p-10 group hover:bg-krov-ink transition-colors duration-500"
             >
               <div
-                className="w-14 h-14 mb-8 flex items-center justify-center border border-[#c9a96e]/40 text-[#c9a96e] group-hover:bg-[#c9a96e] group-hover:text-black transition-all duration-500"
+                className="w-14 h-14 mb-8 flex items-center justify-center border border-krov-blood/40 text-krov-rose group-hover:bg-krov-blood group-hover:text-black transition-all duration-500"
                 aria-hidden="true"
               >
                 <svg

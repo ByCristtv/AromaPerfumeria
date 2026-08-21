@@ -32,8 +32,8 @@ export default function ProductListAdmin({ rows, onEdit, onChanged }: ProductLis
       text: `Se va a ${action} la variante "${label}".`,
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#c9a96e",
-      cancelButtonColor: "#6c757d",
+      confirmButtonColor: "#ff4d74",
+      cancelButtonColor: "#2a2130",
       confirmButtonText: `Sí, ${action}`,
       cancelButtonText: "Cancelar",
     });
@@ -65,16 +65,16 @@ export default function ProductListAdmin({ rows, onEdit, onChanged }: ProductLis
 
   if (variants.length === 0) {
     return (
-      <p className="text-[#ececec] text-center py-12">
+      <p className="text-krov-bone text-center py-12">
         No hay variantes disponibles.
       </p>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-[#c9a96e]/30 bg-black shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
-      <table className="min-w-full text-sm text-left text-[#ececec]">
-        <thead className="bg-[#1a1a1a] text-[#c9a96e] uppercase text-xs tracking-wider">
+    <div className="overflow-x-auto rounded-none border border-krov-blood/30 bg-black shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
+      <table className="min-w-full text-sm text-left text-krov-bone">
+        <thead className="bg-krov-graphite text-krov-rose uppercase text-xs tracking-wider">
           <tr>
             <th className="px-4 py-3">SKU</th>
             <th className="px-4 py-3">Producto</th>
@@ -97,33 +97,33 @@ export default function ProductListAdmin({ rows, onEdit, onChanged }: ProductLis
             return (
               <tr
                 key={v.variant_id}
-                className="border-t border-[#c9a96e]/10 hover:bg-[#1a1a1a]/60 transition-colors"
+                className="border-t border-krov-smoke/70 hover:bg-krov-graphite/60 transition-colors"
               >
-                <td className="px-4 py-3 font-mono text-xs text-[#a5a5a5]">
+                <td className="px-4 py-3 font-mono text-xs text-krov-ash">
                   {v.sku}
                 </td>
                 <td className="px-4 py-3 font-medium">{v.name}</td>
-                <td className="px-4 py-3 text-[#a5a5a5]">{v.brand}</td>
-                <td className="px-4 py-3 capitalize text-[#a5a5a5]">
+                <td className="px-4 py-3 text-krov-ash">{v.brand}</td>
+                <td className="px-4 py-3 capitalize text-krov-ash">
                   {{
                     decant: "Decant",
                     set: "Set",
                     full_size: "Full size"
                   }[v.product_type] || "Desconocido"}
                 </td>
-                <td className="px-4 py-3 text-[#a5a5a5]">{v.size_ml} ml</td>
+                <td className="px-4 py-3 text-krov-ash">{v.size_ml} ml</td>
                 <td className="px-4 py-3">
                   {v.is_on_offer && v.offer_price != null ? (
                     <div className="flex flex-col">
-                      <span className="line-through text-xs text-[#a5a5a5]">
+                      <span className="line-through text-xs text-krov-ash">
                         {currency.format(v.price)}
                       </span>
-                      <span className="text-[#c9a96e] font-semibold">
+                      <span className="text-krov-rose font-semibold">
                         {currency.format(effectivePrice)}
                       </span>
                     </div>
                   ) : (
-                    <span className="text-[#c9a96e] font-semibold">
+                    <span className="text-krov-rose font-semibold">
                       {currency.format(effectivePrice)}
                     </span>
                   )}
@@ -131,35 +131,35 @@ export default function ProductListAdmin({ rows, onEdit, onChanged }: ProductLis
                 <td className="px-4 py-3">
                   {v.wholesale_price != null ? (
                     <div className="flex flex-col">
-                      <span className="text-[#c9a96e] font-semibold">
+                      <span className="text-krov-rose font-semibold">
                         {currency.format(v.wholesale_price)}
                       </span>
                       {v.min_wholesale_quantity != null && (
-                        <span className="text-xs text-[#a5a5a5]">
+                        <span className="text-xs text-krov-ash">
                           mín. {v.min_wholesale_quantity}
                         </span>
                       )}
                     </div>
                   ) : (
-                    <span className="text-[#a5a5a5]">—</span>
+                    <span className="text-krov-ash">—</span>
                   )}
                 </td>
                 <td className="px-4 py-3">
                   <span
                     className={
                       v.product_type === "decant"
-                        ? "text-[#c9a96e]"
+                        ? "text-krov-rose"
                         : v.stock <= 0
                         ? "text-red-400"
                         : v.stock < 5
                         ? "text-yellow-400"
-                        : "text-[#ececec]"
+                        : "text-krov-bone"
                     }
                   >
                     {v.product_type === "decant" ? "X" : v.stock}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-[#a5a5a5]">
+                <td className="px-4 py-3 text-krov-ash">
                   {v.categories.length > 0
                     ? v.categories.map((c) => c.name).join(", ")
                     : "—"}
@@ -169,7 +169,7 @@ export default function ProductListAdmin({ rows, onEdit, onChanged }: ProductLis
                     className={
                       v.is_active
                         ? "text-emerald-400"
-                        : "text-[#a5a5a5] italic"
+                        : "text-krov-ash italic"
                     }
                   >
                     {v.is_active ? "Activa" : "Inactiva"}
@@ -178,7 +178,7 @@ export default function ProductListAdmin({ rows, onEdit, onChanged }: ProductLis
                 <td className="px-4 py-3 text-right whitespace-nowrap">
                   <button
                     onClick={() => onEdit?.(v.product_id, v.variant_id)}
-                    className="bg-blue-950 hover:bg-blue-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors mr-2"
+                    className="bg-blue-950 hover:bg-blue-800 text-white px-3 py-1.5 rounded-none text-xs font-medium transition-colors mr-2"
                   >
                     Editar
                   </button>
@@ -194,7 +194,7 @@ export default function ProductListAdmin({ rows, onEdit, onChanged }: ProductLis
                       v.is_active
                         ? "bg-red-900 hover:bg-red-700"
                         : "bg-emerald-900 hover:bg-emerald-700"
-                    } text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors`}
+                    } text-white px-3 py-1.5 rounded-none text-xs font-medium transition-colors`}
                   >
                     {v.is_active ? "Desactivar" : "Reactivar"}
                   </button>

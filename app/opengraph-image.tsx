@@ -11,14 +11,18 @@ import { SITE } from "@/lib/seo/site";
  *
  * Deliberately no remote font fetch: it would add a network hop to every render
  * and fails closed (a broken card) if the font host is slow. System serif
- * carries the brand adequately at this size.
+ * carries the brand adequately at this size, and the card leans on the two
+ * things that survive any font substitution — the near-black ground and the
+ * KROV red.
  */
 export const runtime = "edge";
 export const alt = `${SITE.name} — Perfumes originales en Costa Rica`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const GOLD = "#c9a96e";
+const BLOOD = "#ff0b55";
+const BLUSH = "#ffdede";
+const BONE = "#f4eef0";
 
 export default function OpengraphImage() {
   return new ImageResponse(
@@ -29,84 +33,78 @@ export default function OpengraphImage() {
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
           justifyContent: "center",
+          padding: "0 92px",
           background:
-            "radial-gradient(circle at 12% 8%, #1e1e1e 0%, #111 45%, #000 100%)",
+            "radial-gradient(circle at 8% 100%, #4a0518 0%, #0c090f 52%, #08060a 100%)",
           fontFamily: "Georgia, 'Times New Roman', serif",
         }}
       >
-        {/* Top hairline */}
+        {/* Left-aligned, like the hero. A centred card is the one everyone
+            makes; the off-centre column is the one people recognise. */}
         <div
           style={{
-            position: "absolute",
-            top: 0,
-            width: "100%",
-            height: 2,
-            background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)`,
-          }}
-        />
-
-        <div
-          style={{
-            fontSize: 104,
-            letterSpacing: 28,
-            color: "#ffffff",
-            fontWeight: 300,
             display: "flex",
+            alignItems: "center",
+            gap: 18,
+            fontSize: 22,
+            letterSpacing: 9,
+            color: BLOOD,
+            textTransform: "uppercase",
           }}
         >
-          AROMA
+          {/* flexShrink: 0 is required — Satori (the next/og layout engine) is
+              flex-only, so a fixed-width rule inside a flex container collapses
+              to a dot without it. */}
+          <div style={{ width: 56, height: 2, flexShrink: 0, background: BLOOD }} />
+          кровь · sangre
         </div>
 
         <div
           style={{
-            fontSize: 28,
-            letterSpacing: 12,
-            color: GOLD,
+            fontSize: 122,
+            letterSpacing: 26,
+            color: BONE,
+            marginTop: 26,
+            display: "flex",
+          }}
+        >
+          KROV
+        </div>
+
+        <div
+          style={{
+            fontSize: 40,
+            color: BLUSH,
             fontStyle: "italic",
-            marginTop: 8,
+            marginTop: 14,
             display: "flex",
           }}
         >
-          Luxury Fragrance
+          Tu fragancia es parte de vos
         </div>
 
-        {/*
-          flexShrink: 0 is required — Satori (the next/og layout engine) is
-          flex-only, so a fixed-width rule inside a column flex container gets
-          collapsed to a dot without it.
-        */}
         <div
           style={{
-            width: 160,
-            height: 2,
-            flexShrink: 0,
-            background: GOLD,
-            opacity: 0.55,
-            margin: "44px 0",
-          }}
-        />
-
-        <div
-          style={{
-            fontSize: 26,
-            color: "rgba(255,255,255,0.62)",
-            letterSpacing: 3,
+            fontSize: 24,
+            color: "rgba(244,238,240,0.55)",
+            letterSpacing: 5,
+            marginTop: 34,
             display: "flex",
           }}
         >
           Perfumes originales · Costa Rica
         </div>
 
-        {/* Bottom hairline */}
+        {/* The horizon — the same red line that closes the hero. */}
         <div
           style={{
             position: "absolute",
             bottom: 0,
+            left: 0,
             width: "100%",
-            height: 2,
-            background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)`,
+            height: 6,
+            background: BLOOD,
           }}
         />
       </div>

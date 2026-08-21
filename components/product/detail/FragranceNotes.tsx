@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 interface FragranceNotesProps {
   top: string | null;
@@ -11,116 +11,92 @@ interface FragranceNotesProps {
 const TIERS = [
   {
     key: "top" as const,
-    label: "Notas de salida",
+    label: "Salida",
     sublabel: "Top",
     description:
-      "La primera impresión — frescura inicial que se percibe al instante.",
+      "La primera impresión — lo que se percibe al instante.",
   },
   {
     key: "middle" as const,
-    label: "Notas de corazón",
+    label: "Corazón",
     sublabel: "Heart",
     description: "El alma del perfume, su carácter dominante.",
   },
   {
     key: "base" as const,
-    label: "Notas de fondo",
+    label: "Fondo",
     sublabel: "Base",
-    description:
-      "La huella final, la profundidad que permanece sobre la piel.",
+    description: "La huella final, lo que permanece sobre la piel.",
   },
 ];
 
+/**
+ * The olfactive pyramid, set as a numbered descent rather than three cards.
+ *
+ * A fragrance is experienced in sequence — top, then heart, then base, over
+ * hours — so the notes are laid out as an ordered progression down the page
+ * with a rule between each stage. Three equal boxes side by side implied the
+ * three tiers were parallel options, which is the opposite of what they are.
+ *
+ * The per-card scroll animations are gone; the shared `.reveal-fx` observer on
+ * the parent section already handles the entrance, and this had its own set.
+ */
 export default function FragranceNotes({ top, middle, base }: FragranceNotesProps) {
-  const tiers = [top, middle, base];
-  if (tiers.every((t) => !t)) return null;
+  const values = [top, middle, base];
+  if (values.every((t) => !t)) return null;
 
   return (
-    <section className="relative">
-      <header className="text-center mb-10">
-        <p
-          className="text-[11px] tracking-[0.32em] uppercase"
-          style={{ color: "#c9a96e" }}
-        >
-          La pirámide olfativa
-        </p>
+    <section className="relative mx-auto max-w-3xl">
+      <header className="mb-10">
+        <p className="krov-eyebrow">La pirámide olfativa</p>
         <h2
-          className="mt-3 text-3xl sm:text-4xl font-light text-black"
-          style={{ fontFamily: '"Cormorant Garamond", "Garamond", serif' }}
+          className="mt-5 text-3xl text-krov-bone sm:text-4xl"
+          style={{ fontFamily: serif }}
         >
-          Composición de la fragancia
+          Cómo se <span className="italic text-krov-blush">revela</span>
         </h2>
       </header>
 
-      <ol className="grid gap-5 md:grid-cols-3">
+      <ol className="border-t border-krov-smoke">
         {TIERS.map((tier, i) => {
-          const value = tiers[i];
+          const value = values[i];
           if (!value) return null;
           return (
-            <motion.li
+            <li
               key={tier.key}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{
-                duration: 0.7,
-                delay: i * 0.12,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="group relative rounded-2xl bg-white p-6 overflow-hidden"
-              style={{
-                border: "1px solid rgba(0,0,0,0.06)",
-                boxShadow: "0 10px 40px -24px rgba(0,0,0,0.15)",
-              }}
+              className="grid grid-cols-[auto_1fr] gap-x-5 border-b border-krov-smoke py-7 sm:grid-cols-[auto_10rem_1fr] sm:gap-x-8"
             >
-              {/* Gold accent strip */}
               <span
                 aria-hidden
-                className="absolute inset-x-6 top-0 h-px"
-                style={{
-                  background:
-                    "linear-gradient(90deg, transparent, #c9a96e, transparent)",
-                }}
-              />
+                className="text-[10px] leading-6 tracking-[0.2em] text-krov-rose"
+              >
+                {String(i + 1).padStart(2, "0")}
+              </span>
 
-              {/* Hover ambient */}
-              <span
-                aria-hidden
-                className="pointer-events-none absolute -bottom-20 -right-20 h-40 w-40 rounded-full opacity-0 blur-3xl transition-opacity duration-700 group-hover:opacity-100"
-                style={{
-                  background:
-                    "radial-gradient(circle, rgba(201,169,110,0.45), transparent 65%)",
-                }}
-              />
-
-              <div className="flex items-baseline justify-between">
+              <div className="min-w-0">
                 <h3
-                  className="text-xl font-light text-black"
-                  style={{
-                    fontFamily: '"Cormorant Garamond", "Garamond", serif',
-                  }}
+                  className="text-2xl leading-none text-krov-bone"
+                  style={{ fontFamily: serif }}
                 >
                   {tier.label}
                 </h3>
-                <span
-                  className="text-[10px] tracking-[0.28em] uppercase"
-                  style={{ color: "#c9a96e" }}
-                >
+                <p className="mt-1.5 text-[9px] uppercase tracking-[0.24em] text-krov-dust">
                   {tier.sublabel}
-                </span>
+                </p>
+                <p className="mt-3 text-xs leading-relaxed text-krov-dust sm:hidden">
+                  {tier.description}
+                </p>
               </div>
 
-              <p className="mt-3 text-sm leading-relaxed text-black/55">
-                {tier.description}
-              </p>
-
-              <div
-                className="mt-5 pt-5 text-sm text-black/85 leading-relaxed"
-                style={{ borderTop: "1px dashed rgba(0,0,0,0.08)" }}
-              >
-                {value}
+              <div className="col-span-2 mt-4 sm:col-span-1 sm:mt-0">
+                <p className="text-[0.95rem] leading-relaxed text-krov-bone">
+                  {value}
+                </p>
+                <p className="mt-2.5 hidden text-xs leading-relaxed text-krov-dust sm:block">
+                  {tier.description}
+                </p>
               </div>
-            </motion.li>
+            </li>
           );
         })}
       </ol>

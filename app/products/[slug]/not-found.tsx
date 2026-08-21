@@ -1,35 +1,38 @@
 import Link from "next/link";
 
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
+
+/**
+ * A dead product link is a dead end, so this page does one job: get the visitor
+ * back into the collection. The line about the fragrance having vanished keeps
+ * the brand's voice without pretending the error did not happen.
+ */
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 pt-28 pb-20">
-      <div className="text-center max-w-md">
-        <p
-          className="text-[11px] tracking-[0.32em] uppercase"
-          style={{ color: "#c9a96e" }}
-        >
-          Producto no encontrado
-        </p>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-krov-void px-5 pb-20 pt-28">
+      <div
+        aria-hidden
+        className="krov-aura-wine pointer-events-none absolute left-1/2 top-1/3 h-[28rem] w-[28rem] -translate-x-1/2 opacity-60"
+      />
+
+      <div className="relative max-w-md text-center">
+        <p className="krov-eyebrow">Producto no encontrado</p>
+
         <h1
-          className="mt-4 text-4xl font-light text-black"
-          style={{ fontFamily: '"Cormorant Garamond", "Garamond", serif' }}
+          className="mt-6 text-4xl leading-tight text-krov-bone sm:text-5xl"
+          style={{ fontFamily: serif }}
         >
-          Esta fragancia se ha desvanecido
+          Esta fragancia se{" "}
+          <span className="italic text-krov-blush">desvaneció</span>
         </h1>
-        <p className="mt-4 text-sm text-black/55">
-          Tal vez el producto fue retirado del catálogo o el enlace no es
-          correcto. Te invitamos a explorar nuestra colección.
+
+        <p className="mx-auto mt-5 max-w-sm text-sm leading-relaxed text-krov-ash">
+          El producto salió del catálogo o el enlace no es correcto. La colección
+          sigue completa del otro lado.
         </p>
-        <Link
-          href="/"
-          className="inline-block mt-8 px-7 py-3 text-[11px] font-semibold tracking-[0.22em] uppercase text-white rounded-full transition-transform hover:-translate-y-0.5"
-          style={{
-            background: "linear-gradient(135deg, #0a0a0a, #1a1a1a)",
-            boxShadow:
-              "0 14px 30px -14px rgba(201,169,110,0.5), 0 0 0 1px rgba(201,169,110,0.3)",
-          }}
-        >
-          Volver al catálogo
+
+        <Link href="/products" className="krov-btn-primary mt-9">
+          Volver a la colección
         </Link>
       </div>
     </div>

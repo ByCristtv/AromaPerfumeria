@@ -5,13 +5,13 @@ import ReactSelect, {
   type Props,
   type StylesConfig,
 } from "react-select";
-import { ADMIN_GOLD } from "./styles";
+import { ADMIN_ACCENT } from "./styles";
 
 /**
  * Shared react-select theming for every dropdown in the admin panel.
  *
  * Why this exists — the bug it fixes: the admin forms apply `input-field-custom`
- * (which sets `color:#ececec` on a dark control) to their <Select>. react-select
+ * (which sets `color:#f4eef0` on a dark control) to their <Select>. react-select
  * v5's default option color is `inherit` (see its optionCSS), and the menu
  * renders on a white background — so the options inherited that light-gray
  * control color and became unreadable on white. Setting the color per field is
@@ -33,7 +33,7 @@ export function adminSelectStyles<
     menu: (base) => ({
       ...base,
       backgroundColor: "#ffffff",
-      border: "1px solid rgba(201, 169, 110, 0.35)",
+      border: "1px solid rgba(255,11,85, 0.35)",
       boxShadow: "0 12px 32px -12px rgba(0, 0, 0, 0.45)",
       overflow: "hidden",
       zIndex: 50,
@@ -43,35 +43,35 @@ export function adminSelectStyles<
       ...base,
       // Explicit near-black text on the white menu — never inherit the light
       // control color. Meets WCAG AA on all three backgrounds below.
-      color: state.isDisabled ? "#9ca3af" : "#1a1a1a",
+      color: state.isDisabled ? "#a2969d" : "#191420",
       backgroundColor: state.isSelected
-        ? ADMIN_GOLD
+        ? ADMIN_ACCENT
         : state.isFocused
-          ? "rgba(201, 169, 110, 0.16)"
+          ? "rgba(255,11,85, 0.16)"
           : "#ffffff",
       cursor: state.isDisabled ? "not-allowed" : "pointer",
       ":active": {
         backgroundColor: state.isDisabled
           ? undefined
-          : "rgba(201, 169, 110, 0.28)",
+          : "rgba(255,11,85, 0.28)",
       },
     }),
     // Selected chips render on react-select's default white control, so they use
-    // a solid gold fill with near-black text — the same gold/near-black pairing
+    // a solid red fill with near-black text — the same red/near-black pairing
     // as a selected option above, which meets WCAG AA on white. (A translucent
-    // gold tint with light text was unreadable here.)
+    // red tint with light text was unreadable here.)
     multiValue: (base) => ({
       ...base,
-      backgroundColor: ADMIN_GOLD,
-      border: "1px solid #a8894f",
+      backgroundColor: ADMIN_ACCENT,
+      border: "1px solid #d40040",
     }),
-    multiValueLabel: (base) => ({ ...base, color: "#1a1a1a" }),
+    multiValueLabel: (base) => ({ ...base, color: "#191420" }),
     multiValueRemove: (base) => ({
       ...base,
-      color: "#1a1a1a",
-      ":hover": { backgroundColor: "#a8894f", color: "#ffffff" },
+      color: "#191420",
+      ":hover": { backgroundColor: "#d40040", color: "#ffffff" },
     }),
-    noOptionsMessage: (base) => ({ ...base, color: "#6b7280" }),
+    noOptionsMessage: (base) => ({ ...base, color: "#6f656c" }),
   };
 }
 

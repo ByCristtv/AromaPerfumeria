@@ -116,17 +116,17 @@ export default function TransformDecantForm({
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-black rounded-2xl border border-[#c9a96e]/30 p-8 shadow-2xl">
+    <div className="max-w-2xl mx-auto bg-black rounded-none border border-krov-blood/30 p-8 shadow-2xl">
       <div className="mb-8 text-center">
-        <h2 className="text-2xl font-bold text-[#ececec]">Generar Stock de Decant</h2>
-        <p className="text-[#a5a5a5]">
+        <h2 className="text-2xl font-bold text-krov-bone">Generar Stock de Decant</h2>
+        <p className="text-krov-ash">
           Transforma botellas full size en mililitros para el pool compartido
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         <div className="space-y-4">
-          <h3 className="text-[#c9a96e] font-bold border-b border-[#c9a96e]/20 pb-2">
+          <h3 className="text-krov-rose font-bold border-b border-krov-smoke pb-2">
             Variante Full Size de Origen
           </h3>
           <AdminSelect<Option>
@@ -140,13 +140,13 @@ export default function TransformDecantForm({
           />
         </div>
 
-        <div className="space-y-4 bg-[#1a1a1a]/50 p-6 rounded-xl border border-[#c9a96e]/10">
-          <h3 className="text-[#c9a96e] font-bold border-b border-[#c9a96e]/20 pb-2">
+        <div className="space-y-4 bg-krov-graphite/50 p-6 rounded-none border border-krov-smoke/70">
+          <h3 className="text-krov-rose font-bold border-b border-krov-smoke pb-2">
             Transformación
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-[#c9a96e] uppercase">
+              <label className="text-xs font-bold text-krov-rose uppercase">
                 Unidades a transformar
               </label>
               <input
@@ -161,17 +161,17 @@ export default function TransformDecantForm({
               />
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-bold text-[#c9a96e] uppercase">
+              <label className="text-xs font-bold text-krov-rose uppercase">
                 Mililitros generados
               </label>
-              <div className="input-field-custom flex items-center text-[#c9a96e] font-bold">
+              <div className="input-field-custom flex items-center text-krov-rose font-bold">
                 {mlToAdd > 0 ? `${mlToAdd} ml` : "—"}
               </div>
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold text-[#c9a96e] uppercase">
+            <label className="text-xs font-bold text-krov-rose uppercase">
               Notas (opcional)
             </label>
             <input
@@ -184,9 +184,9 @@ export default function TransformDecantForm({
           </div>
 
           {selected && (
-            <p className="text-xs text-[#a5a5a5]">
-              Se descontarán <span className="text-[#ececec] font-bold">{qty > 0 ? qty : 0}</span>{" "}
-              unidad(es) de <span className="text-[#ececec] font-bold">{selected.sku}</span>{" "}
+            <p className="text-xs text-krov-ash">
+              Se descontarán <span className="text-krov-bone font-bold">{qty > 0 ? qty : 0}</span>{" "}
+              unidad(es) de <span className="text-krov-bone font-bold">{selected.sku}</span>{" "}
               (stock actual: {selected.stock}).
             </p>
           )}
@@ -195,7 +195,7 @@ export default function TransformDecantForm({
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#c9a96e] text-black font-black py-4 rounded-lg uppercase hover:bg-[#b8a060] transition-colors disabled:opacity-50"
+          className="w-full bg-krov-blood text-black font-black py-4 rounded-none uppercase hover:bg-krov-crimson transition-colors disabled:opacity-50"
         >
           {loading ? "Transformando..." : "Transformar a Pool de Decants"}
         </button>
@@ -205,16 +205,16 @@ export default function TransformDecantForm({
         .input-field-custom {
           width: 100%;
           padding: 0.75rem 1rem;
-          background-color: #1a1a1a;
-          border: 1px solid rgba(201, 169, 110, 0.3);
+          background-color: #191420;
+          border: 1px solid rgba(255,11,85, 0.3);
           border-radius: 0.5rem;
-          color: #ececec;
+          color: #f4eef0;
           transition: all 0.2s;
         }
         .input-field-custom:focus {
-          border-color: #c9a96e;
+          border-color: #ff4d74;
           outline: none;
-          box-shadow: 0 0 0 1px #c9a96e;
+          box-shadow: 0 0 0 1px #ff4d74;
         }
       `}</style>
     </div>

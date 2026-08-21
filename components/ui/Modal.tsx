@@ -25,7 +25,7 @@ interface ModalProps {
  * - Traps initial focus on the panel; restores focus to the trigger on close.
  * - role="dialog" + aria-modal; the title (if any) labels the dialog.
  *
- * Visual language matches the storefront: dark glass panel, gold accents.
+ * Visual language matches the storefront: dark glass panel, red accents.
  */
 export default function Modal({
   open,
@@ -103,7 +103,7 @@ export default function Modal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: 8 }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className={`relative w-full ${maxWidthClassName} max-h-[90vh] overflow-y-auto rounded-2xl border border-[#c9a96e]/35 bg-black/90 backdrop-blur-md shadow-[0_24px_80px_rgba(0,0,0,0.6)] outline-none`}
+            className={`relative w-full ${maxWidthClassName} max-h-[90vh] overflow-y-auto rounded-2xl border border-krov-blood/35 bg-black/90 backdrop-blur-md shadow-[0_24px_80px_rgba(0,0,0,0.6)] outline-none`}
           >
             {(title || subtitle) && (
               <div className="flex items-start justify-between gap-4 border-b border-white/10 px-6 py-5">

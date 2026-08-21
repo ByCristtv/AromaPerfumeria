@@ -119,14 +119,14 @@ export default function AdminProductsView({
             <button
               type="button"
               onClick={() => setCreateModalOpen(true)}
-              className="rounded-lg bg-[#c9a96e] px-5 py-2.5 text-sm font-semibold uppercase tracking-wider text-black transition-colors hover:bg-[#b8a060]"
+              className="rounded-none bg-krov-blood px-5 py-2.5 text-sm font-semibold uppercase tracking-wider text-black transition-colors hover:bg-krov-crimson"
             >
               + Nuevo Producto
             </button>
             <button
               type="button"
               onClick={() => setVariantModalOpen(true)}
-              className="rounded-lg border border-[#c9a96e]/50 bg-transparent px-5 py-2.5 text-sm font-semibold uppercase tracking-wider text-[#c9a96e] transition-colors hover:border-[#c9a96e] hover:bg-[#c9a96e]/10"
+              className="rounded-none border border-krov-blood/50 bg-transparent px-5 py-2.5 text-sm font-semibold uppercase tracking-wider text-krov-rose transition-colors hover:border-krov-blood hover:bg-krov-blood/10"
             >
               + Nueva Variante
             </button>
@@ -139,7 +139,7 @@ export default function AdminProductsView({
           <Search
             size={17}
             aria-hidden
-            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#a5a5a5]"
+            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-krov-ash"
           />
           <input
             type="text"
@@ -147,14 +147,14 @@ export default function AdminProductsView({
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar por nombre, marca o SKU…"
             aria-label="Buscar productos"
-            className="w-full rounded-xl border border-[#c9a96e]/30 bg-[#1a1a1a] py-3 pl-11 pr-10 text-sm text-[#ececec] placeholder:text-[#a5a5a5]/60 outline-none transition-colors focus:border-[#c9a96e] focus:ring-1 focus:ring-[#c9a96e]/40"
+            className="w-full rounded-none border border-krov-blood/30 bg-krov-graphite py-3 pl-11 pr-10 text-sm text-krov-bone placeholder:text-krov-ash/60 outline-none transition-colors focus:border-krov-blood focus:ring-1 focus:ring-krov-blood/40"
           />
           {search && (
             <button
               type="button"
               onClick={() => setSearch("")}
               aria-label="Limpiar búsqueda"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#a5a5a5] hover:text-[#ececec]"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-krov-ash hover:text-krov-bone"
             >
               <X size={15} />
             </button>
@@ -162,7 +162,7 @@ export default function AdminProductsView({
         </div>
       </div>
 
-      <p className="mb-4 text-xs uppercase tracking-[0.2em] text-[#a5a5a5]">
+      <p className="mb-4 text-xs uppercase tracking-[0.2em] text-krov-ash">
         {total === 0 ? "Sin productos" : `Mostrando ${from}–${to} de ${total}`}
       </p>
 
@@ -228,7 +228,7 @@ function ModalOverlay({
           type="button"
           aria-label="Cerrar"
           onClick={onClose}
-          className="absolute top-3 left-3 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-black/80 border border-[#c9a96e]/40 text-[#c9a96e] hover:bg-[#c9a96e] hover:text-black transition-colors shadow-lg"
+          className="absolute top-3 left-3 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-black/80 border border-krov-blood/40 text-krov-rose hover:bg-krov-blood hover:text-black transition-colors shadow-lg"
         >
           <svg
             width="18"

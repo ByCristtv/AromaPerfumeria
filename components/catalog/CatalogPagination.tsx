@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { buildCatalogQuery } from "@/lib/catalogParams";
 import type { CatalogPageResult } from "@/types/productFilter";
 
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 type Props = Pick<
   CatalogPageResult,
@@ -46,7 +46,7 @@ export default function CatalogPagination({
   const baseBtn =
     "flex h-11 min-w-11 items-center justify-center rounded-lg border px-3 text-sm transition-all duration-300";
   const idle =
-    "border-white/10 text-white/70 hover:border-[#c9a96e]/50 hover:text-[#c9a96e]";
+    "border-white/10 text-white/70 hover:border-krov-blood/50 hover:text-krov-rose";
   const disabled = "cursor-not-allowed border-white/5 text-white/20";
 
   const window = pageWindow(currentPage, totalPages);
@@ -77,7 +77,7 @@ export default function CatalogPagination({
             <span
               key={p}
               aria-current="page"
-              className={`${baseBtn} border-[#c9a96e] bg-[#c9a96e] font-semibold text-black`}
+              className={`${baseBtn} border-krov-blood bg-krov-blood font-semibold text-black`}
             >
               {p}
             </span>
@@ -126,7 +126,7 @@ export default function CatalogPagination({
         )}
       </div>
 
-      <p className="text-[11px] uppercase tracking-[0.2em] text-white/35" style={{ fontFamily: serif }}>
+      <p className="text-[11px] uppercase tracking-[0.2em] text-white/35">
         Página {currentPage} de {totalPages}
       </p>
     </nav>

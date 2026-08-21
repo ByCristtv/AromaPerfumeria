@@ -55,7 +55,7 @@ export default function StockToolbar({
         <Search
           size={17}
           aria-hidden
-          className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#a5a5a5]"
+          className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-krov-ash"
         />
         <input
           type="text"
@@ -63,14 +63,14 @@ export default function StockToolbar({
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar por producto, marca o SKU…"
           aria-label="Buscar movimientos de stock"
-          className="w-full rounded-xl border border-[#c9a96e]/30 bg-[#1a1a1a] py-3 pl-11 pr-10 text-sm text-[#ececec] placeholder:text-[#a5a5a5]/60 outline-none transition-colors focus:border-[#c9a96e] focus:ring-1 focus:ring-[#c9a96e]/40"
+          className="w-full rounded-none border border-krov-blood/30 bg-krov-graphite py-3 pl-11 pr-10 text-sm text-krov-bone placeholder:text-krov-ash/60 outline-none transition-colors focus:border-krov-blood focus:ring-1 focus:ring-krov-blood/40"
         />
         {search && (
           <button
             type="button"
             onClick={() => setSearch("")}
             aria-label="Limpiar búsqueda"
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#a5a5a5] hover:text-[#ececec]"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-krov-ash hover:text-krov-bone"
           >
             <X size={15} />
           </button>
@@ -80,7 +80,7 @@ export default function StockToolbar({
       <button
         type="button"
         onClick={() => setModalOpen(true)}
-        className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#c9a96e] px-5 py-3 text-sm font-semibold text-black transition-colors hover:bg-[#b8a060]"
+        className="inline-flex items-center justify-center gap-2 rounded-none bg-krov-blood px-5 py-3 text-sm font-semibold text-black transition-colors hover:bg-krov-crimson"
       >
         <PackagePlus size={17} aria-hidden />
         Registrar entrada

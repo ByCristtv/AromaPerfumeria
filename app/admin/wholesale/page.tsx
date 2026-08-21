@@ -27,7 +27,7 @@ export default async function AdminWholesalePage() {
         description="Revisa y aprueba las solicitudes de cuenta mayorista (B2B). Aprobar promueve la cuenta a precios mayoristas."
       />
 
-      <p className="mb-4 text-xs uppercase tracking-[0.2em] text-[#a5a5a5]">
+      <p className="mb-4 text-xs uppercase tracking-[0.2em] text-krov-ash">
         {pendingCount === 0
           ? "Sin solicitudes pendientes"
           : `${pendingCount} ${

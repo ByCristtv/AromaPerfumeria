@@ -1,49 +1,42 @@
-"use client";
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
-import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
-
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 28 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const } },
-};
-
-/** Compact editorial hero that opens the catalog like a boutique entrance. */
+/**
+ * The masthead over the collection.
+ *
+ * This was previously a single pill badge floating in ~200px of empty space —
+ * the catalogue opened on nothing. It now opens the way a magazine section
+ * opens: a label, a statement, and a rule, with the grid starting immediately
+ * beneath.
+ *
+ * Server component. It was a client component only to run a Framer stagger on
+ * two elements, which cost a hydration boundary at the very top of the most
+ * visited page in the store for an animation nobody was waiting to see.
+ */
 export default function CatalogHero() {
   return (
-    <section className="relative overflow-hidden px-5 pt-28 pb-12 text-center sm:px-8 md:pt-36">
+    <section className="relative overflow-hidden px-5 pb-10 pt-28 sm:px-8 md:pt-36">
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-40 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-[#c9a96e]/10 blur-[120px]"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#c9a96e]/30 to-transparent"
+        className="krov-aura-wine pointer-events-none absolute -top-48 left-1/4 h-[26rem] w-[26rem] opacity-60"
       />
 
-      <motion.div
-        variants={{ show: { transition: { staggerChildren: 0.12 } } }}
-        initial="hidden"
-        animate="show"
-        className="relative mx-auto max-w-2xl"
-      >
-        <motion.div
-            variants={fadeUp}
-            className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#c9a96e]/30 bg-[#c9a96e]/6 px-4 py-2"
-          >
-            <Sparkles size={14} className="text-[#c9a96e]" aria-hidden="true" />
-            <span
-              className="text-xs uppercase tracking-[0.35em] text-[#c9a96e]"
-              style={{ fontFamily: serif }}
-            >
-              Catalogo · Aroma Perfumería
-            </span>
-          </motion.div>
-        
-        
-      </motion.div>
+      <div className="relative mx-auto max-w-7xl">
+        <p className="krov-eyebrow">La colección</p>
+
+        <h1
+          className="mt-6 max-w-3xl text-4xl leading-[1.02] text-krov-bone sm:text-5xl md:text-6xl"
+          style={{ fontFamily: serif }}
+        >
+          Encontrá la que ya
+          <br />
+          <span className="italic text-krov-blush">era tuya</span>
+        </h1>
+
+        <p className="mt-7 max-w-lg text-sm leading-relaxed text-krov-ash">
+          Originales de nicho y diseñador, y decants para probar antes de
+          comprometerte. Filtrá hasta que quede una.
+        </p>
+      </div>
     </section>
   );
 }

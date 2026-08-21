@@ -7,7 +7,7 @@ import { useAuthUser } from "@/hooks/useAuthUser";
 import { useWholesaleStatus } from "@/hooks/useWholesaleStatus";
 import WholesaleApplicationForm from "@/components/wholesale/WholesaleApplicationForm";
 
-const SERIF = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+const SERIF = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 /**
  * /wholesale/apply — the gated wholesale request page.
@@ -73,7 +73,7 @@ export default function WholesaleApplyView() {
 
   return (
     <Shell>
-      <div className="rounded-2xl border border-[#c9a96e]/20 bg-black/50 p-6 backdrop-blur-sm shadow-[0_12px_40px_rgba(0,0,0,0.35)] sm:p-8">
+      <div className="rounded-2xl border border-krov-smoke bg-black/50 p-6 backdrop-blur-sm shadow-[0_12px_40px_rgba(0,0,0,0.35)] sm:p-8">
         {eligibility.status === "rejected" && (
           <p className="mb-5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-xs leading-relaxed text-amber-200/90">
             Tu solicitud anterior fue rechazada. Puedes corregir los datos y volver
@@ -88,12 +88,11 @@ export default function WholesaleApplyView() {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <section className="min-h-screen bg-[radial-gradient(circle_at_12%_8%,#1e1e1e_0%,#111_45%,#000_100%)] px-4 pt-28 pb-16">
+    <section className="min-h-screen bg-[radial-gradient(circle_at_12%_8%,#191420_0%,#111_45%,#000_100%)] px-4 pt-28 pb-16">
       <div className="mx-auto max-w-lg">
         <header className="mb-8 text-center">
           <p
-            className="mb-3 text-[10px] uppercase tracking-[0.35em] text-[#c9a96e]"
-            style={{ fontFamily: SERIF }}
+            className="mb-3 text-[10px] uppercase tracking-[0.35em] text-krov-rose"
           >
             Programa mayorista
           </p>
@@ -126,10 +125,10 @@ function StatusCard({
   tone?: "neutral" | "success";
 }) {
   return (
-    <div className="rounded-2xl border border-[#c9a96e]/20 bg-black/50 p-8 text-center backdrop-blur-sm">
+    <div className="rounded-2xl border border-krov-smoke bg-black/50 p-8 text-center backdrop-blur-sm">
       <h2
         className={`text-2xl font-light tracking-wide ${
-          tone === "success" ? "text-[#c9a96e]" : "text-white"
+          tone === "success" ? "text-krov-rose" : "text-white"
         }`}
         style={{ fontFamily: SERIF }}
       >
@@ -140,8 +139,7 @@ function StatusCard({
       </p>
       <Link
         href={cta.href}
-        className="mt-6 inline-block border border-[#c9a96e]/50 px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] text-[#c9a96e] transition-colors duration-300 hover:bg-[#c9a96e] hover:text-black"
-        style={{ fontFamily: SERIF }}
+        className="mt-6 inline-block border border-krov-blood/50 px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] text-krov-rose transition-colors duration-300 hover:bg-krov-blood hover:text-black"
       >
         {cta.label}
       </Link>

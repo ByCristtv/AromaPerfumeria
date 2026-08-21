@@ -83,24 +83,24 @@ export default async function SinpeInstructionsPage({
   const whatsappUrl = buildWhatsappUrl(order.order_number, order.total);
 
   return (
-    <section className="pt-28 pb-16 px-4 bg-gray-50 min-h-screen">
+    <section className="pt-28 pb-16 px-4 bg-krov-void min-h-screen">
       <div className="max-w-2xl mx-auto">
         <header className="text-center mb-8">
           <div
             className={`inline-flex items-center justify-center w-14 h-14 rounded-full mb-4 ${
-              isPaid ? "bg-emerald-100" : "bg-amber-100"
+              isPaid ? "bg-emerald-500/15" : "bg-amber-500/15"
             }`}
           >
             {isPaid ? (
-              <CheckIcon className="w-7 h-7 text-emerald-700" />
+              <CheckIcon className="w-7 h-7 text-emerald-300" />
             ) : (
-              <PhoneIcon className="w-7 h-7 text-amber-700" />
+              <PhoneIcon className="w-7 h-7 text-amber-300" />
             )}
           </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-krov-bone">
             {isPaid ? "¡Pago confirmado!" : "Completa tu pago con SINPE Móvil"}
           </h1>
-          <p className="text-sm text-gray-600 mt-2">
+          <p className="text-sm text-krov-ash mt-2">
             Pedido <span className="font-mono">{reference}</span> · Reservamos tus
             productos mientras confirmamos el pago.
           </p>
@@ -108,7 +108,7 @@ export default async function SinpeInstructionsPage({
 
         {isPaid ? (
           <Panel>
-            <p className="text-sm text-gray-700 leading-relaxed">
+            <p className="text-sm text-krov-ash leading-relaxed">
               Ya validamos tu transferencia. Te contactaremos por WhatsApp con las
               novedades de tu entrega.
             </p>
@@ -117,7 +117,7 @@ export default async function SinpeInstructionsPage({
           <div className="space-y-5">
             {/* ──────── The three things they must get right ──────── */}
             <Panel>
-              <dl className="divide-y divide-gray-100">
+              <dl className="divide-y divide-krov-smoke/70">
                 <DataRow label="Monto exacto" value={formatPrice(order.total)} emphasis />
                 <DataRow label="Número SINPE" value={sinpe.phone} emphasis />
                 <DataRow label="A nombre de" value={sinpe.accountHolder} />
@@ -156,13 +156,13 @@ export default async function SinpeInstructionsPage({
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-black text-white py-3 text-sm font-medium hover:opacity-90 transition"
+              className="flex w-full items-center justify-center gap-2 rounded-none bg-krov-blood text-krov-void py-3 text-sm font-medium hover:opacity-90 transition"
             >
               <WhatsappIcon className="w-4 h-4" />
               Enviar comprobante por WhatsApp
             </a>
 
-            <p className="text-xs text-gray-500 text-center leading-relaxed">
+            <p className="text-xs text-krov-dust text-center leading-relaxed">
               Guarda esta página: el número de pedido{" "}
               <span className="font-mono">{reference}</span> es tu referencia.
             </p>
@@ -171,7 +171,7 @@ export default async function SinpeInstructionsPage({
 
         <Link
           href="/"
-          className="mt-6 block text-center text-sm font-medium text-black underline"
+          className="mt-6 block text-center text-sm text-krov-rose underline underline-offset-4 hover:text-krov-blush"
         >
           Seguir comprando
         </Link>
@@ -203,9 +203,9 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-gray-200 bg-white p-5">
+    <section className="rounded-none border border-krov-smoke bg-krov-coal p-5">
       {title && (
-        <h2 className="text-base font-semibold text-gray-900 mb-3">{title}</h2>
+        <h2 className="text-base font-semibold text-krov-bone mb-3">{title}</h2>
       )}
       {children}
     </section>
@@ -226,18 +226,18 @@ function DataRow({
   return (
     <div className="py-3 first:pt-0 last:pb-0">
       <div className="flex items-baseline justify-between gap-3">
-        <dt className="text-sm text-gray-500 shrink-0">{label}</dt>
+        <dt className="text-sm text-krov-dust shrink-0">{label}</dt>
         <dd
           className={`text-right break-all ${
             emphasis
-              ? "text-base font-semibold text-gray-900 tabular-nums"
-              : "text-sm text-gray-900"
+              ? "text-base font-semibold text-krov-bone tabular-nums"
+              : "text-sm text-krov-bone"
           }`}
         >
           {value}
         </dd>
       </div>
-      {hint && <p className="text-xs text-gray-400 mt-1">{hint}</p>}
+      {hint && <p className="text-xs text-krov-dust mt-1">{hint}</p>}
     </div>
   );
 }
@@ -245,10 +245,10 @@ function DataRow({
 function Step({ n, children }: { n: number; children: React.ReactNode }) {
   return (
     <li className="flex gap-3">
-      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xs font-semibold text-gray-700">
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-krov-graphite text-xs font-semibold text-krov-ash">
         {n}
       </span>
-      <span className="text-sm text-gray-700 leading-relaxed">{children}</span>
+      <span className="text-sm text-krov-ash leading-relaxed">{children}</span>
     </li>
   );
 }

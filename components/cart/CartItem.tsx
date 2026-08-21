@@ -1,8 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import { Minus, Plus, X } from "lucide-react";
 import { CartLineItem } from "@/types/product";
 import type { LinePricing } from "@/lib/pricing/wholesale";
+
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 type CartItemProps = {
     item: CartLineItem;
@@ -21,6 +24,16 @@ function formatPrice(value: number) {
     });
 }
 
+/**
+ * A cart line, set as a manifest row rather than a card.
+ *
+ * The thumbnail keeps the catalogue's linen niche so the product is recognisably
+ * the same object the customer just clicked; everything around it is the dark
+ * ground. Rows are separated by a hairline instead of being boxed — a stack of
+ * bordered cards inside a bordered page is the shape this design is avoiding.
+ *
+ * Pricing logic (wholesale resolution, unlock threshold, subtotals) is untouched.
+ */
 export default function CartItem({
     item,
     line,
@@ -51,81 +64,107 @@ export default function CartItem({
     const wholesalePrice = line?.wholesalePrice ?? null;
 
     return (
-        <article className="rounded-xl border border-gray-200 bg-white p-3 sm:p-4 shadow-sm">
-            <div className="flex gap-3 sm:gap-4">
-                <div className="relative h-20 w-20 sm:h-24 sm:w-24 shrink-0 rounded-lg bg-gray-50 overflow-hidden border">
-                    <Image src={image_url} alt={product_name} fill sizes="100%" className="object-contain p-1" />
+        <article className="border-b border-krov-smoke py-5">
+            <div className="flex gap-4 sm:gap-6">
+                <div className="relative h-24 w-20 shrink-0 overflow-hidden bg-gradient-to-b from-krov-linen to-krov-linen-deep sm:h-28 sm:w-24">
+                    <Image
+                        src={image_url}
+                        alt={product_name}
+                        fill
+                        sizes="96px"
+                        className="object-contain p-2"
+                    />
                 </div>
 
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                        <div>
-                            <h3 className="text-sm sm:text-base font-semibold text-gray-900 line-clamp-1">
+                <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                            <h3
+                                className="line-clamp-1 text-base text-krov-bone sm:text-lg"
+                                style={{ fontFamily: serif }}
+                            >
                                 {product_name}
                             </h3>
-                            <p className="text-xs text-gray-500 font-medium">
-                                {size_ml}ml - {product_type === 'full_size' ? 'Frasco Original' : 'Decant'}
+                            <p className="mt-0.5 text-[11px] uppercase tracking-[0.16em] text-krov-dust">
+                                {size_ml} ml ·{" "}
+                                {product_type === "full_size" ? "Frasco original" : "Decant"}
                             </p>
+
                             {isWholesale && (
-                                <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700">
-                                    ✓ Precio mayorista aplicado
+                                <span className="mt-2 inline-flex items-center gap-1.5 border border-krov-blood/40 bg-krov-blood/10 px-2 py-0.5 text-[9px] uppercase tracking-[0.18em] text-krov-rose">
+                                    Precio mayorista
                                 </span>
                             )}
                             {!isWholesale && wholesaleConfigured && (
-                                <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                                <span className="mt-2 inline-flex items-center border border-krov-edge px-2 py-0.5 text-[9px] uppercase tracking-[0.18em] text-krov-dust">
                                     Precio estándar
                                 </span>
                             )}
                         </div>
+
+                        {/* Remove: an icon at a full 40px target, muted until
+                            hovered so it never competes with the price. */}
                         <button
                             onClick={() => onDelete(variant_id)}
-                            className="text-xs text-red-500 hover:text-red-700 font-medium"
+                            aria-label={`Quitar ${product_name} del carrito`}
+                            className="-mr-2 -mt-2 flex h-10 w-10 shrink-0 items-center justify-center text-krov-dust transition-colors hover:text-krov-blood"
                         >
-                            Eliminar
+                            <X size={16} aria-hidden />
                         </button>
                     </div>
 
                     {/* Wholesale unlock progress — only shown for eligible buyers below the minimum. */}
                     {unitsToUnlock !== null && unitsToUnlock > 0 && (
-                        <p className="mt-2 rounded-md bg-[#c9a96e]/10 px-2.5 py-1.5 text-[11px] leading-snug text-[#8a6d3b]">
-                            Agrega <strong>{unitsToUnlock}</strong>{" "}
-                            {unitsToUnlock === 1 ? "unidad" : "unidades"} más de{" "}
-                            <strong>{product_name}</strong> para desbloquear el precio
-                            mayorista
-                            {wholesalePrice != null && <> de {formatPrice(wholesalePrice)}</>}.
+                        <p className="mt-3 border-l-2 border-krov-blood bg-krov-blood/[0.07] px-3 py-2 text-[11px] leading-snug text-krov-ash">
+                            Agregá{" "}
+                            <strong className="text-krov-bone">{unitsToUnlock}</strong>{" "}
+                            {unitsToUnlock === 1 ? "unidad" : "unidades"} más para
+                            desbloquear el precio mayorista
+                            {wholesalePrice != null && (
+                                <>
+                                    {" "}
+                                    de{" "}
+                                    <strong className="text-krov-rose">
+                                        {formatPrice(wholesalePrice)}
+                                    </strong>
+                                </>
+                            )}
+                            .
                         </p>
                     )}
 
-                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                        <div className="inline-flex items-center rounded-lg border border-gray-200 bg-gray-50">
+                    <div className="mt-4 flex flex-wrap items-end justify-between gap-3">
+                        <div className="inline-flex items-center border border-krov-edge">
                             <button
                                 onClick={() => onDecrease(variant_id)}
-                                className="h-8 w-8 text-lg hover:bg-gray-200 rounded-l-lg transition"
+                                className="flex h-9 w-9 items-center justify-center text-krov-ash transition-colors hover:bg-krov-graphite hover:text-krov-bone"
                                 aria-label="Disminuir cantidad"
                             >
-                                -
+                                <Minus size={13} aria-hidden />
                             </button>
-                            <span className="w-10 text-center text-sm font-bold">{quantity}</span>
+                            <span className="w-9 text-center text-sm tabular-nums text-krov-bone">
+                                {quantity}
+                            </span>
                             <button
                                 onClick={() => onIncrease(variant_id)}
-                                className="h-8 w-8 text-lg hover:bg-gray-200 rounded-r-lg transition"
+                                className="flex h-9 w-9 items-center justify-center text-krov-ash transition-colors hover:bg-krov-graphite hover:text-krov-bone"
                                 aria-label="Aumentar cantidad"
                             >
-                                +
+                                <Plus size={13} aria-hidden />
                             </button>
                         </div>
 
-                        <div className="text-right ml-auto">
+                        <div className="ml-auto text-right">
                             {/* When wholesale applied, show the retail unit price struck through. */}
                             {isWholesale && line && (
-                                <p className="text-[11px] text-gray-400 line-through tabular-nums">
+                                <p className="text-[10px] tabular-nums text-krov-dust line-through">
                                     {formatPrice(line.retailPrice)} c/u
                                 </p>
                             )}
-                            <p className="text-[11px] text-gray-400 tabular-nums">
+                            <p className="text-[10px] tabular-nums text-krov-dust">
                                 {formatPrice(unitPrice)} c/u
                             </p>
-                            <p className="text-sm sm:text-base font-bold text-gray-900 tabular-nums">
+                            <p className="text-base tabular-nums text-krov-bone">
                                 {formatPrice(subtotal)}
                             </p>
                         </div>

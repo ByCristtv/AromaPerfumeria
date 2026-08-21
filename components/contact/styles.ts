@@ -1,10 +1,10 @@
 // Shared design tokens for the "Contacto" experience.
-// Mirrors the site's premium identity: gold on charcoal, Cormorant serif.
+// Mirrors the site's premium identity: KROV red on near-black, Didone headings.
 
 export const serif =
-  "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+  "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
-export const GOLD = "#c9a96e";
+export const ACCENT = "#ff4d74";
 
 export const fadeUp = {
   hidden: { opacity: 0, y: 32 },

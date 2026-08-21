@@ -32,8 +32,7 @@ export default function SectionHeading({
     >
       <motion.p
         variants={fadeUp}
-        className="mb-5 text-xs uppercase tracking-[0.4em] text-[#c9a96e]"
-        style={{ fontFamily: serif }}
+        className="mb-5 text-xs uppercase tracking-[0.4em] text-krov-rose"
       >
         {eyebrow}
       </motion.p>
@@ -42,7 +41,7 @@ export default function SectionHeading({
         className="text-3xl leading-tight text-white md:text-5xl"
         style={{ fontFamily: serif }}
       >
-        {title} {emphasis && <span className="italic text-[#c9a96e]">{emphasis}</span>}
+        {title} {emphasis && <span className="italic text-krov-rose">{emphasis}</span>}
       </motion.h2>
       {description && (
         <motion.p

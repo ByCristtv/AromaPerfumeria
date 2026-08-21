@@ -26,7 +26,7 @@ export default function PaidCustomerNote({
   if (!isPaid) return null;
 
   return (
-    <p className="text-sm text-gray-500 leading-relaxed">
+    <p className="text-sm text-krov-dust leading-relaxed">
       Te enviaremos un correo a <strong>{customerEmail}</strong> con los detalles
       y actualizaciones de tu pedido. Si tienes preguntas, contáctanos por
       WhatsApp.

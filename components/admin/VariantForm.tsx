@@ -131,17 +131,17 @@ export default function VariantForm({ onSuccess }: VariantFormProps) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-black rounded-2xl border border-[#c9a96e]/30 p-8 shadow-2xl">
+    <div className="max-w-4xl mx-auto bg-black rounded-none border border-krov-blood/30 p-8 shadow-2xl">
       <div className="mb-8 text-center">
-        <h2 className="text-2xl font-bold text-[#ececec]">Nueva Variante</h2>
-        <p className="text-[#a5a5a5]">
+        <h2 className="text-2xl font-bold text-krov-bone">Nueva Variante</h2>
+        <p className="text-krov-ash">
           Agrega una variante comercial a un producto existente
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         <div className="space-y-4">
-          <h3 className="text-[#c9a96e] font-bold border-b border-[#c9a96e]/20 pb-2">
+          <h3 className="text-krov-rose font-bold border-b border-krov-smoke pb-2">
             Producto Padre
           </h3>
           <AdminSelect<{ value: string; label: string }>
@@ -154,13 +154,13 @@ export default function VariantForm({ onSuccess }: VariantFormProps) {
           />
         </div>
 
-        <div className="space-y-4 bg-[#1a1a1a]/50 p-6 rounded-xl border border-[#c9a96e]/10">
-          <h3 className="text-[#c9a96e] font-bold border-b border-[#c9a96e]/20 pb-2">
+        <div className="space-y-4 bg-krov-graphite/50 p-6 rounded-none border border-krov-smoke/70">
+          <h3 className="text-krov-rose font-bold border-b border-krov-smoke pb-2">
             Variante Comercial (Stock y Precio)
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-[#c9a96e] uppercase">
+              <label className="text-xs font-bold text-krov-rose uppercase">
                 SKU (Único)
               </label>
               <input
@@ -173,7 +173,7 @@ export default function VariantForm({ onSuccess }: VariantFormProps) {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-bold text-[#c9a96e] uppercase">
+              <label className="text-xs font-bold text-krov-rose uppercase">
                 Precio Base
               </label>
               <input
@@ -185,11 +185,11 @@ export default function VariantForm({ onSuccess }: VariantFormProps) {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-bold text-[#c9a96e] uppercase">
+              <label className="text-xs font-bold text-krov-rose uppercase">
                 Stock
               </label>
               {form.product_type === "decant" ? (
-                <div className="input-field-custom flex items-center text-xs text-[#a5a5a5]">
+                <div className="input-field-custom flex items-center text-xs text-krov-ash">
                   Pool de decants
                 </div>
               ) : (
@@ -203,7 +203,7 @@ export default function VariantForm({ onSuccess }: VariantFormProps) {
               )}
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-bold text-[#c9a96e] uppercase">
+              <label className="text-xs font-bold text-krov-rose uppercase">
                 Tamaño (ml)
               </label>
               <input
@@ -229,12 +229,12 @@ export default function VariantForm({ onSuccess }: VariantFormProps) {
               <option value="set">Set</option>
             </select>
 
-            <label className="flex items-center gap-2 text-[#ececec] cursor-pointer">
+            <label className="flex items-center gap-2 text-krov-bone cursor-pointer">
               <input
                 type="checkbox"
                 checked={form.is_on_offer}
                 onChange={(e) => setField("is_on_offer", e.target.checked)}
-                className="accent-[#c9a96e]"
+                className="accent-krov-blood"
               />
               ¿En Oferta?
             </label>
@@ -252,10 +252,10 @@ export default function VariantForm({ onSuccess }: VariantFormProps) {
           </div>
         </div>
 
-        <div className="space-y-4 bg-[#1a1a1a]/50 p-6 rounded-xl border border-[#c9a96e]/10">
-          <div className="border-b border-[#c9a96e]/20 pb-2">
-            <h3 className="text-[#c9a96e] font-bold">Precios Mayoristas (B2B)</h3>
-            <p className="text-xs text-[#a5a5a5] mt-1">
+        <div className="space-y-4 bg-krov-graphite/50 p-6 rounded-none border border-krov-smoke/70">
+          <div className="border-b border-krov-smoke pb-2">
+            <h3 className="text-krov-rose font-bold">Precios Mayoristas (B2B)</h3>
+            <p className="text-xs text-krov-ash mt-1">
               Opcional. Solo se aplican a clientes mayoristas aprobados que compren
               la cantidad mínima. Déjalos vacíos si esta variante no se vende al por
               mayor.
@@ -263,7 +263,7 @@ export default function VariantForm({ onSuccess }: VariantFormProps) {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-[#c9a96e] uppercase">
+              <label className="text-xs font-bold text-krov-rose uppercase">
                 Precio Mayorista
               </label>
               <input
@@ -277,7 +277,7 @@ export default function VariantForm({ onSuccess }: VariantFormProps) {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-bold text-[#c9a96e] uppercase">
+              <label className="text-xs font-bold text-krov-rose uppercase">
                 Cantidad Mínima Mayorista
               </label>
               <input
@@ -298,7 +298,7 @@ export default function VariantForm({ onSuccess }: VariantFormProps) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#c9a96e] text-black font-black py-4 rounded-lg uppercase hover:bg-[#b8a060] transition-colors disabled:opacity-50"
+          className="w-full bg-krov-blood text-black font-black py-4 rounded-none uppercase hover:bg-krov-crimson transition-colors disabled:opacity-50"
         >
           {loading ? "Registrando Variante..." : "Crear Variante"}
         </button>
@@ -308,16 +308,16 @@ export default function VariantForm({ onSuccess }: VariantFormProps) {
         .input-field-custom {
           width: 100%;
           padding: 0.75rem 1rem;
-          background-color: #1a1a1a;
-          border: 1px solid rgba(201, 169, 110, 0.3);
+          background-color: #191420;
+          border: 1px solid rgba(255,11,85, 0.3);
           border-radius: 0.5rem;
-          color: #ececec;
+          color: #f4eef0;
           transition: all 0.2s;
         }
         .input-field-custom:focus {
-          border-color: #c9a96e;
+          border-color: #ff4d74;
           outline: none;
-          box-shadow: 0 0 0 1px #c9a96e;
+          box-shadow: 0 0 0 1px #ff4d74;
         }
       `}</style>
     </div>

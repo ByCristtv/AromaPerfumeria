@@ -130,7 +130,7 @@ export default async function OrderPage({
   };
 
   return (
-    <section className="pt-28 pb-16 px-4 bg-gray-50 min-h-screen">
+    <section className="pt-28 pb-16 px-4 bg-krov-void min-h-screen">
       <div className="max-w-3xl mx-auto">
         {/* ──────── Status header + cancelled banner (client island: polls
             for webhook confirmation so the customer never refreshes) ──────── */}
@@ -146,22 +146,22 @@ export default async function OrderPage({
           {/* ──────── Items + delivery ──────── */}
           <div className="space-y-5">
             <Panel title="Productos">
-              <ul className="divide-y divide-gray-100">
+              <ul className="divide-y divide-krov-smoke/70">
                 {(order.order_items ?? []).map((item) => (
                   <li
                     key={item.id}
                     className="py-3 flex items-start justify-between gap-3"
                   >
                     <div className="min-w-0">
-                      <p className="text-sm text-gray-900 truncate">
+                      <p className="text-sm text-krov-bone truncate">
                         {item.brand_name} — {item.product_name}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-krov-dust">
                         {item.size_ml} ml · cant. {item.quantity} ·{" "}
                         <span className="font-mono">{item.sku}</span>
                       </p>
                     </div>
-                    <span className="text-sm text-gray-900 shrink-0 tabular-nums">
+                    <span className="text-sm text-krov-bone shrink-0 tabular-nums">
                       {formatPrice(item.line_total)}
                     </span>
                   </li>
@@ -170,7 +170,7 @@ export default async function OrderPage({
             </Panel>
 
             <Panel title="Entrega">
-              <dl className="text-sm text-gray-700 space-y-1">
+              <dl className="text-sm text-krov-ash space-y-1">
                 <Row label="Nombre" value={order.customer_name} />
                 <Row label="Teléfono" value={order.customer_phone} />
                 <Row label="Correo" value={order.customer_email ?? "—"} />
@@ -198,16 +198,16 @@ export default async function OrderPage({
           </div>
 
           {/* ──────── Totals ──────── */}
-          <aside className="rounded-2xl border border-gray-200 bg-white p-5 h-fit md:sticky md:top-28">
-            <h2 className="text-base font-semibold text-gray-900 mb-3">
+          <aside className="rounded-none border border-krov-smoke bg-krov-coal p-5 h-fit md:sticky md:top-28">
+            <h2 className="text-base font-semibold text-krov-bone mb-3">
               Total
             </h2>
             <dl className="text-sm space-y-2">
-              <div className="flex justify-between text-gray-600">
+              <div className="flex justify-between text-krov-ash">
                 <dt>Subtotal</dt>
                 <dd className="tabular-nums">{formatPrice(order.subtotal)}</dd>
               </div>
-              <div className="flex justify-between text-gray-600">
+              <div className="flex justify-between text-krov-ash">
                 <dt>Envío</dt>
                 <dd className="tabular-nums">
                   {order.shipping_cost > 0
@@ -215,7 +215,7 @@ export default async function OrderPage({
                     : "Gratis"}
                 </dd>
               </div>
-              <div className="flex justify-between text-base font-semibold text-gray-900 pt-3 border-t border-gray-200">
+              <div className="flex justify-between text-base font-semibold text-krov-bone pt-3 border-t border-krov-smoke">
                 <dt>Total</dt>
                 <dd className="tabular-nums">{formatPrice(order.total)}</dd>
               </div>
@@ -223,7 +223,7 @@ export default async function OrderPage({
 
             <Link
               href="/"
-              className="mt-5 block text-center text-sm font-medium text-black underline"
+              className="mt-5 block text-center text-sm text-krov-rose underline underline-offset-4 hover:text-krov-blush"
             >
               Seguir comprando
             </Link>
@@ -246,8 +246,8 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-gray-200 bg-white p-5">
-      <h2 className="text-base font-semibold text-gray-900 mb-3">{title}</h2>
+    <section className="rounded-none border border-krov-smoke bg-krov-coal p-5">
+      <h2 className="text-base font-semibold text-krov-bone mb-3">{title}</h2>
       {children}
     </section>
   );
@@ -256,8 +256,8 @@ function Panel({
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col sm:flex-row sm:gap-3">
-      <dt className="text-gray-500 sm:w-32 shrink-0">{label}</dt>
-      <dd className="text-gray-900 break-words">{value}</dd>
+      <dt className="text-krov-dust sm:w-32 shrink-0">{label}</dt>
+      <dd className="text-krov-bone break-words">{value}</dd>
     </div>
   );
 }

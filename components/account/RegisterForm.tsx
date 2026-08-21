@@ -7,12 +7,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/lib/supabase/client";
 import { registerSchema, type RegisterFormValues } from "@/schemas/auth";
+import KrovLogo from "@/components/brand/KrovLogo";
 
 const serif =
-  "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+  "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 const inputClass =
-  "w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#c9a96e]/50";
+  "w-full border border-krov-edge bg-krov-graphite px-4 py-3 text-sm text-krov-bone placeholder:text-krov-dust transition-colors focus:border-krov-blood focus:outline-none";
 
 /**
  * Manual registration form (email + password + full name).
@@ -85,7 +86,7 @@ export default function RegisterForm() {
         </p>
         <Link
           href="/login"
-          className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-[#c9a96e] py-3 text-sm font-medium text-black transition hover:bg-[#c9a96e]/90"
+          className="krov-btn-primary mt-7 w-full"
         >
           Ir a iniciar sesión
         </Link>
@@ -154,7 +155,7 @@ export default function RegisterForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full rounded-xl bg-[#c9a96e] py-3 text-sm font-medium text-black transition hover:bg-[#c9a96e]/90 disabled:opacity-50"
+          className="krov-btn-primary w-full"
         >
           {isSubmitting ? "Creando cuenta…" : "Crear cuenta"}
         </button>
@@ -162,7 +163,7 @@ export default function RegisterForm() {
 
       <p className="text-center text-sm text-white/55 mt-6">
         ¿Ya tienes cuenta?{" "}
-        <Link href="/login" className="text-[#c9a96e] hover:underline">
+        <Link href="/login" className="text-krov-rose hover:underline">
           Inicia sesión
         </Link>
       </p>
@@ -184,9 +185,13 @@ function translateAuthError(message: string): string {
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
-    <section className="min-h-screen pt-28 pb-10 px-4 bg-[radial-gradient(circle_at_10%_10%,#222_0%,#111_45%,#000_100%)]">
-      <div className="max-w-md mx-auto">
-        <div className="rounded-2xl border border-[#c9a96e]/35 bg-black/65 backdrop-blur-md shadow-[0_16px_60px_rgba(0,0,0,0.45)] p-6 sm:p-8">
+    <section className="relative min-h-screen overflow-hidden bg-krov-void px-5 pb-16 pt-28">
+      <div
+        aria-hidden
+        className="krov-aura-wine pointer-events-none absolute -top-32 left-1/2 h-[30rem] w-[30rem] -translate-x-1/2 opacity-70"
+      />
+      <div className="relative mx-auto max-w-md">
+        <div className="border border-krov-smoke bg-krov-coal p-7 sm:p-9">
           {children}
         </div>
       </div>
@@ -205,7 +210,9 @@ function Field({
 }) {
   return (
     <div>
-      <label className="text-white/60 text-xs mb-1 block">{label}</label>
+      <label className="mb-2 block text-[10px] uppercase tracking-[0.18em] text-krov-ash">
+        {label}
+      </label>
       {children}
       {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
     </div>
@@ -213,20 +220,11 @@ function Field({
 }
 
 function Brand() {
+  // The official mark, never type. See KrovLogo for why the CSS-drawn
+  // "AROMA" lockup this replaced was a problem rather than a shortcut.
   return (
-    <div className="inline-flex flex-col leading-none select-none">
-      <span
-        className="text-white tracking-[0.35em] text-3xl sm:text-4xl font-light"
-        style={{ fontFamily: serif }}
-      >
-        AROMA
-      </span>
-      <span
-        className="text-[#c9a96e] text-[11px] tracking-[0.25em] font-light italic mt-1"
-        style={{ fontFamily: serif }}
-      >
-        Luxury Fragrance
-      </span>
-    </div>
+    <Link href="/" aria-label="KROV Perfumería — inicio">
+      <KrovLogo tone="light" width={150} />
+    </Link>
   );
 }

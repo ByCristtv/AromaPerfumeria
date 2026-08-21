@@ -2,7 +2,6 @@
 
 import { Monitor, Smartphone } from "lucide-react";
 import type { FlowView } from "./steps";
-import { serif } from "./styles";
 
 const OPTIONS: Array<{
   value: FlowView;
@@ -32,7 +31,7 @@ export default function ViewToggle({ value, onChange }: ViewToggleProps) {
     <fieldset className="mx-auto w-fit">
       <legend className="sr-only">Elige cómo estás navegando</legend>
 
-      <div className="relative flex items-center gap-1 rounded-full border border-[#c9a96e]/25 bg-white/[0.03] p-1 backdrop-blur-sm">
+      <div className="relative flex items-center gap-1 rounded-full border border-krov-smoke bg-white/[0.03] p-1 backdrop-blur-sm">
         {OPTIONS.map((option) => {
           const Icon = option.icon;
           const active = value === option.value;
@@ -40,12 +39,11 @@ export default function ViewToggle({ value, onChange }: ViewToggleProps) {
           return (
             <label
               key={option.value}
-              className={`relative flex cursor-pointer items-center gap-2 rounded-full px-5 py-2.5 text-xs uppercase tracking-[0.2em] transition-colors duration-300 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[#c9a96e]/60 ${
+              className={`relative flex cursor-pointer items-center gap-2 rounded-full px-5 py-2.5 text-xs uppercase tracking-[0.2em] transition-colors duration-300 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-krov-blood/60 ${
                 active
-                  ? "bg-[#c9a96e] text-black"
+                  ? "bg-krov-blood text-black"
                   : "text-white/55 hover:text-white"
               }`}
-              style={{ fontFamily: serif }}
             >
               <input
                 type="radio"

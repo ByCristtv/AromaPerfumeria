@@ -45,32 +45,32 @@ export default function OrderStatusSection({
         <div
           className={`inline-flex items-center justify-center w-14 h-14 rounded-full mb-4 ${
             isPaid
-              ? "bg-emerald-100"
+              ? "bg-emerald-500/15"
               : isFailed
-              ? "bg-red-100"
+              ? "bg-red-500/15"
               : isCancelled
-              ? "bg-amber-100"
-              : "bg-gray-100"
+              ? "bg-amber-500/15"
+              : "bg-krov-graphite"
           }`}
         >
           {isPaid ? (
-            <CheckIcon className="w-7 h-7 text-emerald-700" />
+            <CheckIcon className="w-7 h-7 text-emerald-300" />
           ) : isConfirming ? (
-            <Spinner className="w-6 h-6 text-gray-500" />
+            <Spinner className="w-6 h-6 text-krov-dust" />
           ) : (
             <ClockIcon
               className={`w-7 h-7 ${
                 isFailed
-                  ? "text-red-700"
+                  ? "text-red-300"
                   : isCancelled
-                  ? "text-amber-700"
-                  : "text-gray-600"
+                  ? "text-amber-300"
+                  : "text-krov-ash"
               }`}
             />
           )}
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-krov-bone">
           {isPaid
             ? "¡Gracias por tu pedido!"
             : isFailed
@@ -85,12 +85,12 @@ export default function OrderStatusSection({
         {/* While the webhook is confirming, replace the bare "pending" badge
             with a reassuring message so the customer knows the payment landed. */}
         {isConfirming ? (
-          <p className="text-sm text-gray-600 mt-2 max-w-md mx-auto leading-relaxed">
+          <p className="text-sm text-krov-ash mt-2 max-w-md mx-auto leading-relaxed">
             Tu pago fue recibido y está siendo verificado. Esto usualmente toma
             solo unos segundos.
           </p>
         ) : (
-          <p className="text-sm text-gray-600 mt-2">
+          <p className="text-sm text-krov-ash mt-2">
             Pedido <span className="font-mono">#{orderNumber}</span> ·{" "}
             <StatusBadge
               orderStatus={status.order_status}
@@ -115,20 +115,20 @@ function StatusBadge({
   paymentStatus: string;
 }) {
   let label = "Pago pendiente";
-  let cls = "bg-amber-100 text-amber-800";
+  let cls = "bg-amber-500/15 text-amber-200";
 
   if (orderStatus === "denied") {
     label = paymentStatus === "failed" ? "Pago fallido" : "Cancelado";
-    cls = "bg-red-100 text-red-800";
+    cls = "bg-red-500/15 text-red-200";
   } else if (orderStatus === "shipped") {
     label = "Enviado";
-    cls = "bg-blue-100 text-blue-800";
+    cls = "bg-blue-500/15 text-blue-200";
   } else if (orderStatus === "received" && paymentStatus === "paid") {
     label = "Confirmado";
-    cls = "bg-emerald-100 text-emerald-800";
+    cls = "bg-emerald-500/15 text-emerald-200";
   } else if (paymentStatus === "paid") {
     label = "Pagado";
-    cls = "bg-emerald-100 text-emerald-800";
+    cls = "bg-emerald-500/15 text-emerald-200";
   }
 
   return (

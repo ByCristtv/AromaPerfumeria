@@ -83,7 +83,7 @@ export default async function AdminOrdersPage({ searchParams }: AdminOrdersPageP
         actions={
           <Link
             href="/admin/orders/new"
-            className="inline-flex items-center gap-2 rounded-lg bg-[#c9a96e] px-4 py-2.5 text-sm font-semibold text-black transition hover:bg-[#b8a060]"
+            className="inline-flex items-center gap-2 rounded-none bg-krov-blood px-4 py-2.5 text-sm font-semibold text-black transition hover:bg-krov-crimson"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
               <path
@@ -104,7 +104,7 @@ export default async function AdminOrdersPage({ searchParams }: AdminOrdersPageP
         paymentStatus={paymentStatus}
       />
 
-      <p className="mb-4 mt-6 text-xs uppercase tracking-[0.2em] text-[#a5a5a5]">
+      <p className="mb-4 mt-6 text-xs uppercase tracking-[0.2em] text-krov-ash">
         {total === 0 ? "Sin pedidos" : `Mostrando ${from}–${to} de ${total}`}
       </p>
 

@@ -27,8 +27,7 @@ export default function SectionHeading({
   return (
     <div ref={ref} className="reveal mx-auto max-w-2xl text-center">
       <p
-        className="reveal reveal-d1 mb-5 text-xs uppercase tracking-[0.4em] text-[#c9a96e]"
-        style={{ fontFamily: serif }}
+        className="reveal reveal-d1 mb-5 text-xs uppercase tracking-[0.4em] text-krov-rose"
       >
         {eyebrow}
       </p>
@@ -37,7 +36,7 @@ export default function SectionHeading({
         style={{ fontFamily: serif }}
       >
         {title}{" "}
-        {emphasis && <span className="italic text-[#c9a96e]">{emphasis}</span>}
+        {emphasis && <span className="italic text-krov-rose">{emphasis}</span>}
       </h2>
       {description && (
         <p

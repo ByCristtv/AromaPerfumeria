@@ -82,8 +82,8 @@ export default function ProductImagesManager({ productId }: ProductImagesManager
       title: "¿Eliminar imagen?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#c9a96e",
-      cancelButtonColor: "#6c757d",
+      confirmButtonColor: "#ff4d74",
+      cancelButtonColor: "#2a2130",
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
     });
@@ -100,27 +100,27 @@ export default function ProductImagesManager({ productId }: ProductImagesManager
   };
 
   return (
-    <div className="space-y-4 bg-[#1a1a1a]/50 p-6 rounded-xl border border-[#c9a96e]/10">
-      <div className="flex items-center justify-between border-b border-[#c9a96e]/20 pb-2">
-        <h3 className="text-[#c9a96e] font-bold">Imágenes del Producto</h3>
-        <span className="text-[11px] text-[#a5a5a5]">
+    <div className="space-y-4 bg-krov-graphite/50 p-6 rounded-none border border-krov-smoke/70">
+      <div className="flex items-center justify-between border-b border-krov-smoke pb-2">
+        <h3 className="text-krov-rose font-bold">Imágenes del Producto</h3>
+        <span className="text-[11px] text-krov-ash">
           La primera imagen es la del catálogo
         </span>
       </div>
 
       {loading ? (
-        <p className="text-sm text-[#a5a5a5]">Cargando imágenes…</p>
+        <p className="text-sm text-krov-ash">Cargando imágenes…</p>
       ) : (
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
           {images.map((img, i) => (
             <div
               key={img.id}
-              className="relative aspect-square overflow-hidden rounded-lg border border-[#c9a96e]/20 bg-black"
+              className="relative aspect-square overflow-hidden rounded-none border border-krov-smoke bg-black"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={img.url} alt="" className="h-full w-full object-contain" />
               {i === 0 && (
-                <span className="absolute left-1 top-1 rounded bg-[#c9a96e] px-1.5 py-0.5 text-[9px] font-bold text-black">
+                <span className="absolute left-1 top-1 rounded-none bg-krov-blood px-1.5 py-0.5 text-[9px] font-bold text-black">
                   Principal
                 </span>
               )}
@@ -138,7 +138,7 @@ export default function ProductImagesManager({ productId }: ProductImagesManager
           ))}
 
           {/* Add tile */}
-          <label className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-[#c9a96e]/40 text-[#c9a96e] transition hover:bg-[#c9a96e]/5">
+          <label className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-none border border-dashed border-krov-blood/40 text-krov-rose transition hover:bg-krov-blood/5">
             <input
               ref={inputRef}
               type="file"
@@ -159,7 +159,7 @@ export default function ProductImagesManager({ productId }: ProductImagesManager
         </div>
       )}
 
-      <p className="text-[11px] text-[#a5a5a5]">JPG, PNG, WEBP o AVIF · máx. 5 MB.</p>
+      <p className="text-[11px] text-krov-ash">JPG, PNG, WEBP o AVIF · máx. 5 MB.</p>
       {error && <p className="text-xs text-red-400">{error}</p>}
     </div>
   );

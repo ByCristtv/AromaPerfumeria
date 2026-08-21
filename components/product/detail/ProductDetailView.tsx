@@ -75,23 +75,29 @@ export default function ProductDetailView({
 
       <div className="relative pt-24 pb-24 sm:pt-28 sm:pb-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumb */}
+          {/* Breadcrumb — the trail back out. Kept as real links with a visible
+              separator so a visitor who arrived from search can always find the
+              catalogue without reaching for the browser back button. */}
           <nav
             aria-label="Migas"
-            className="text-[11px] tracking-[0.24em] uppercase text-black/45 mb-8"
+            className="mb-10 text-[10px] uppercase tracking-[0.24em] text-krov-dust"
           >
-            <Link href="/" className="hover:text-black transition-colors">
-              Aroma
+            <Link href="/" className="transition-colors hover:text-krov-bone">
+              KROV
             </Link>
-            <span className="mx-2 text-black/25">/</span>
+            <span className="mx-2.5 text-krov-smoke" aria-hidden>
+              /
+            </span>
             <Link
               href="/products"
-              className="hover:text-black transition-colors"
+              className="transition-colors hover:text-krov-bone"
             >
-              Catálogo
+              Colección
             </Link>
-            <span className="mx-2 text-black/25">/</span>
-            <span style={{ color: "#c9a96e" }}>{product.name}</span>
+            <span className="mx-2.5 text-krov-smoke" aria-hidden>
+              /
+            </span>
+            <span className="text-krov-rose">{product.name}</span>
           </nav>
 
           {/* Hero: gallery + purchase */}

@@ -9,17 +9,17 @@ import { fadeUp, serif, stagger } from "./styles";
 export default function ContactHero() {
   return (
     <section
-      aria-label="Ponte en contacto con Aroma Perfumería"
+      aria-label="Ponte en contacto con KROV Perfumería"
       className="relative overflow-hidden px-5 pb-12 pt-28 sm:px-8 md:pt-36"
     >
-      {/* Ambient gold halos */}
+      {/* Ambient wine halos */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-40 left-1/4 h-96 w-96 -translate-x-1/2 rounded-full bg-[#c9a96e]/10 blur-[120px]"
+        className="pointer-events-none absolute -top-40 left-1/4 h-96 w-96 -translate-x-1/2 rounded-full bg-krov-blood/10 blur-[120px]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#c9a96e]/30 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-krov-blood/30 to-transparent"
       />
 
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
@@ -31,14 +31,13 @@ export default function ContactHero() {
         >
           <motion.div
             variants={fadeUp}
-            className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#c9a96e]/30 bg-[#c9a96e]/6 px-4 py-2"
+            className="mb-7 inline-flex items-center gap-2 rounded-full border border-krov-blood/30 bg-krov-blood/6 px-4 py-2"
           >
-            <Sparkles size={14} className="text-[#c9a96e]" aria-hidden="true" />
+            <Sparkles size={14} className="text-krov-rose" aria-hidden="true" />
             <span
-              className="text-xs uppercase tracking-[0.35em] text-[#c9a96e]"
-              style={{ fontFamily: serif }}
+              className="text-xs uppercase tracking-[0.35em] text-krov-rose"
             >
-              Contacto · Aroma Perfumería
+              Contacto · KROV Perfumería
             </span>
           </motion.div>
 
@@ -49,7 +48,7 @@ export default function ContactHero() {
           >
             Conversemos
             <br />
-            <span className="italic text-[#c9a96e]">contigo</span>
+            <span className="italic text-krov-rose">contigo</span>
           </motion.h1>
 
           <motion.p
@@ -68,16 +67,14 @@ export default function ContactHero() {
           >
             <a
               href="#contacto-formulario"
-              className="inline-flex items-center gap-2 border border-[#c9a96e] bg-[#c9a96e] px-9 py-4 text-sm uppercase tracking-[0.25em] text-black transition-all duration-500 hover:bg-transparent hover:text-[#c9a96e]"
-              style={{ fontFamily: serif }}
+              className="inline-flex items-center gap-2 border border-krov-blood bg-krov-blood px-9 py-4 text-sm uppercase tracking-[0.25em] text-black transition-all duration-500 hover:bg-transparent hover:text-krov-rose"
             >
               <MessageCircle size={16} aria-hidden="true" />
               Escríbenos
             </a>
             <a
               href="#canales"
-              className="inline-block border border-[#c9a96e]/40 px-9 py-4 text-sm uppercase tracking-[0.25em] text-[#c9a96e] transition-all duration-500 hover:border-[#c9a96e] hover:bg-[#c9a96e]/10"
-              style={{ fontFamily: serif }}
+              className="inline-block border border-krov-blood/40 px-9 py-4 text-sm uppercase tracking-[0.25em] text-krov-rose transition-all duration-500 hover:border-krov-blood hover:bg-krov-blood/10"
             >
               Ver canales
             </a>

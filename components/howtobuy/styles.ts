@@ -1,5 +1,5 @@
 // Shared design tokens for the "Cómo Comprar" experience.
-// Keeps the premium identity (gold on charcoal, Cormorant serif) in one place.
+// Keeps the premium identity (KROV red on near-black, Didone headings) in one place.
 //
 // The Framer Motion variants that used to live here (fadeUp / stagger /
 // cardReveal) are gone: the journey's reveals are now CSS transitions driven by
@@ -8,4 +8,4 @@
 // separate file and still uses Framer — this change is scoped to How-to-Buy.
 
 export const serif =
-  "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+  "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";

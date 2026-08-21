@@ -4,9 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 const images = [
   "/hero-image1.avif",
@@ -16,24 +16,43 @@ const images = [
 ];
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const } },
+  hidden: { opacity: 0, y: 24 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] as const },
+  },
 };
 
+/**
+ * The brand statement, not a promotional banner.
+ *
+ * KROV is кровь — blood — and the whole proposition is the chain that runs from
+ * blood to DNA to identity: a fragrance is the part of you that enters a room
+ * first. The hero has to land that idea before it sells anything, so it opens
+ * with the claim and only then offers the catalogue.
+ *
+ * Nothing here draws blood literally. The reference lives in a single word set
+ * in italic Didone, a red horizon low in the frame, and the deep wine wash over
+ * the photography. The visitor is meant to work the meaning out, not be shown it.
+ */
 export default function Hero() {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(
       () => setCurrent((prev) => (prev + 1) % images.length),
-      5000
+      6500
     );
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <section className="relative flex h-screen min-h-160 w-full items-center justify-center overflow-hidden">
-      {/* Rotating background */}
+    <section className="relative flex h-screen min-h-160 w-full items-center overflow-hidden bg-krov-void">
+      {/* ── Photography ─────────────────────────────────────────────────────
+          Held far back: desaturated, dimmed and pushed under a wine wash so it
+          reads as atmosphere rather than as a product shot. The images carry
+          mood; the type carries the message. */}
       <div className="absolute inset-0">
         {images.map((img, index) => (
           <Image
@@ -43,80 +62,120 @@ export default function Hero() {
             fill
             priority={index === 0}
             aria-hidden
-            className={`absolute inset-0 object-cover transition-all duration-3000 ease-out ${
-              index === current ? "scale-105 opacity-100" : "scale-100 opacity-0"
+            sizes="100vw"
+            className={`absolute inset-0 object-cover transition-[opacity,transform] duration-[4000ms] ease-out ${
+              index === current
+                ? "scale-105 opacity-100"
+                : "scale-100 opacity-0"
             }`}
+            style={{ filter: "saturate(0.55) contrast(1.05) brightness(0.62)" }}
           />
         ))}
-        {/* Premium gradient overlays */}
-        <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/45 to-black/85" />
-        <div className="absolute inset-0 bg-linear-to-r from-black/60 via-transparent to-black/30" />
+
+        {/* Wine wash — the colour of the brand laid over the light of the photo,
+            not painted on top of it. `multiply` keeps the highlights alive
+            where a flat overlay would grey them out. */}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-krov-wine/45 mix-blend-multiply"
+        />
+        {/* Legibility gradients: dark at both edges, open through the middle. */}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-r from-krov-void via-krov-void/70 to-krov-void/20"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-t from-krov-void via-transparent to-krov-void/80"
+        />
       </div>
 
-      {/* Top & bottom hairlines for an editorial frame */}
-      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#c9a96e]/40 to-transparent" />
+      {/* ── The two circles ─────────────────────────────────────────────────
+          The mark is built from two overlapping circular forms. Rather than
+          reprinting the symbol, the hero states the idea as light: two blooms
+          that meet and become a single field. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-40 -left-20 h-[34rem] w-[34rem] krov-aura opacity-25"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-56 left-40 h-[30rem] w-[30rem] krov-aura-wine opacity-60"
+      />
 
-      {/* Content */}
+      {/* ── Statement ───────────────────────────────────────────────────────
+          Left-aligned on an editorial measure. Centred hero type is the single
+          most template-looking decision available; an off-centre column with a
+          hard left margin is what separates a house from a store. */}
       <motion.div
-        variants={{ show: { transition: { staggerChildren: 0.14, delayChildren: 0.1 } } }}
+        variants={{
+          show: { transition: { staggerChildren: 0.13, delayChildren: 0.15 } },
+        }}
         initial="hidden"
         animate="show"
-        className="relative z-10 mx-auto max-w-4xl px-6 text-center"
+        className="relative z-10 mx-auto w-full max-w-7xl px-6 lg:px-10"
       >
-      
-        <motion.h1
-          variants={fadeUp}
-          className="text-4xl leading-[1.1] text-white sm:text-5xl md:text-7xl"
-          style={{ fontFamily: serif }}
-        >
-          Bienvenido a
-          <br />
-          <span className="italic text-[#c9a96e]">Aroma Perfumería</span>
-        </motion.h1>
+        <div className="max-w-2xl">
+          {/* The etymology, stated once, quietly. This is the only place the
+              Cyrillic appears — it rewards attention instead of demanding it. */}
+          <motion.p
+            variants={fadeUp}
+            className="flex items-center gap-3 text-[10px] uppercase tracking-[0.42em] text-krov-rose"
+          >
+            <span className="h-px w-8 bg-krov-blood" aria-hidden />
+            кровь · sangre
+          </motion.p>
 
-        <motion.p
-          variants={fadeUp}
-          className="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-white/75 md:text-lg"
-          style={{ fontFamily: serif }}
-        >
-          &ldquo;Se necesita un vestido para el cuerpo y un perfume para el alma.&rdquo; — Yves Saint Laurent.
-        </motion.p>
-
-        <motion.div
-          variants={fadeUp}
-          className="mt-11 flex flex-col items-center justify-center gap-4 sm:flex-row"
-        >
-          <Link
-            href="/products"
-            className="group inline-flex items-center gap-2 border border-[#c9a96e] bg-[#c9a96e] px-10 py-4 text-sm uppercase tracking-[0.22em] text-black transition-all duration-500 hover:bg-transparent hover:text-[#c9a96e]"
+          <motion.h1
+            variants={fadeUp}
+            className="mt-7 text-[2.75rem] leading-[0.95] text-krov-bone sm:text-6xl md:text-[5.25rem]"
             style={{ fontFamily: serif }}
           >
-            Explorar catalogo
-            <ArrowRight
-              size={16}
-              aria-hidden
-              className="transition-transform duration-500 group-hover:translate-x-1"
-            />
-          </Link>
-          <Link
-            href="/howtobuy"
-            className="inline-block border border-white/30 px-10 py-4 text-sm uppercase tracking-[0.22em] text-white transition-all duration-500 hover:border-[#c9a96e] hover:text-[#c9a96e]"
-            style={{ fontFamily: serif }}
+            Lo que llevás
+            <br />
+            <span className="italic text-krov-blush">en la sangre</span>
+          </motion.h1>
+
+          <motion.p
+            variants={fadeUp}
+            className="mt-8 max-w-md text-[0.95rem] leading-relaxed text-krov-ash md:text-base"
           >
-            Como Comprar
-          </Link>
-        </motion.div>
+            Nadie recuerda tu ropa. Recuerdan cómo olías. Una fragancia no se
+            usa: se vuelve parte de vos.
+          </motion.p>
+
+          <motion.div
+            variants={fadeUp}
+            className="mt-11 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center"
+          >
+            <Link
+              href="/products"
+              className="krov-btn-primary group justify-center"
+            >
+              Ver la colección
+              <ArrowRight
+                size={14}
+                aria-hidden
+                className="transition-transform duration-500 group-hover:translate-x-1"
+              />
+            </Link>
+            <Link
+              href="/howtobuy"
+              className="krov-btn-outline justify-center"
+            >
+              Cómo comprar
+            </Link>
+          </motion.div>
+        </div>
       </motion.div>
 
-      {/* Scroll cue */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 1 }}
-        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-[#c9a96e]/60"
-      >
-        <ChevronDown size={22} className="animate-bounce" aria-hidden />
-      </motion.div>
+      {/* ── Horizon ─────────────────────────────────────────────────────────
+          A single red line at the foot of the frame. It is the hero's only
+          saturated element and it doubles as the seam into the next section. */}
+      <div
+        aria-hidden
+        className="krov-rule absolute inset-x-0 bottom-0 z-10 h-px"
+      />
     </section>
   );
 }

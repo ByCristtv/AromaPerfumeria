@@ -13,10 +13,8 @@ import {
 } from "@/schemas/wholesale";
 import { WHOLESALE_STATUS_QUERY_KEY } from "@/hooks/useWholesaleStatus";
 
-const SERIF = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
-
 const INPUT_CLS =
-  "w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-[#c9a96e]/60 focus:border-[#c9a96e]/60";
+  "w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-krov-blood/60 focus:border-krov-blood/60";
 
 /**
  * Wholesale account request form. Validated with the shared zod schema; the
@@ -45,7 +43,7 @@ export default function WholesaleApplicationForm() {
         icon: "error",
         title: "No pudimos enviar tu solicitud",
         text: result.message,
-        confirmButtonColor: "#c9a96e",
+        confirmButtonColor: "#ff4d74",
       });
       return;
     }
@@ -57,7 +55,7 @@ export default function WholesaleApplicationForm() {
       icon: "success",
       title: "¡Solicitud enviada!",
       text: result.message,
-      confirmButtonColor: "#c9a96e",
+      confirmButtonColor: "#ff4d74",
     });
     router.push("/profile");
   };
@@ -112,8 +110,7 @@ export default function WholesaleApplicationForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-full bg-[#c9a96e] py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-black transition hover:bg-[#c9a96e]/90 disabled:cursor-not-allowed disabled:opacity-50"
-        style={{ fontFamily: SERIF }}
+        className="w-full rounded-full bg-krov-blood py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-black transition hover:bg-krov-crimson disabled:cursor-not-allowed disabled:opacity-50"
       >
         {isSubmitting ? "Enviando…" : "Enviar solicitud"}
       </button>

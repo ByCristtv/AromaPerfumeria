@@ -1,24 +1,169 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  color-scheme: light;
+/* ═══════════════════════════════════════════════════════════════════════════
+   KROV — DESIGN SYSTEM
+   ═══════════════════════════════════════════════════════════════════════════
+
+   кровь /krof/ — "blood".
+
+   Blood carries DNA. DNA carries identity. A fragrance is worn identity.
+   That chain — BLOOD → DNA → IDENTITY → DESIRE — is the whole brand, and this
+   file is where it becomes a colour, a rhythm and a typeface.
+
+   The palette is derived directly from the official logo files in
+   `public/logos/`: #ff0b55 (the mark's red) and #ffdede (its pale counterpart).
+   Nothing here is invented; it is extracted.
+
+   Rules of the system
+   ───────────────────
+   1. Near-black is the ground, not the decoration. 90% of every screen is
+      void/ink/coal. Darkness is the brand's default state.
+   2. Red is a *pulse*, never a wash. It appears at decision points — the CTA,
+      the focus ring, the live accent — and nowhere else.
+   3. Between the two sits `rose`: red diluted to a readable accent for eyebrow
+      labels and highlighted words. This is what stops the UI from becoming
+      "black page + red buttons".
+   4. Structure is drawn in two weights: `smoke` for decorative rules, `edge`
+      for anything a user can actually operate. Borders are information.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* ── Ground ──────────────────────────────────────────────────────────────
+     Four steps of near-black, each with a trace of plum so the surfaces feel
+     related to the red rather than sitting under it as a neutral slab. */
+  --color-krov-void: #08060a;      /* page — the deepest surface        */
+  --color-krov-ink: #0c090f;       /* sections alternating with void    */
+  --color-krov-coal: #121016;      /* cards, panels                     */
+  --color-krov-graphite: #191420;  /* inputs, elevated / hovered state  */
+  --color-krov-smoke: #322838;     /* decorative hairlines & dividers   */
+  --color-krov-edge: #695b71;      /* INTERACTIVE control boundaries    */
+
+  /* ── Blood ───────────────────────────────────────────────────────────────
+     One hue, three intensities. `blood` is the logo's own red and is reserved
+     for solids, focus and emphasis borders. `rose` is the readable text form.
+     `blush` is the logo's pale — used for display words and hover lifts.
+     `wine` is the deep burgundy used only in gradients and washes. */
+  --color-krov-blood: #ff0b55;
+  --color-krov-crimson: #d40040;   /* pressed / darkened solid          */
+  --color-krov-rose: #ff4d74;      /* accent TEXT — 6.3:1 on void       */
+  --color-krov-blush: #ffdede;     /* pale brand tone, display accents  */
+  --color-krov-wine: #4a0518;      /* burgundy for washes & gradients   */
+
+  /* ── Flesh & bone ────────────────────────────────────────────────────────
+     Text is never pure white. A trace of rose in the off-white keeps the whole
+     interface inside the brand's temperature.
+
+     Every one of these is measured against the void, not eyeballed:
+       bone 16.9:1 · ash 7.0:1 · dust 5.0:1 · rose 6.3:1 · blush 15.9:1
+     `dust` started three shades darker and audited at 3.6:1 — under AA for the
+     product metadata and breadcrumbs it is actually used for. It was raised
+     until it passed rather than being reclassified as decorative.
+
+     `smoke` vs `edge` exists for the same reason. A hairline between two
+     sections is decoration and may sit at 1.4:1; the border of an input or a
+     selectable variant is what tells a low-vision user the control is there at
+     all, and WCAG 1.4.11 puts that at 3:1. `edge` measures 3.1:1. */
+  --color-krov-bone: #f4eef0;      /* primary text — 16.9:1 on void     */
+  --color-krov-ash: #a2969d;       /* secondary text — 7.0:1 on void    */
+  --color-krov-dust: #877c84;      /* tertiary text — 5.0:1 on void     */
+
+  /* Light "niche" used behind product photography, which is shot on white.
+     Keeping the product surface luminous against the dark UI is what makes the
+     bottles read as objects under gallery lighting. */
+  --color-krov-linen: #f6f0f1;
+  --color-krov-linen-deep: #e6dcde;
+
+  /* ── Palette overrides ───────────────────────────────────────────────────
+     DELIBERATE: `white` and `black` are re-pointed at the brand's bone and
+     void. Several hundred `text-white/60`, `bg-black`, `border-white/10`
+     utilities already carry the app's structure correctly; re-pointing the two
+     base tokens rebrands every one of them at once, with no risk of a missed
+     find-and-replace leaving a cold grey patch inside a warm interface.
+     If you need literal #fff, write it as an arbitrary value. */
+  --color-white: #f4eef0;
+  --color-black: #08060a;
+
+  /* ── Motion ──────────────────────────────────────────────────────────────
+     One easing curve for the whole product. Everything decelerates the same
+     way, which is most of what makes an interface feel authored. */
+  --ease-krov: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: "Times New Roman", Times, serif;
+  --color-background: var(--color-krov-void);
+  --color-foreground: var(--color-krov-bone);
+
+  /* Display: a Didone. High stroke contrast, the typographic equivalent of
+     skin against black — this is the single strongest non-colour brand signal.
+     Body/UI: a geometric grotesque that holds up at 10px with wide tracking,
+     which is how nearly every label in this interface is set. */
+  --font-display: var(--font-krov-display), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-krov-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-krov-display), "Cormorant Garamond", Georgia, serif;
+}
+
+:root {
+  --background: var(--color-krov-void);
+  --foreground: var(--color-krov-bone);
+  color-scheme: dark;
+
+  /* Consumed by inline styles and gradients that cannot use a utility class. */
+  --krov-blood: #ff0b55;
+  --krov-rose: #ff4d74;
+  --krov-blush: #ffdede;
+  --krov-wine: #4a0518;
+  --krov-void: #08060a;
+  --krov-bone: #f4eef0;
+  --krov-ash: #a2969d;
+  --krov-smoke: #322838;
+  --krov-edge: #695b71;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-krov-void);
+  color: var(--color-krov-bone);
+  font-family: var(--font-krov-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Selection: the brand's one unmissable flash of red. */
+::selection {
+  background: var(--color-krov-blood);
+  color: var(--color-krov-void);
+}
+
+/* A single, consistent focus signature across the entire app — storefront,
+   checkout and admin. Keyboard users get the same red pulse everywhere. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-krov-blood);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Scrollbar drawn in brand rather than left as OS chrome. */
+* {
+  scrollbar-color: var(--color-krov-smoke) transparent;
+  scrollbar-width: thin;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: var(--color-krov-void);
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--color-krov-smoke);
+  border: 3px solid var(--color-krov-void);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--color-krov-crimson);
 }
 
 /*
@@ -60,12 +205,156 @@ body > * {
 }
 
 @layer components {
+  /* ═══ FORM CONTROLS ══════════════════════════════════════════════════════
+     Inputs are drawn as a lit line on a dark plane rather than as boxes. The
+     field only gains a red edge once it has the user's attention. */
   .input-field-custom {
-    @apply w-full px-4 py-3 bg-[#1a1a1a] border border-[#c9a96e]/30 rounded-lg text-[#ececec] transition-all duration-200 focus:border-[#c9a96e] focus:outline-none focus:ring-1 focus:ring-[#c9a96e];
+    @apply w-full px-4 py-3 bg-krov-graphite border border-krov-edge rounded-none text-krov-bone placeholder:text-krov-dust transition-colors duration-200 focus:border-krov-blood focus:outline-none;
+  }
+
+  /* ═══ BUTTONS ════════════════════════════════════════════════════════════
+     Squared, wide-tracked, uppercase. No radius anywhere: the sharp edge is
+     part of the brand's severity, and it separates KROV from the rounded
+     "friendly commerce" default. */
+  /*
+     The shared base is a comma selector, NOT `@apply krov-btn` inside each
+     variant: Tailwind v4's `@apply` resolves only generated utilities, so a
+     custom class applying another custom class from the same layer fails the
+     build with "Cannot apply unknown utility class".
+  */
+  .krov-btn,
+  .krov-btn-primary,
+  .krov-btn-outline,
+  .krov-btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-3.5 text-[11px] font-medium uppercase tracking-[0.24em] transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-40;
+    font-family: var(--font-krov-sans), ui-sans-serif, system-ui, sans-serif;
+  }
+
+  /* Solid red with near-black text: 5.2:1, and the only full-bleed red in the
+     system. White-on-red would only reach 3.9:1 — this is why the CTA is dark. */
+  .krov-btn-primary {
+    @apply bg-krov-blood text-krov-void hover:bg-krov-blush;
+  }
+
+  .krov-btn-outline {
+    @apply border border-krov-edge text-krov-bone hover:border-krov-blood hover:text-krov-rose;
+  }
+
+  .krov-btn-ghost {
+    @apply text-krov-ash hover:text-krov-bone;
+  }
+
+  /* ═══ SURFACES ═══════════════════════════════════════════════════════════ */
+  .krov-card {
+    @apply relative border border-krov-smoke bg-krov-coal transition-colors duration-300;
+  }
+
+  /* ═══ EDITORIAL TYPE ═════════════════════════════════════════════════════ */
+  .krov-display {
+    font-family: var(--font-krov-display), "Cormorant Garamond", Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  /* The small-caps label that appears above almost every section. Its wide
+     tracking is the interface's connective tissue — it repeats at every scale
+     and is half of what makes unrelated pages feel like one brand. */
+  .krov-eyebrow {
+    @apply text-[10px] uppercase tracking-[0.42em] text-krov-rose;
+    font-family: var(--font-krov-sans), ui-sans-serif, system-ui, sans-serif;
   }
 }
 
 @layer utilities {
+  /* ═══ THE MARK'S VISUAL LANGUAGE ═════════════════════════════════════════
+     The logo is built from two circular forms that overlap. That idea — two
+     things becoming one — is expressed here as light rather than as a repeated
+     copy of the symbol: soft circular blooms that bleed into each other behind
+     content. Never draw the logo in CSS; suggest its geometry instead. */
+
+  /* A single circular bloom of red, sized and positioned by the caller. */
+  .krov-aura {
+    background-image: radial-gradient(
+      circle at center,
+      color-mix(in srgb, var(--color-krov-blood) 55%, transparent) 0%,
+      transparent 68%
+    );
+    filter: blur(90px);
+  }
+
+  .krov-aura-wine {
+    background-image: radial-gradient(
+      circle at center,
+      color-mix(in srgb, var(--color-krov-wine) 90%, transparent) 0%,
+      transparent 70%
+    );
+    filter: blur(80px);
+  }
+
+  /* Hairline that fades in from nothing and back out — the divider used
+     between every major section. A plain 1px border reads as a table; this
+     reads as a printed rule. */
+  .krov-rule {
+    background-image: linear-gradient(
+      to right,
+      transparent,
+      color-mix(in srgb, var(--color-krov-blood) 45%, transparent),
+      transparent
+    );
+  }
+
+  /* ═══ GRAIN ══════════════════════════════════════════════════════════════
+     Large flat black planes look like an unfinished template on an OLED phone.
+     A 3% fractal-noise overlay gives them the tooth of printed matte stock —
+     the difference between "dark theme" and "art-directed". Rendered once as an
+     inline SVG filter; no image request, no animation, no layout cost. */
+  .krov-grain {
+    position: relative;
+    isolation: isolate;
+  }
+  .krov-grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ═══ THE PULSE ══════════════════════════════════════════════════════════
+     One heartbeat, used sparingly — a live-stock dot, the cart badge. Slow
+     enough to register as breathing rather than as a notification demanding
+     attention. */
+  @keyframes krovPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.45; transform: scale(0.86); }
+  }
+  .krov-pulse {
+    animation: krovPulse 2.4s var(--ease-krov) infinite;
+  }
+
+  /* Underline that draws itself from the left on hover. Used on every text
+     link in the navigation and footer. */
+  .krov-underline {
+    background-image: linear-gradient(var(--color-krov-blood), var(--color-krov-blood));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1px;
+    transition: background-size 400ms var(--ease-krov);
+  }
+  @media (hover: hover) {
+    .krov-underline:hover {
+      background-size: 100% 1px;
+    }
+  }
+
+  /* Letterspacing that opens on hover — the wordmark's own micro-interaction. */
+  .krov-track {
+    transition: letter-spacing 600ms var(--ease-krov);
+  }
+
   /*
    * Minimal entrance for product cards & grids: opacity only, runs immediately
    * on mount (never scroll-triggered), once. No movement/scale/blur — keeps
@@ -86,6 +375,9 @@ body > * {
 
   @media (prefers-reduced-motion: reduce) {
     .animate-fadeIn {
+      animation: none;
+    }
+    .krov-pulse {
       animation: none;
     }
   }
@@ -127,8 +419,8 @@ body > * {
   .reveal-d4 { transition-delay: 280ms; }
 
   /*
-   * Gold shimmer for empty media slots. Was an `Infinity`-repeat Framer
-   * animation running a rAF loop per placeholder — with the mobile flow's empty
+   * Shimmer for empty media slots. Was an `Infinity`-repeat Framer animation
+   * running a rAF loop per placeholder — with the mobile flow's empty
    * placeholders that meant a dozen concurrent JS loops. As a CSS animation on
    * `transform` alone it is compositor-driven and browsers throttle it when
    * off-screen.
@@ -205,6 +497,9 @@ body > * {
     .connector-dot {
       opacity: 1;
       transform: none;
+      transition: none;
+    }
+    .krov-underline {
       transition: none;
     }
   }

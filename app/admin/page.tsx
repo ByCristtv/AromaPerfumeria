@@ -90,7 +90,7 @@ export default function AdminPage() {
       <AdminPageHeader
         showBack={false}
         eyebrow="Panel de Administración"
-        title="Aroma Perfumería"
+        title="KROV Perfumería"
         description="Gestiona tu tienda de perfumes desde un solo lugar."
       />
 
@@ -107,19 +107,19 @@ export default function AdminPage() {
             }}
           >
             <Link href={href} className="group block h-full">
-              <article className="flex h-full flex-col rounded-2xl border border-[#c9a96e]/20 bg-[#141414] p-7 shadow-[0_18px_64px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-[#c9a96e]/60 hover:shadow-[0_0_28px_rgba(201,169,110,0.12)]">
-                <span className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-xl border border-[#c9a96e]/25 bg-[#c9a96e]/[0.06] text-[#c9a96e] transition-colors duration-300 group-hover:border-[#c9a96e]/60 group-hover:bg-[#c9a96e]/10">
+              <article className="flex h-full flex-col rounded-none border border-krov-smoke bg-krov-graphite p-7 shadow-[0_18px_64px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-krov-blood/60 hover:shadow-[0_0_28px_rgba(255,11,85,0.12)]">
+                <span className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-none border border-krov-smoke bg-krov-blood/[0.06] text-krov-rose transition-colors duration-300 group-hover:border-krov-blood/60 group-hover:bg-krov-blood/10">
                   <Icon size={26} strokeWidth={1.5} aria-hidden />
                 </span>
 
                 <h3
-                  className="mb-3 text-xl text-[#ececec] transition-colors group-hover:text-[#c9a96e]"
+                  className="mb-3 text-xl text-krov-bone transition-colors group-hover:text-krov-rose"
                   style={{ fontFamily: adminSerif }}
                 >
                   {title}
                 </h3>
 
-                <p className="text-sm leading-relaxed text-[#a5a5a5]">
+                <p className="text-sm leading-relaxed text-krov-ash">
                   {description}
                 </p>
               </article>

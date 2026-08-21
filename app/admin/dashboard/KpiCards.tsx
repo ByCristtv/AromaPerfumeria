@@ -19,7 +19,7 @@ export default function KpiCards({ since }: Props) {
 
   if (isError) {
     return (
-      <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
+      <div className="rounded-none border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
         No pudimos cargar los KPIs:{" "}
         {error instanceof Error ? error.message : "error desconocido"}
       </div>
@@ -52,12 +52,12 @@ function Card({
   loading?: boolean;
 }) {
   return (
-    <div className="rounded-2xl border border-[#c9a96e]/20 bg-[#1a1a1a] p-4 sm:p-5">
-      <p className="text-[11px] uppercase tracking-wider text-[#a5a5a5]">{label}</p>
+    <div className="rounded-none border border-krov-smoke bg-krov-graphite p-4 sm:p-5">
+      <p className="text-[11px] uppercase tracking-wider text-krov-ash">{label}</p>
       {loading ? (
-        <div className="mt-2 h-7 w-2/3 bg-[#c9a96e]/10 rounded animate-pulse" />
+        <div className="mt-2 h-7 w-2/3 bg-krov-blood/10 rounded-none animate-pulse" />
       ) : (
-        <p className="mt-1 text-2xl font-bold text-[#ececec] tabular-nums">
+        <p className="mt-1 text-2xl font-bold text-krov-bone tabular-nums">
           {value}
         </p>
       )}

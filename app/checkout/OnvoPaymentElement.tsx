@@ -135,7 +135,7 @@ export default function OnvoPaymentElement({
       />
 
       {status === "error" ? (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+        <div className="rounded-none border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
           <p className="font-medium mb-1">No pudimos cargar el pago</p>
           <p className="leading-relaxed">
             Hubo un problema al iniciar el formulario de pago. Recarga la página
@@ -147,11 +147,11 @@ export default function OnvoPaymentElement({
           {/* SDK mounts every card field inside this container. */}
           <div
             id={CONTAINER_ID}
-            className="min-h-[220px] rounded-lg border border-gray-200 bg-white p-3 sm:p-4"
+            className="min-h-[220px] rounded-none border border-krov-smoke bg-krov-coal p-3 sm:p-4"
           />
 
           {status === "loading" && (
-            <p className="text-xs text-gray-500 text-center">
+            <p className="text-xs text-krov-dust text-center">
               Cargando pago seguro…
             </p>
           )}
@@ -160,7 +160,7 @@ export default function OnvoPaymentElement({
             type="button"
             onClick={handleSubmit}
             disabled={status !== "ready"}
-            className="w-full rounded-lg bg-black text-white py-3 text-sm font-medium hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded-none bg-krov-blood text-krov-void py-3 text-sm font-medium hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {status === "submitting" ? "Procesando…" : "Completar compra"}
           </button>

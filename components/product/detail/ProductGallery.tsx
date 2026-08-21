@@ -21,6 +21,13 @@ const PLACEHOLDER = "/placeholder.png";
  * click. Images belong to the parent product — variant selection does NOT
  * change them.
  *
+ * The plate stays LIGHT on the dark page, and that is the point. Product
+ * photography is shot on white, so a dark frame would either show a white
+ * rectangle or require every asset to be re-cut. Holding one lit surface inside
+ * a black page also puts the bottle under gallery lighting, which is a better
+ * result than the old white page ever produced — there the plate and the page
+ * were the same colour and the object had no edge at all.
+ *
  * The main image is deliberately NOT wrapped in any entrance animation. It
  * previously lived inside two nested Framer Motion nodes that started at
  * `opacity: 0`, so even though `next/image priority` preloaded the bytes early,
@@ -57,39 +64,19 @@ export default function ProductGallery({
 
   return (
     <div className="md:sticky md:top-28">
-      {/* Main frame */}
       <div className="relative">
-        {/* Gold halo behind the bottle */}
+        {/* The bloom behind the plate — the light the bottle is standing in. */}
         <div
           aria-hidden
-          className="absolute inset-0 -m-6 rounded-4xl opacity-60 blur-2xl"
-          style={{
-            background:
-              "radial-gradient(circle at 50% 60%, rgba(201,169,110,0.28), transparent 70%)",
-          }}
+          className="krov-aura absolute inset-0 -m-8 opacity-[0.22]"
         />
 
         <div
           ref={frameRef}
           onMouseMove={onMove}
           onMouseLeave={() => setZoom((z) => ({ ...z, on: false }))}
-          className="group relative aspect-square overflow-hidden rounded-[1.75rem] border border-black/5 bg-linear-to-b from-white via-white to-[#fafaf7] shadow-[0_30px_80px_-30px_rgba(0,0,0,0.25)]"
+          className="group relative aspect-square overflow-hidden bg-gradient-to-b from-krov-linen via-krov-linen to-krov-linen-deep"
         >
-          {/* Gold animated border (hover only) */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-[1.75rem] opacity-0 transition-opacity duration-700 group-hover:opacity-100"
-            style={{
-              padding: "1px",
-              background:
-                "linear-gradient(135deg, rgba(201,169,110,0.0), rgba(201,169,110,0.55), rgba(201,169,110,0.0))",
-              WebkitMask:
-                "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
-              WebkitMaskComposite: "xor",
-              maskComposite: "exclude",
-            }}
-          />
-
           <Image
             key={active.url}
             src={active.url}
@@ -97,24 +84,26 @@ export default function ProductGallery({
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
             priority
-            className="object-contain p-8 transition-transform duration-500 ease-out"
+            className="object-contain p-10 transition-transform duration-500 ease-out"
             style={{
               transform: zoom.on ? "scale(1.6)" : "scale(1)",
               transformOrigin: `${zoom.x}% ${zoom.y}%`,
             }}
           />
 
-          {/* Corner ornaments */}
-          <Corner className="top-4 left-4" />
-          <Corner className="top-4 right-4 rotate-90" />
-          <Corner className="bottom-4 right-4 rotate-180" />
-          <Corner className="bottom-4 left-4 -rotate-90" />
+          {/* Registration marks at the corners — a printer's crop mark rather
+              than a decorative flourish. They frame the object and reinforce
+              that this is an editorial plate, not a UI card. */}
+          <Corner className="left-5 top-5" />
+          <Corner className="right-5 top-5 rotate-90" />
+          <Corner className="bottom-5 right-5 rotate-180" />
+          <Corner className="bottom-5 left-5 -rotate-90" />
         </div>
       </div>
 
       {/* Thumbnails */}
       {safeImages.length > 1 && (
-        <div className="mt-5 flex gap-3 overflow-x-auto pb-1">
+        <div className="mt-4 flex gap-3 overflow-x-auto pb-1">
           {safeImages.map((img, i) => {
             const isActive = i === activeIdx;
             return (
@@ -122,23 +111,20 @@ export default function ProductGallery({
                 key={img.url + i}
                 type="button"
                 onClick={() => setActiveIdx(i)}
-                aria-label={`Imagen ${i + 1}`}
-                className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-white transition-transform duration-300 hover:-translate-y-0.5"
+                aria-label={`Ver imagen ${i + 1} de ${safeImages.length}`}
+                aria-pressed={isActive}
+                className={`relative h-20 w-20 shrink-0 overflow-hidden border bg-krov-linen transition-colors duration-300 ${
+                  isActive
+                    ? "border-krov-blood"
+                    : "border-transparent opacity-60 hover:opacity-100"
+                }`}
               >
-                <span
-                  className="absolute inset-0 rounded-xl transition-all duration-300"
-                  style={{
-                    boxShadow: isActive
-                      ? "0 0 0 1.5px #c9a96e, 0 6px 18px -8px rgba(201,169,110,0.6)"
-                      : "0 0 0 1px rgba(0,0,0,0.08)",
-                  }}
-                />
                 <Image
                   src={img.url}
                   alt={img.alt_text || `${productName} ${i + 1}`}
                   fill
                   sizes="80px"
-                  className="object-contain p-1.5"
+                  className="object-contain p-2"
                 />
               </button>
             );
@@ -153,12 +139,7 @@ function Corner({ className = "" }: { className?: string }) {
   return (
     <span
       aria-hidden
-      className={`pointer-events-none absolute h-5 w-5 ${className}`}
-      style={{
-        borderTop: "1px solid #c9a96e",
-        borderLeft: "1px solid #c9a96e",
-        opacity: 0.55,
-      }}
+      className={`pointer-events-none absolute h-4 w-4 border-l border-t border-krov-void/25 ${className}`}
     />
   );
 }

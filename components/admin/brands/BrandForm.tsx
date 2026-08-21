@@ -91,12 +91,12 @@ export default function BrandForm({ brand, onSuccess }: BrandFormProps = {}) {
   };
 
   return (
-    <div className="mx-auto max-w-2xl rounded-2xl border border-[#c9a96e]/30 bg-black p-8 shadow-2xl">
+    <div className="mx-auto max-w-2xl rounded-none border border-krov-blood/30 bg-black p-8 shadow-2xl">
       <div className="mb-8 text-center">
-        <h2 className="text-2xl font-bold text-[#ececec]">
+        <h2 className="text-2xl font-bold text-krov-bone">
           {isEdit ? "Editar Marca" : "Nueva Marca"}
         </h2>
-        <p className="text-[#a5a5a5]">
+        <p className="text-krov-ash">
           {isEdit
             ? "Actualiza los datos de la marca."
             : "Agrega una marca al catálogo."}
@@ -106,7 +106,7 @@ export default function BrandForm({ brand, onSuccess }: BrandFormProps = {}) {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase text-[#c9a96e]">
+            <label className="text-xs font-bold uppercase text-krov-rose">
               Nombre
             </label>
             <input
@@ -119,7 +119,7 @@ export default function BrandForm({ brand, onSuccess }: BrandFormProps = {}) {
             />
           </div>
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase text-[#c9a96e]">
+            <label className="text-xs font-bold uppercase text-krov-rose">
               Slug
             </label>
             <input
@@ -132,14 +132,14 @@ export default function BrandForm({ brand, onSuccess }: BrandFormProps = {}) {
               className="brand-input font-mono"
               placeholder="chanel"
             />
-            <p className="text-[11px] text-[#a5a5a5]">
+            <p className="text-[11px] text-krov-ash">
               Se genera del nombre. Debe ser único.
             </p>
           </div>
         </div>
 
         <div className="space-y-2">
-          <label className="text-xs font-bold uppercase text-[#c9a96e]">
+          <label className="text-xs font-bold uppercase text-krov-rose">
             Logo (URL)
           </label>
           <input
@@ -152,7 +152,7 @@ export default function BrandForm({ brand, onSuccess }: BrandFormProps = {}) {
         </div>
 
         <div className="space-y-2">
-          <label className="text-xs font-bold uppercase text-[#c9a96e]">
+          <label className="text-xs font-bold uppercase text-krov-rose">
             Descripción
           </label>
           <textarea
@@ -164,12 +164,12 @@ export default function BrandForm({ brand, onSuccess }: BrandFormProps = {}) {
           />
         </div>
 
-        <label className="flex cursor-pointer items-center gap-2 text-[#ececec]">
+        <label className="flex cursor-pointer items-center gap-2 text-krov-bone">
           <input
             type="checkbox"
             checked={isActive}
             onChange={(e) => setIsActive(e.target.checked)}
-            className="accent-[#c9a96e]"
+            className="accent-krov-blood"
           />
           Marca activa (visible en la tienda)
         </label>
@@ -177,7 +177,7 @@ export default function BrandForm({ brand, onSuccess }: BrandFormProps = {}) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-[#c9a96e] py-4 font-black uppercase text-black transition-colors hover:bg-[#b8a060] disabled:opacity-50"
+          className="w-full rounded-none bg-krov-blood py-4 font-black uppercase text-black transition-colors hover:bg-krov-crimson disabled:opacity-50"
         >
           {loading
             ? "Guardando…"
@@ -191,16 +191,16 @@ export default function BrandForm({ brand, onSuccess }: BrandFormProps = {}) {
         .brand-input {
           width: 100%;
           padding: 0.75rem 1rem;
-          background-color: #1a1a1a;
-          border: 1px solid rgba(201, 169, 110, 0.3);
+          background-color: #191420;
+          border: 1px solid rgba(255,11,85, 0.3);
           border-radius: 0.5rem;
-          color: #ececec;
+          color: #f4eef0;
           transition: all 0.2s;
         }
         .brand-input:focus {
-          border-color: #c9a96e;
+          border-color: #ff4d74;
           outline: none;
-          box-shadow: 0 0 0 1px #c9a96e;
+          box-shadow: 0 0 0 1px #ff4d74;
         }
       `}</style>
     </div>

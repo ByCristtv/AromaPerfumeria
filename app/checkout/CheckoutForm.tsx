@@ -260,7 +260,7 @@ export default function CheckoutForm({
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-lg bg-black text-white py-3 text-sm font-medium hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full rounded-none bg-krov-blood text-krov-void py-3 text-sm font-medium hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isSubmitting ? "Procesando…" : "Continuar al pago"}
       </button>
@@ -293,15 +293,15 @@ function Section({
 
   return (
     <section
-      className={`rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 transform transition-opacity duration-300 ease-out ${
+      className={`rounded-none border border-krov-smoke bg-krov-coal p-5 sm:p-6 transform transition-opacity duration-300 ease-out ${
         visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
       }`}
       style={{ transitionDelay: `${appearDelay}ms` }}
     >
       <header className="mb-4">
-        <h3 className="text-base font-semibold text-gray-900">{title}</h3>
+        <h3 className="text-base font-semibold text-krov-bone">{title}</h3>
         {description && (
-          <p className="text-xs text-gray-500 mt-0.5">{description}</p>
+          <p className="text-xs text-krov-dust mt-0.5">{description}</p>
         )}
       </header>
       <div className="space-y-4">{children}</div>
@@ -331,13 +331,13 @@ function Field({
       <div className="flex items-baseline justify-between mb-1.5">
         <label
           htmlFor={id}
-          className="text-sm font-medium text-gray-900"
+          className="text-sm font-medium text-krov-bone"
         >
           {label}
           {required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
         {hint && (
-          <span className="text-xs text-gray-400">{hint}</span>
+          <span className="text-xs text-krov-dust">{hint}</span>
         )}
       </div>
       {/* Inject id + aria props into the child input/select/textarea */}
@@ -345,7 +345,7 @@ function Field({
       {error && (
         <p
           id={`${id}-error`}
-          className="mt-1 text-xs text-red-600"
+          className="mt-1 text-xs text-red-400"
         >
           {error}
         </p>
@@ -374,12 +374,12 @@ function injectFieldProps(
 
 function inputClass(hasError: boolean) {
   return [
-    "w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-gray-900",
-    "placeholder:text-gray-400",
+    "w-full rounded-none border bg-krov-coal px-3 py-2.5 text-sm text-krov-bone",
+    "placeholder:text-krov-dust",
     "focus:outline-none focus:ring-2 focus:ring-offset-0",
     hasError
-      ? "border-red-300 focus:ring-red-200"
-      : "border-gray-300 focus:ring-gray-200",
-    "disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed",
+      ? "border-red-500/50 focus:ring-red-500/40"
+      : "border-krov-edge focus:ring-krov-blood/40",
+    "disabled:bg-krov-void disabled:text-krov-dust disabled:cursor-not-allowed",
   ].join(" ");
 }

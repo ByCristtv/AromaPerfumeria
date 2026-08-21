@@ -3,56 +3,64 @@ import { ArrowRight } from "lucide-react";
 import { getProductsPage } from "@/features/products/getProducts";
 import ProductGrid from "@/components/catalog/ProductGrid";
 
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 /**
  * Homepage teaser: the latest arrivals (server-fetched). Creates desire and
  * funnels visitors into the full `/products` showroom. Renders nothing when
  * the catalog is empty.
+ *
+ * The header is left-aligned against a rule with the count on the right, the
+ * way a magazine opens a section — a centred "Selección destacada" block over a
+ * grid is the single most recognisable e-commerce template shape there is.
  */
 export default async function FeaturedCollection() {
   const { items } = await getProductsPage(0, 8);
   if (items.length === 0) return null;
 
   return (
-    <section className="bg-[#0a0a0a] px-5 py-24 sm:px-8 md:py-32">
+    <section
+      aria-labelledby="recien-llegados"
+      className="bg-krov-ink px-5 py-24 sm:px-8 md:py-32"
+    >
       <div className="mx-auto max-w-7xl">
-        <header className="mb-16 text-center">
-          <p
-            className="mb-5 text-xs uppercase tracking-[0.4em] text-[#c9a96e]"
-            style={{ fontFamily: serif }}
-          >
-            Selección destacada
-          </p>
-          <h2
-            className="text-3xl leading-tight text-white md:text-5xl"
-            style={{ fontFamily: serif }}
-          >
-            Recién <span className="italic text-[#c9a96e]">llegados</span>
-          </h2>
-          <p
-            className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-white/55 md:text-lg"
-            style={{ fontFamily: serif }}
-          >
-            Las incorporaciones más recientes a nuestra colección, listas para
-            convertirse en tu próxima firma olfativa.
-          </p>
+        <header className="mb-12 md:mb-16">
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <div>
+              <p className="krov-eyebrow">Recién llegados</p>
+              <h2
+                id="recien-llegados"
+                className="mt-5 text-3xl leading-tight text-krov-bone md:text-5xl"
+                style={{ fontFamily: serif }}
+              >
+                Lo último que <span className="italic text-krov-blush">entró</span>
+              </h2>
+            </div>
+
+            {/* Desktop-only secondary route out. On mobile the same action sits
+                below the grid, where the thumb already is. */}
+            <Link
+              href="/products"
+              className="group hidden items-center gap-2 text-[10px] uppercase tracking-[0.24em] text-krov-ash transition-colors duration-300 hover:text-krov-bone sm:inline-flex"
+            >
+              <span className="krov-underline">Ver la colección</span>
+              <ArrowRight
+                size={13}
+                aria-hidden
+                className="transition-transform duration-500 group-hover:translate-x-1"
+              />
+            </Link>
+          </div>
+
+          <div className="krov-rule mt-8 h-px w-full" />
         </header>
 
         <ProductGrid products={items} />
 
-        <div className="mt-16 flex justify-center">
-          <Link
-            href="/products"
-            className="group inline-flex items-center gap-2 border border-[#c9a96e] px-10 py-4 text-sm uppercase tracking-[0.22em] text-[#c9a96e] transition-all duration-500 hover:bg-[#c9a96e] hover:text-black"
-            style={{ fontFamily: serif }}
-          >
-            Ver todo el catálogo
-            <ArrowRight
-              size={16}
-              aria-hidden
-              className="transition-transform duration-500 group-hover:translate-x-1"
-            />
+        <div className="mt-14 flex justify-center sm:hidden">
+          <Link href="/products" className="krov-btn-outline w-full justify-center">
+            Ver la colección
+            <ArrowRight size={14} aria-hidden />
           </Link>
         </div>
       </div>

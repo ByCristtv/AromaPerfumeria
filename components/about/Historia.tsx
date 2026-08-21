@@ -1,18 +1,17 @@
 import Image from "next/image";
 
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 export default function Historia() {
   return (
     <section
       aria-labelledby="historia-title"
-      className="bg-[#0a0a0a] py-24 md:py-32 px-6"
+      className="bg-krov-void py-24 md:py-32 px-6"
     >
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24 items-center">
         <div>
           <p
-            className="text-[#c9a96e] tracking-[0.4em] text-xs mb-6 uppercase"
-            style={{ fontFamily: serif }}
+            className="text-krov-rose tracking-[0.4em] text-xs mb-6 uppercase"
           >
             Nuestra historia
           </p>
@@ -22,14 +21,14 @@ export default function Historia() {
             style={{ fontFamily: serif }}
           >
             Una pasión convertida en
-            <span className="italic text-[#c9a96e]"> experiencia</span>
+            <span className="italic text-krov-rose"> experiencia</span>
           </h2>
           <div
             className="space-y-5 text-white/75 text-base md:text-lg leading-relaxed"
             style={{ fontFamily: serif }}
           >
             <p>
-              Aroma Perfumería nació de una necesidad y de un sueño: dar acceso
+              KROV Perfumería nació de una necesidad y de un sueño: dar acceso
               en Costa Rica a las fragancias más codiciadas del mundo. Lo que
               comenzó como una búsqueda personal por casas perfumistas
               exclusivas se transformó en una curaduría dedicada a quienes
@@ -42,10 +41,9 @@ export default function Historia() {
             </p>
           </div>
 
-          <div className="mt-12 pl-6 border-l border-[#c9a96e]/40">
+          <div className="mt-12 pl-6 border-l border-krov-blood/40">
             <p
-              className="text-[#c9a96e] tracking-[0.3em] text-xs mb-3 uppercase"
-              style={{ fontFamily: serif }}
+              className="text-krov-rose tracking-[0.3em] text-xs mb-3 uppercase"
             >
               Nuestra filosofía
             </p>
@@ -66,7 +64,7 @@ export default function Historia() {
             className="object-cover"
             sizes="(min-width: 768px) 50vw, 100vw"
           />
-          <div className="absolute inset-0 ring-1 ring-inset ring-[#c9a96e]/20" />
+          <div className="absolute inset-0 ring-1 ring-inset ring-krov-blood/20" />
         </div>
       </div>
     </section>

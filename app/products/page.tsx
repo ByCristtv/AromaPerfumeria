@@ -12,13 +12,11 @@ import ProductGrid from "@/components/catalog/ProductGrid";
 import CatalogPagination from "@/components/catalog/CatalogPagination";
 import CatalogEmptyState from "@/components/catalog/CatalogEmptyState";
 
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
-
 export const metadata: Metadata = {
   alternates: { canonical: "/products" },
   title: "Catálogo",
   description:
-    "Explora la colección completa de Aroma Perfumería: perfumes nicho, diseñadores de lujo y decants originales. Filtra por categoría, tipo y precio.",
+    "Explora la colección completa de KROV Perfumería: perfumes nicho, diseñadores de lujo y decants originales. Filtra por categoría, tipo y precio.",
 };
 
 interface ProductsPageProps {
@@ -44,10 +42,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   );
 
   return (
-    <div className="relative min-h-screen bg-[#0a0a0a]">
+    <div className="relative min-h-screen bg-krov-void">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0c0b0a] via-[#0a0a0a] to-[#080808]"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-krov-ink via-krov-void to-krov-void"
       />
 
       <div className="relative">
@@ -60,12 +58,14 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             <CatalogEmptyState filtered={filtered} />
           ) : (
             <>
-              <p
-                className="mb-8 mt-10 text-xs uppercase tracking-[0.2em] text-white/40"
-                style={{ fontFamily: serif }}
-              >
-                Mostrando {from}–{to} de {result.totalProducts}
-              </p>
+              {/* Result count doubles as the rule that closes the toolbar and
+                  opens the grid, so the page has one seam here instead of two. */}
+              <div className="mb-8 mt-10 flex items-center gap-5">
+                <p className="shrink-0 text-[10px] uppercase tracking-[0.24em] text-krov-dust">
+                  {from}–{to} de {result.totalProducts}
+                </p>
+                <span aria-hidden className="krov-rule h-px flex-1" />
+              </div>
 
               <ProductGrid products={result.products} />
 

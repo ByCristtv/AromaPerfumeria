@@ -40,7 +40,7 @@ export default function BrandsTable({
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#dc2626",
-      cancelButtonColor: "#6c757d",
+      cancelButtonColor: "#2a2130",
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
     });
@@ -69,9 +69,9 @@ export default function BrandsTable({
 
   return (
     <div className="space-y-6">
-      <div className="overflow-x-auto rounded-2xl border border-[#c9a96e]/30 bg-black shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
-        <table className="min-w-full text-left text-sm text-[#ececec]">
-          <thead className="bg-[#1a1a1a] text-xs uppercase tracking-wider text-[#c9a96e]">
+      <div className="overflow-x-auto rounded-none border border-krov-blood/30 bg-black shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
+        <table className="min-w-full text-left text-sm text-krov-bone">
+          <thead className="bg-krov-graphite text-xs uppercase tracking-wider text-krov-rose">
             <tr>
               <th className="px-5 py-3">Marca</th>
               <th className="px-5 py-3">Slug</th>
@@ -84,13 +84,13 @@ export default function BrandsTable({
             {rows.map((brand) => (
               <tr
                 key={brand.id}
-                className="border-t border-[#c9a96e]/10 transition-colors hover:bg-[#1a1a1a]/60"
+                className="border-t border-krov-smoke/70 transition-colors hover:bg-krov-graphite/60"
               >
                 <td className="px-5 py-3 font-medium">{brand.name}</td>
-                <td className="px-5 py-3 font-mono text-xs text-[#a5a5a5]">
+                <td className="px-5 py-3 font-mono text-xs text-krov-ash">
                   {brand.slug}
                 </td>
-                <td className="max-w-xs truncate px-5 py-3 text-[#a5a5a5]">
+                <td className="max-w-xs truncate px-5 py-3 text-krov-ash">
                   {brand.description || "—"}
                 </td>
                 <td className="px-5 py-3">
@@ -98,7 +98,7 @@ export default function BrandsTable({
                     className={
                       brand.is_active
                         ? "text-emerald-400"
-                        : "italic text-[#a5a5a5]"
+                        : "italic text-krov-ash"
                     }
                   >
                     {brand.is_active ? "Activa" : "Inactiva"}
@@ -108,14 +108,14 @@ export default function BrandsTable({
                   <button
                     type="button"
                     onClick={() => onEdit(brand)}
-                    className="mr-2 rounded-lg bg-blue-950 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-blue-800"
+                    className="mr-2 rounded-none bg-blue-950 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-blue-800"
                   >
                     Editar
                   </button>
                   <button
                     type="button"
                     onClick={() => handleDelete(brand)}
-                    className="rounded-lg bg-red-900 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-red-700"
+                    className="rounded-none bg-red-900 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-red-700"
                   >
                     Eliminar
                   </button>
@@ -156,9 +156,9 @@ function Pagination({
   if (totalPages <= 1) return null;
 
   const baseBtn =
-    "flex h-10 min-w-10 items-center justify-center rounded-lg border px-3 text-sm transition-all duration-300";
+    "flex h-10 min-w-10 items-center justify-center rounded-none border px-3 text-sm transition-all duration-300";
   const idle =
-    "border-[#c9a96e]/20 text-[#a5a5a5] hover:border-[#c9a96e]/60 hover:text-[#c9a96e]";
+    "border-krov-smoke text-krov-ash hover:border-krov-blood/60 hover:text-krov-rose";
   const disabled = "cursor-not-allowed border-white/5 text-white/20";
 
   const hasPrev = page > 1;
@@ -193,7 +193,7 @@ function Pagination({
           <span
             key={p}
             aria-current="page"
-            className={`${baseBtn} border-[#c9a96e] bg-[#c9a96e] font-semibold text-black`}
+            className={`${baseBtn} border-krov-blood bg-krov-blood font-semibold text-black`}
           >
             {p}
           </span>

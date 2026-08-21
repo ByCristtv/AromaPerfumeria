@@ -48,7 +48,7 @@ export default async function AdminStockPage({ searchParams }: AdminStockPagePro
 
       <StockToolbar initialSearch={search ?? ""} />
 
-      <p className="mb-4 mt-6 text-xs uppercase tracking-[0.2em] text-[#a5a5a5]">
+      <p className="mb-4 mt-6 text-xs uppercase tracking-[0.2em] text-krov-ash">
         {total === 0
           ? "Sin movimientos"
           : `Mostrando ${from}–${to} de ${total}`}

@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { useAuthUser } from "@/hooks/useAuthUser";
+import KrovLogo from "@/components/brand/KrovLogo";
 
-const SERIF = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+const SERIF = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 const INPUT_CLS =
-  "w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#c9a96e]/50";
+  "w-full border border-krov-edge bg-krov-graphite px-4 py-3 text-sm text-krov-bone placeholder:text-krov-dust transition-colors focus:border-krov-blood focus:outline-none";
 
 /**
  * /login — authentication only.
@@ -58,29 +59,29 @@ export default function LoginView() {
   };
 
   return (
-    <section className="min-h-screen pt-28 pb-10 px-4 bg-[radial-gradient(circle_at_10%_10%,#222_0%,#111_45%,#000_100%)]">
-      <div className="max-w-md mx-auto">
-        <div className="rounded-2xl border border-[#c9a96e]/35 bg-black/65 backdrop-blur-md shadow-[0_16px_60px_rgba(0,0,0,0.45)] p-6 sm:p-8">
-          <div className="text-center mb-8">
-            <div className="inline-flex flex-col leading-none select-none">
-              <span
-                className="text-white tracking-[0.35em] text-3xl sm:text-4xl font-light"
-                style={{ fontFamily: SERIF }}
-              >
-                AROMA
-              </span>
-              <span
-                className="text-[#c9a96e] text-[11px] tracking-[0.25em] font-light italic mt-1"
-                style={{ fontFamily: SERIF }}
-              >
-                Luxury Fragrance
-              </span>
-            </div>
-            <h1 className="text-white text-xl sm:text-2xl font-semibold mt-6">
-              Iniciar sesión
+    <section className="relative min-h-screen overflow-hidden bg-krov-void px-5 pb-16 pt-28">
+      <div
+        aria-hidden
+        className="krov-aura-wine pointer-events-none absolute -top-32 left-1/2 h-[30rem] w-[30rem] -translate-x-1/2 opacity-70"
+      />
+      <div className="relative mx-auto max-w-md">
+        <div className="border border-krov-smoke bg-krov-coal p-7 sm:p-9">
+          <div className="mb-9 text-center">
+            {/* The official mark, not a type approximation. The old lockup
+                set "AROMA" as letterspaced text with an italic tagline under
+                it — a wordmark redrawn in CSS, which is exactly what a brand
+                asset exists to prevent. */}
+            <Link href="/" aria-label="KROV Perfumería — inicio">
+              <KrovLogo tone="light" width={150} />
+            </Link>
+            <h1
+              className="mt-8 text-3xl text-krov-bone"
+              style={{ fontFamily: SERIF }}
+            >
+              Volvé a entrar
             </h1>
-            <p className="text-white/70 text-sm mt-2">
-              Accede a tu cuenta para gestionar pedidos y favoritos.
+            <p className="mt-3 text-sm text-krov-ash">
+              Tus pedidos, tus direcciones y tu historial te esperan.
             </p>
           </div>
 
@@ -107,37 +108,37 @@ export default function LoginView() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-xl bg-[#c9a96e] py-3 text-sm font-medium text-black transition hover:bg-[#c9a96e]/90 disabled:opacity-50"
+              className="krov-btn-primary w-full"
             >
               {submitting ? "Ingresando…" : "Iniciar sesión"}
             </button>
           </form>
 
-          <p className="text-center text-sm text-white/55 mb-5">
+          <p className="mb-5 text-center text-sm text-krov-ash">
             ¿No tienes cuenta?{" "}
-            <Link href="/register" className="text-[#c9a96e] hover:underline">
+            <Link href="/register" className="text-krov-rose underline-offset-4 hover:underline">
               Crear cuenta
             </Link>
           </p>
 
           <div className="flex items-center gap-3 mb-5">
-            <span className="h-px flex-1 bg-white/10" />
-            <span className="text-[11px] uppercase tracking-wider text-white/40">
+            <span className="h-px flex-1 bg-krov-smoke" />
+            <span className="text-[10px] uppercase tracking-[0.24em] text-krov-dust">
               o
             </span>
-            <span className="h-px flex-1 bg-white/10" />
+            <span className="h-px flex-1 bg-krov-smoke" />
           </div>
 
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 rounded-xl bg-white text-black py-3.5 px-4 font-medium hover:bg-neutral-100 transition duration-200"
+            className="flex w-full items-center justify-center gap-3 border border-krov-edge px-4 py-3.5 text-[11px] uppercase tracking-[0.2em] text-krov-bone transition-colors duration-300 hover:border-krov-blood hover:text-krov-rose"
           >
             <GoogleIcon />
             Continuar con Google
           </button>
 
-          <p className="text-center text-xs text-white/55 mt-5 leading-relaxed">
+          <p className="mt-6 text-center text-xs leading-relaxed text-krov-dust">
             Al continuar, aceptas nuestros términos y condiciones.
           </p>
         </div>

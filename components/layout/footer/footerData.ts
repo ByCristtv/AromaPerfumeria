@@ -10,12 +10,12 @@ import { CONTACT } from "@/components/contact/contactData";
  */
 
 export const BRAND_STATEMENT =
-  "Aroma Perfumería nace de la pasión por las fragancias excepcionales. Ofrecemos perfumes originales, decants premium y una experiencia de compra diseñada para quienes valoran la autenticidad, la calidad y el lujo.";
+  "KROV — del ruso кровь, sangre. Lo que llevamos en la sangre nos define, y una fragancia funciona igual: no la usás, te vuelve parte de ella. Perfumes originales y decants para quienes eligen su aroma como eligen su nombre.";
 
 // ---- Contact (Column 4) ----
 export const FOOTER_CONTACT = {
   // PLACEHOLDER — no support email is configured in the project yet.
-  email: "contacto@aromaperfumeria.cr",
+  email: "contacto@krovperfumeria.cr",
   whatsappUrl: CONTACT.whatsapp,
   whatsappDisplay: "+506 7138 7812",
   // PLACEHOLDER — confirm real business hours.
@@ -36,8 +36,8 @@ type FooterLink = { label: string; href: string };
 // ---- Column 2 — Tienda ----
 // Links map to real destinations; filter-backed ones use catalog query params.
 export const SHOP_LINKS: FooterLink[] = [
-  { label: "Catálogo Completo", href: "/products" },
-  { label: "Nuevos Ingresos", href: "/" },
+  { label: "La colección", href: "/products" },
+  { label: "Recién llegados", href: "/" },
 ];
 
 // ---- Column 3 — Información ----
@@ -53,10 +53,10 @@ export const INFO_LINKS: FooterLink[] = [
 
 // ---- Trust indicators (Column 4) ----
 export const TRUST_INDICATORS = [
-  "Perfumes 100% Originales",
-  "Pagos Seguros",
-  "Envíos Nacionales",
-  "Atención Personalizada",
+  "100% originales",
+  "Pago seguro",
+  "Envío nacional",
+  "Asesoría uno a uno",
 ] as const;
 
 // ---- Accepted payment methods (Section 6) ----

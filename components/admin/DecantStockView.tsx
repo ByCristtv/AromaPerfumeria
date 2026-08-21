@@ -48,7 +48,7 @@ export default function DecantStockView() {
           <button
             type="button"
             onClick={() => setTransformModalOpen(true)}
-            className="rounded-lg bg-[#c9a96e] px-5 py-2.5 text-sm font-semibold uppercase tracking-wider text-black transition-colors hover:bg-[#b8a060]"
+            className="rounded-none bg-krov-blood px-5 py-2.5 text-sm font-semibold uppercase tracking-wider text-black transition-colors hover:bg-krov-crimson"
           >
             + Generar Stock de Decant
           </button>
@@ -98,7 +98,7 @@ function ModalOverlay({
           type="button"
           aria-label="Cerrar"
           onClick={onClose}
-          className="absolute top-3 left-3 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-black/80 border border-[#c9a96e]/40 text-[#c9a96e] hover:bg-[#c9a96e] hover:text-black transition-colors shadow-lg"
+          className="absolute top-3 left-3 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-black/80 border border-krov-blood/40 text-krov-rose hover:bg-krov-blood hover:text-black transition-colors shadow-lg"
         >
           <svg
             width="18"

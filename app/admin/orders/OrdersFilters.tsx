@@ -59,7 +59,7 @@ export default function OrdersFilters({ search, orderStatus, paymentStatus }: Pr
   }, [localSearch]);
 
   return (
-    <div className="rounded-2xl border border-[#c9a96e]/20 bg-[#1a1a1a] p-4 sm:p-5">
+    <div className="rounded-none border border-krov-smoke bg-krov-graphite p-4 sm:p-5">
       <div className="grid grid-cols-1 sm:grid-cols-[1fr_180px_180px] gap-3 sm:gap-4 items-end">
         <Field id="search" label="Buscar">
           <input
@@ -127,7 +127,7 @@ function Field({
     <div>
       <label
         htmlFor={id}
-        className="block text-[11px] uppercase tracking-wider text-[#a5a5a5] mb-1.5"
+        className="block text-[11px] uppercase tracking-wider text-krov-ash mb-1.5"
       >
         {label}
       </label>
@@ -137,5 +137,5 @@ function Field({
 }
 
 const inputCls =
-  "w-full rounded-lg border border-[#c9a96e]/30 bg-[#0a0a0a] px-3 py-2.5 text-sm text-[#ececec] " +
-  "placeholder:text-[#666] focus:outline-none focus:ring-2 focus:ring-[#c9a96e]/40 focus:border-[#c9a96e]";
+  "w-full rounded-none border border-krov-blood/30 bg-krov-void px-3 py-2.5 text-sm text-krov-bone " +
+  "placeholder:text-krov-dust focus:outline-none focus:ring-2 focus:ring-krov-blood/40 focus:border-krov-blood";

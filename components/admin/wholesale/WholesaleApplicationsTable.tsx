@@ -64,7 +64,7 @@ export default function WholesaleApplicationsTable({
         icon: result.ok ? "success" : "error",
         title: result.ok ? "Listo" : "Error",
         text: result.message,
-        confirmButtonColor: "#c9a96e",
+        confirmButtonColor: "#ff4d74",
       });
 
       if (result.ok) router.refresh();
@@ -73,18 +73,18 @@ export default function WholesaleApplicationsTable({
 
   if (rows.length === 0) {
     return (
-      <div className="rounded-2xl border border-[#c9a96e]/20 bg-[#1a1a1a] p-12 text-center">
-        <p className="text-[#a5a5a5]">No hay solicitudes de cuenta mayorista.</p>
+      <div className="rounded-none border border-krov-smoke bg-krov-graphite p-12 text-center">
+        <p className="text-krov-ash">No hay solicitudes de cuenta mayorista.</p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-[#c9a96e]/20 bg-[#1a1a1a]">
+    <div className="overflow-hidden rounded-none border border-krov-smoke bg-krov-graphite">
       {/* Desktop table */}
       <table className="hidden w-full text-left text-sm md:table">
         <thead>
-          <tr className="border-b border-[#c9a96e]/15 text-xs uppercase tracking-wider text-[#a5a5a5]">
+          <tr className="border-b border-krov-smoke/85 text-xs uppercase tracking-wider text-krov-ash">
             <th className="px-5 py-4 font-medium">Empresa</th>
             <th className="px-5 py-4 font-medium">Cédula / RUC</th>
             <th className="px-5 py-4 font-medium">Actividad</th>
@@ -106,11 +106,11 @@ export default function WholesaleApplicationsTable({
                 className="border-b border-white/5 transition-colors last:border-0 hover:bg-white/[0.03]"
               >
                 <td className="px-5 py-4">
-                  <span className="font-medium text-[#ececec]">
+                  <span className="font-medium text-krov-bone">
                     {row.company_name}
                   </span>
                   {row.applicant_name && (
-                    <span className="block text-xs text-[#a5a5a5]">
+                    <span className="block text-xs text-krov-ash">
                       {row.applicant_name}
                     </span>
                   )}
@@ -119,16 +119,16 @@ export default function WholesaleApplicationsTable({
                       href={row.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-0.5 inline-flex items-center gap-1 text-xs text-[#c9a96e] hover:underline"
+                      className="mt-0.5 inline-flex items-center gap-1 text-xs text-krov-rose hover:underline"
                     >
                       <ExternalLink size={11} aria-hidden /> Sitio web
                     </a>
                   )}
                 </td>
-                <td className="px-5 py-4 tabular-nums text-[#a5a5a5]">
+                <td className="px-5 py-4 tabular-nums text-krov-ash">
                   {row.tax_id}
                 </td>
-                <td className="px-5 py-4 max-w-xs text-[#a5a5a5]">
+                <td className="px-5 py-4 max-w-xs text-krov-ash">
                   {row.business_activity ?? "—"}
                 </td>
                 <td className="px-5 py-4">
@@ -138,7 +138,7 @@ export default function WholesaleApplicationsTable({
                     {meta.label}
                   </span>
                 </td>
-                <td className="px-5 py-4 whitespace-nowrap text-[#a5a5a5]">
+                <td className="px-5 py-4 whitespace-nowrap text-krov-ash">
                   {formatDate(row.created_at)}
                 </td>
                 <td className="px-5 py-4">
@@ -167,8 +167,8 @@ export default function WholesaleApplicationsTable({
             <div key={row.user_id} className="p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="font-medium text-[#ececec]">{row.company_name}</p>
-                  <p className="text-xs text-[#a5a5a5]">{row.tax_id}</p>
+                  <p className="font-medium text-krov-bone">{row.company_name}</p>
+                  <p className="text-xs text-krov-ash">{row.tax_id}</p>
                 </div>
                 <span
                   className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${meta.cls}`}
@@ -177,7 +177,7 @@ export default function WholesaleApplicationsTable({
                 </span>
               </div>
               {row.business_activity && (
-                <p className="mt-2 text-xs text-[#a5a5a5]">{row.business_activity}</p>
+                <p className="mt-2 text-xs text-krov-ash">{row.business_activity}</p>
               )}
               <div className="mt-3">
                 <RowActions
@@ -218,7 +218,7 @@ function RowActions({
           type="button"
           onClick={onApprove}
           disabled={busy}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/40 px-3 py-1.5 text-xs font-medium text-emerald-300 transition hover:bg-emerald-500/10 disabled:opacity-40"
+          className="inline-flex items-center gap-1.5 rounded-none border border-emerald-500/40 px-3 py-1.5 text-xs font-medium text-emerald-300 transition hover:bg-emerald-500/10 disabled:opacity-40"
         >
           <Check size={13} aria-hidden /> Aprobar
         </button>
@@ -228,7 +228,7 @@ function RowActions({
           type="button"
           onClick={onReject}
           disabled={busy}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-red-500/40 px-3 py-1.5 text-xs font-medium text-red-300 transition hover:bg-red-500/10 disabled:opacity-40"
+          className="inline-flex items-center gap-1.5 rounded-none border border-red-500/40 px-3 py-1.5 text-xs font-medium text-red-300 transition hover:bg-red-500/10 disabled:opacity-40"
         >
           <X size={13} aria-hidden /> Rechazar
         </button>

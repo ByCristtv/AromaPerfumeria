@@ -1,12 +1,12 @@
 import Image from "next/image";
 
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 export default function ArteDecant() {
   return (
     <section
       aria-labelledby="decant-title"
-      className="bg-[#0a0a0a] py-24 md:py-32"
+      className="bg-krov-void py-24 md:py-32"
     >
       <div className="max-w-7xl mx-auto px-6">
         <div className="relative aspect-16/8 w-full overflow-hidden mb-16">
@@ -18,13 +18,12 @@ export default function ArteDecant() {
             sizes="(min-width: 1280px) 1200px, 100vw"
           />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0)56%,rgba(0,0,0,0.65)100%)]" />
-          <div className="absolute inset-0 ring-1 ring-inset ring-[#c9a96e]/20" />
+          <div className="absolute inset-0 ring-1 ring-inset ring-krov-blood/20" />
         </div>
 
         <div className="max-w-3xl mx-auto text-center">
           <p
-            className="text-[#c9a96e] tracking-[0.4em] text-xs mb-6 uppercase"
-            style={{ fontFamily: serif }}
+            className="text-krov-rose tracking-[0.4em] text-xs mb-6 uppercase"
           >
             El arte del decant
           </p>
@@ -33,7 +32,7 @@ export default function ArteDecant() {
             className="text-3xl md:text-5xl text-white leading-tight mb-8"
             style={{ fontFamily: serif }}
           >
-            Explora antes de <span className="italic text-[#c9a96e]">comprometerte</span>
+            Explora antes de <span className="italic text-krov-rose">comprometerte</span>
           </h2>
           <p
             className="text-white/75 text-base md:text-lg leading-relaxed"
@@ -48,7 +47,7 @@ export default function ArteDecant() {
           </p>
 
           <div
-            className="mt-12 flex flex-wrap justify-center gap-8 text-[#c9a96e]"
+            className="mt-12 flex flex-wrap justify-center gap-8 text-krov-rose"
             style={{ fontFamily: serif }}
           >
             {["2ml", "5ml", "10ml"].map((s) => (

@@ -44,9 +44,9 @@ export default function Pagination({
     })}`;
 
   const baseBtn =
-    "flex h-10 min-w-10 items-center justify-center rounded-lg border px-3 text-sm transition-all duration-300";
+    "flex h-10 min-w-10 items-center justify-center rounded-none border px-3 text-sm transition-all duration-300";
   const idle =
-    "border-[#c9a96e]/20 text-[#a5a5a5] hover:border-[#c9a96e]/60 hover:text-[#c9a96e]";
+    "border-krov-smoke text-krov-ash hover:border-krov-blood/60 hover:text-krov-rose";
   const disabled = "cursor-not-allowed border-white/5 text-white/20";
 
   const hasPrev = currentPage > 1;
@@ -74,7 +74,7 @@ export default function Pagination({
           <span
             key={p}
             aria-current="page"
-            className={`${baseBtn} border-[#c9a96e] bg-[#c9a96e] font-semibold text-black`}
+            className={`${baseBtn} border-krov-blood bg-krov-blood font-semibold text-black`}
           >
             {p}
           </span>

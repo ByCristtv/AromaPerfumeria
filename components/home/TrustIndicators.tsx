@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   Headset,
   ShieldCheck,
@@ -9,43 +8,55 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+/**
+ * The reassurance band, restated as a masthead strip rather than four cards.
+ *
+ * Four boxed "trust badges" is the most template-looking element in commerce.
+ * The same four promises set as small tracked capitals on one continuous rule
+ * do the same job in a third of the height and read as the credit line under a
+ * magazine masthead — which is the register the rest of the site is in.
+ */
 
-const items: { icon: LucideIcon; title: string; }[] = [
-  { icon: ShieldCheck, title: "Fragancias 100% originales"},
-  { icon: Truck, title: "Envíos a todo el país" },
-  { icon: Lock, title: "Pagos con Tarjeta o SINPE"},
-  { icon: Headset, title: "Asesoría personalizada"},
+const items: { icon: LucideIcon; title: string }[] = [
+  { icon: ShieldCheck, title: "100% originales" },
+  { icon: Truck, title: "Envío a todo el país" },
+  { icon: Lock, title: "Tarjeta o SINPE Móvil" },
+  { icon: Headset, title: "Asesoría uno a uno" },
 ];
 
 export default function TrustIndicators() {
   return (
-    <section className="border-y border-white/8 bg-[#0a0a0a]">
-      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px bg-white/6 lg:grid-cols-4">
-        {items.map((item, i) => {
+    <section
+      aria-label="Garantías"
+      className="border-b border-krov-smoke/70 bg-krov-ink"
+    >
+      {/*
+        `divide-x` rather than a gap-px grid with a background showing through:
+        the old approach painted a full-bleed light plane behind the row and let
+        it leak between cells, which produced a visible seam at the section
+        edges on any width that did not divide evenly.
+      */}
+      <ul className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-y divide-krov-smoke/70 sm:divide-y-0 lg:grid-cols-4">
+        {items.map((item) => {
           const Icon = item.icon;
           return (
-            <motion.div
+            <li
               key={item.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-              className="flex items-center gap-4 bg-[#0a0a0a] px-6 py-8 transition-colors duration-500 hover:bg-[#0e0e0e]"
+              className="group flex items-center gap-3 px-5 py-6 sm:px-7"
             >
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#c9a96e]/40 text-[#c9a96e]">
-                <Icon size={20} strokeWidth={1.4} aria-hidden />
+              <Icon
+                size={17}
+                strokeWidth={1.3}
+                aria-hidden
+                className="shrink-0 text-krov-rose transition-colors duration-500 group-hover:text-krov-blood"
+              />
+              <span className="text-[10px] uppercase leading-tight tracking-[0.2em] text-krov-ash transition-colors duration-500 group-hover:text-krov-bone sm:tracking-[0.24em]">
+                {item.title}
               </span>
-              <div>
-                <p className="text-base text-white" style={{ fontFamily: serif }}>
-                  {item.title}
-                </p>
-                
-              </div>
-            </motion.div>
+            </li>
           );
         })}
-      </div>
+      </ul>
     </section>
   );
 }

@@ -70,7 +70,7 @@ export default function CancelledBanner({ orderId, token }: CancelledBannerProps
   }
 
   return (
-    <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:p-5 text-sm text-amber-900">
+    <div className="mb-6 rounded-none border border-amber-500/30 bg-amber-500/10 p-4 sm:p-5 text-sm text-amber-200">
       <p className="font-medium mb-1">No completaste el pago</p>
       <p className="leading-relaxed mb-4">
         Tu pedido fue creado pero el pago aún no se procesó. Puedes

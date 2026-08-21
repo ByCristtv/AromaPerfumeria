@@ -10,8 +10,6 @@ import { buildCatalogQuery } from "@/lib/catalogParams";
 import type { ProductFilters, ProductOrderBy } from "@/types/productFilter";
 import type { ProductTypes } from "@/types/product";
 
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
-
 const TYPE_OPTIONS: { value: ProductTypes; label: string }[] = [
   { value: "full_size", label: "Tamaño completo" },
   { value: "decant", label: "Disponibles en Decants" },
@@ -26,7 +24,7 @@ const ORDER_OPTIONS: { value: ProductOrderBy; label: string }[] = [
 ];
 
 const selectClass =
-  "w-full appearance-none rounded-lg border border-white/10 bg-[#141414] px-4 py-3 pr-10 text-sm text-white/80 outline-none transition-colors duration-300 focus:border-[#c9a96e] focus:ring-1 focus:ring-[#c9a96e]/40";
+  "w-full appearance-none rounded-lg border border-krov-edge bg-krov-graphite px-4 py-3 pr-10 text-sm text-white/80 outline-none transition-colors duration-300 focus:border-krov-blood focus:ring-1 focus:ring-krov-blood/40";
 
 function Field({
   label,
@@ -39,7 +37,6 @@ function Field({
     <label className="block">
       <span
         className="mb-2 block text-[10px] uppercase tracking-[0.2em] text-white/45"
-        style={{ fontFamily: serif }}
       >
         {label}
       </span>
@@ -48,7 +45,7 @@ function Field({
         <ChevronDown
           size={15}
           aria-hidden
-          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#c9a96e]/70"
+          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-krov-rose/70"
         />
       </div>
     </label>
@@ -157,9 +154,9 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
   );
 
   const offerToggle = (
-    <label className="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-white/10 bg-[#141414] px-4 py-3">
+    <label className="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-krov-edge bg-krov-graphite px-4 py-3">
       <span className="flex items-center gap-2 text-sm text-white/80">
-        <Tag size={15} aria-hidden className="text-[#c9a96e]" />
+        <Tag size={15} aria-hidden className="text-krov-rose" />
         Solo en oferta
       </span>
       <button
@@ -167,7 +164,7 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
         role="switch"
         aria-checked={!!filters.onOffer}
         onClick={() => navigate({ offer: filters.onOffer ? undefined : "1" })}
-        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-300 ${filters.onOffer ? "bg-[#c9a96e]" : "bg-white/15"
+        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-300 ${filters.onOffer ? "bg-krov-blood" : "bg-white/15"
           }`}
       >
         <span
@@ -181,9 +178,9 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
   // Only approved wholesale buyers see this — filters to products whose card can
   // show a wholesale price (featured variant configured for wholesale).
   const wholesaleToggle = isWholesale ? (
-    <label className="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-[#c9a96e]/25 bg-[#141414] px-4 py-3">
+    <label className="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-krov-smoke bg-krov-graphite px-4 py-3">
       <span className="flex items-center gap-2 text-sm text-white/80">
-        <BadgeCheck size={15} aria-hidden className="text-[#c9a96e]" />
+        <BadgeCheck size={15} aria-hidden className="text-krov-rose" />
         Solo productos mayoristas
       </span>
       <button
@@ -192,7 +189,7 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
         aria-checked={!!filters.wholesaleOnly}
         aria-label="Mostrar solo productos con precio mayorista"
         onClick={() => navigate({ wholesale: filters.wholesaleOnly ? undefined : "1" })}
-        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-300 ${filters.wholesaleOnly ? "bg-[#c9a96e]" : "bg-white/15"
+        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-300 ${filters.wholesaleOnly ? "bg-krov-blood" : "bg-white/15"
           }`}
       >
         <span
@@ -205,7 +202,7 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
 
   return (
     <div className="lg:sticky lg:top-21 lg:z-30">
-      <div className="rounded-2xl border border-white/8 bg-[#0d0d0d]/85 p-4 backdrop-blur-md sm:p-5">
+      <div className="rounded-2xl border border-white/8 bg-krov-ink/85 p-4 backdrop-blur-md sm:p-5">
         {/* Search + mobile toggle */}
         <div className="flex items-center gap-3">
           <div className="relative flex-1">
@@ -220,7 +217,7 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Buscar perfumes, marcas, notas…"
               aria-label="Buscar perfumes"
-              className="w-full rounded-lg border border-white/10 bg-[#141414] py-3 pl-11 pr-10 text-sm text-white placeholder:text-white/30 outline-none transition-colors duration-300 focus:border-[#c9a96e] focus:ring-1 focus:ring-[#c9a96e]/40"
+              className="w-full rounded-lg border border-krov-edge bg-krov-graphite py-3 pl-11 pr-10 text-sm text-white placeholder:text-white/30 outline-none transition-colors duration-300 focus:border-krov-blood focus:ring-1 focus:ring-krov-blood/40"
             />
             {search && (
               <button
@@ -240,13 +237,12 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
             onClick={() => setFiltersOpen((v) => !v)}
             aria-expanded={filtersOpen}
             aria-controls="catalog-filters"
-            className="relative flex items-center gap-2 rounded-lg border border-[#c9a96e]/40 px-4 py-3 text-xs uppercase tracking-[0.15em] text-[#c9a96e]"
-            style={{ fontFamily: serif }}
+            className="relative flex items-center gap-2 rounded-lg border border-krov-blood/40 px-4 py-3 text-xs uppercase tracking-[0.15em] text-krov-rose"
           >
             <SlidersHorizontal size={15} aria-hidden />
             Filtros
             {activeCount > 0 && (
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#c9a96e] text-[9px] font-bold text-black">
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-krov-blood text-[9px] font-bold text-black">
                 {activeCount}
               </span>
             )}
@@ -287,8 +283,7 @@ export default function CatalogToolbar({ filters }: { filters: ProductFilters })
                 setSearch("");
                 router.push(pathname, { scroll: false });
               }}
-              className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-white/50 transition-colors hover:text-[#c9a96e]"
-              style={{ fontFamily: serif }}
+              className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-white/50 transition-colors hover:text-krov-rose"
             >
               <X size={13} aria-hidden /> Limpiar filtros ({activeCount})
             </button>

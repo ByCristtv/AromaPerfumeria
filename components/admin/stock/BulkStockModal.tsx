@@ -189,14 +189,14 @@ export default function BulkStockModal({
                     onChange={(e) => updateRow(row.key, { quantity: e.target.value })}
                     disabled={submitting}
                     aria-label={`Cantidad fila ${index + 1}`}
-                    className="w-24 rounded-lg border border-white/20 bg-white/10 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#c9a96e]/50"
+                    className="w-24 rounded-none border border-white/20 bg-white/10 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-krov-blood/50"
                   />
                   <button
                     type="button"
                     onClick={() => removeRow(row.key)}
                     disabled={submitting || rows.length === 1}
                     aria-label="Eliminar fila"
-                    className="rounded-lg p-2.5 text-white/50 transition hover:bg-white/10 hover:text-red-400 disabled:opacity-30"
+                    className="rounded-none p-2.5 text-white/50 transition hover:bg-white/10 hover:text-red-400 disabled:opacity-30"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -208,7 +208,7 @@ export default function BulkStockModal({
               type="button"
               onClick={addRow}
               disabled={submitting}
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#c9a96e] transition hover:text-[#b8a060] disabled:opacity-50"
+              className="inline-flex items-center gap-2 text-sm font-medium text-krov-rose transition hover:text-krov-crimson disabled:opacity-50"
             >
               <Plus size={16} /> Agregar variante
             </button>
@@ -223,7 +223,7 @@ export default function BulkStockModal({
                 onChange={(e) => setNotes(e.target.value)}
                 disabled={submitting}
                 placeholder="Ej. Compra a proveedor X — factura #123"
-                className="w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#c9a96e]/50"
+                className="w-full rounded-none border border-white/20 bg-white/10 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-krov-blood/50"
               />
             </div>
 
@@ -232,7 +232,7 @@ export default function BulkStockModal({
                 type="button"
                 onClick={resetAndClose}
                 disabled={submitting}
-                className="flex-1 rounded-lg border border-white/20 py-2.5 text-sm font-medium text-white/80 transition hover:bg-white/5 disabled:opacity-50"
+                className="flex-1 rounded-none border border-white/20 py-2.5 text-sm font-medium text-white/80 transition hover:bg-white/5 disabled:opacity-50"
               >
                 Cancelar
               </button>
@@ -240,7 +240,7 @@ export default function BulkStockModal({
                 type="button"
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="flex-1 rounded-lg bg-[#c9a96e] py-2.5 text-sm font-medium text-black transition hover:bg-[#c9a96e]/90 disabled:opacity-50"
+                className="flex-1 rounded-none bg-krov-blood py-2.5 text-sm font-medium text-black transition hover:bg-krov-crimson disabled:opacity-50"
               >
                 {submitting ? "Registrando…" : "Registrar stock"}
               </button>

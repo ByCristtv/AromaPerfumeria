@@ -31,7 +31,7 @@ export default function DateRangePicker({ value, onChange }: Props) {
     <div
       role="group"
       aria-label="Rango de fechas"
-      className="inline-flex rounded-lg border border-[#c9a96e]/30 bg-[#1a1a1a] p-0.5"
+      className="inline-flex rounded-none border border-krov-blood/30 bg-krov-graphite p-0.5"
     >
       {PRESETS.map((p) => {
         const active = p.id === value;
@@ -42,10 +42,10 @@ export default function DateRangePicker({ value, onChange }: Props) {
             onClick={() => onChange(p.id)}
             aria-pressed={active}
             className={
-              "px-3 py-1.5 text-xs uppercase tracking-wider rounded-md transition " +
+              "px-3 py-1.5 text-xs uppercase tracking-wider rounded-none transition " +
               (active
-                ? "bg-[#c9a96e] text-black font-semibold"
-                : "text-[#a5a5a5] hover:text-[#ececec]")
+                ? "bg-krov-blood text-black font-semibold"
+                : "text-krov-ash hover:text-krov-bone")
             }
           >
             {p.label}

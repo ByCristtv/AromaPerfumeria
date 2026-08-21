@@ -1,6 +1,6 @@
 import { PAYMENT_METHODS } from "./footerData";
 
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 /** Minimal closing bar: copyright · statement · payment methods. */
 export default function FooterBottomBar() {
@@ -12,12 +12,12 @@ export default function FooterBottomBar() {
           className="order-3 text-xs text-white/40 lg:order-1"
           style={{ fontFamily: serif }}
         >
-          © 2026 Aroma Perfumería. Todos los derechos reservados.
+          © 2026 KROV Perfumería. Todos los derechos reservados.
         </p>
 
         {/* Center — statement */}
         <p
-          className="order-1 text-xs italic text-[#c9a96e]/70 lg:order-2"
+          className="order-1 text-xs italic text-krov-rose/70 lg:order-2"
           style={{ fontFamily: serif }}
         >
           Autenticidad, calidad y pasión por la perfumería.
@@ -28,8 +28,7 @@ export default function FooterBottomBar() {
           {PAYMENT_METHODS.map((method) => (
             <li
               key={method}
-              className="rounded-md border border-white/12 bg-white/5 px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] text-white/55 transition-all duration-300 hover:border-[#c9a96e]/50 hover:text-[#c9a96e]"
-              style={{ fontFamily: serif }}
+              className="rounded-md border border-white/12 bg-white/5 px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] text-white/55 transition-all duration-300 hover:border-krov-blood/50 hover:text-krov-rose"
             >
               {method}
             </li>

@@ -21,7 +21,7 @@ const contactSchema = z.object({
 type ContactValues = z.infer<typeof contactSchema>;
 
 const fieldBase =
-  "w-full rounded-xl border bg-[#0e0e0e]/80 px-4 py-3.5 text-[#ececec] placeholder:text-white/30 transition-all duration-300 focus:outline-none focus:ring-1";
+  "w-full rounded-xl border bg-krov-ink/80 px-4 py-3.5 text-krov-bone placeholder:text-white/30 transition-all duration-300 focus:outline-none focus:ring-1";
 
 export default function ContactForm() {
   const [sent, setSent] = useState(false);
@@ -58,7 +58,7 @@ export default function ContactForm() {
   const borderFor = (hasError: boolean) =>
     hasError
       ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/40"
-      : "border-[#c9a96e]/25 focus:border-[#c9a96e] focus:ring-[#c9a96e]/40";
+      : "border-krov-smoke focus:border-krov-blood focus:ring-krov-blood/40";
 
   return (
     <section
@@ -101,7 +101,7 @@ export default function ContactForm() {
               role="status"
               className="flex flex-col items-center justify-center gap-5 py-12 text-center"
             >
-              <span className="flex h-16 w-16 items-center justify-center rounded-full border border-[#c9a96e]/40 bg-[#c9a96e]/10 text-[#c9a96e]">
+              <span className="flex h-16 w-16 items-center justify-center rounded-full border border-krov-blood/40 bg-krov-blood/10 text-krov-rose">
                 <CheckCircle2 size={28} strokeWidth={1.4} aria-hidden="true" />
               </span>
               <h3 className="text-2xl text-white" style={{ fontFamily: serif }}>
@@ -118,8 +118,7 @@ export default function ContactForm() {
               <button
                 type="button"
                 onClick={() => setSent(false)}
-                className="mt-2 border border-[#c9a96e]/40 px-7 py-3 text-xs uppercase tracking-[0.2em] text-[#c9a96e] transition-all duration-500 hover:bg-[#c9a96e] hover:text-black"
-                style={{ fontFamily: serif }}
+                className="mt-2 border border-krov-blood/40 px-7 py-3 text-xs uppercase tracking-[0.2em] text-krov-rose transition-all duration-500 hover:bg-krov-blood hover:text-black"
               >
                 Enviar otro mensaje
               </button>
@@ -174,8 +173,7 @@ export default function ContactForm() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="group inline-flex w-full items-center justify-center gap-2 border border-[#c9a96e] bg-[#c9a96e] px-8 py-4 text-sm uppercase tracking-[0.25em] text-black transition-all duration-500 hover:bg-transparent hover:text-[#c9a96e] disabled:cursor-not-allowed disabled:opacity-60"
-                style={{ fontFamily: serif }}
+                className="group inline-flex w-full items-center justify-center gap-2 border border-krov-blood bg-krov-blood px-8 py-4 text-sm uppercase tracking-[0.25em] text-black transition-all duration-500 hover:bg-transparent hover:text-krov-rose disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <Send
                   size={16}
@@ -208,7 +206,6 @@ function Field({
       <label
         htmlFor={htmlFor}
         className="mb-2 block text-xs uppercase tracking-[0.2em] text-white/55"
-        style={{ fontFamily: serif }}
       >
         {label}
       </label>

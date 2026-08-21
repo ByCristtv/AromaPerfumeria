@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const serif = "'Cormorant Garamond', 'Garamond', 'Times New Roman', serif";
+const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 const pasos = [
   {
@@ -80,13 +80,12 @@ export default function ExperienciaStats() {
   return (
     <section
       aria-labelledby="experiencia-title"
-      className="bg-[#0a0a0a] py-24 md:py-32 px-6"
+      className="bg-krov-void py-24 md:py-32 px-6"
     >
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20">
           <p
-            className="text-[#c9a96e] tracking-[0.4em] text-xs mb-6 uppercase"
-            style={{ fontFamily: serif }}
+            className="text-krov-rose tracking-[0.4em] text-xs mb-6 uppercase"
           >
             La experiencia
           </p>
@@ -95,7 +94,7 @@ export default function ExperienciaStats() {
             className="text-3xl md:text-5xl text-white leading-tight"
             style={{ fontFamily: serif }}
           >
-            Experiencia <span className="italic text-[#c9a96e]">Aroma Perfumeria</span>
+            Experiencia <span className="italic text-krov-rose">KROV Perfumería</span>
           </h2>
         </div>
 
@@ -103,7 +102,7 @@ export default function ExperienciaStats() {
           {pasos.map((p) => (
             <li key={p.n} className="relative pl-16">
               <span
-                className="absolute left-0 top-0 text-5xl md:text-6xl text-[#c9a96e]/30"
+                className="absolute left-0 top-0 text-5xl md:text-6xl text-krov-rose/30"
                 style={{ fontFamily: serif }}
                 aria-hidden="true"
               >
@@ -127,8 +126,7 @@ export default function ExperienciaStats() {
 
         <div className="text-center mb-14">
           <p
-            className="text-[#c9a96e] tracking-[0.4em] text-xs mb-4 uppercase"
-            style={{ fontFamily: serif }}
+            className="text-krov-rose tracking-[0.4em] text-xs mb-4 uppercase"
           >
             Estadísticas
           </p>
@@ -136,21 +134,21 @@ export default function ExperienciaStats() {
             className="text-2xl md:text-4xl text-white"
             style={{ fontFamily: serif }}
           >
-            Números que <span className="italic text-[#c9a96e]">hablan por nosotros</span>
+            Números que <span className="italic text-krov-rose">hablan por nosotros</span>
           </h3>
         </div>
 
         <div
           ref={ref}
-          className="grid grid-cols-2 md:grid-cols-5 gap-px bg-[#c9a96e]/15"
+          className="grid grid-cols-2 md:grid-cols-5 gap-px bg-krov-blood/15"
         >
           {stats.map((s) => (
             <div
               key={s.label}
-              className="bg-[#0a0a0a] p-8 md:p-10 text-center"
+              className="bg-krov-void p-8 md:p-10 text-center"
             >
               <div
-                className="text-[#c9a96e] text-4xl md:text-5xl mb-3"
+                className="text-krov-rose text-4xl md:text-5xl mb-3"
                 style={{ fontFamily: serif }}
                 aria-label={`${s.prefix}${s.value}${s.suffix} ${s.label}`}
               >
@@ -160,7 +158,6 @@ export default function ExperienciaStats() {
               </div>
               <div
                 className="text-white/65 text-xs md:text-sm tracking-[0.2em] uppercase"
-                style={{ fontFamily: serif }}
               >
                 {s.label}
               </div>

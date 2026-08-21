@@ -80,7 +80,7 @@ export default function PurchasePanel({
         concentration={product.concentration}
       />
 
-      <div className="flex items-end justify-between gap-4 flex-wrap">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <PriceTag
           price={effectivePrice}
           originalPrice={hasOffer ? selectedVariant.price : undefined}
@@ -98,14 +98,7 @@ export default function PurchasePanel({
         />
       )}
 
-      <span
-        aria-hidden
-        className="h-px w-full"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent, rgba(201,169,110,0.4), transparent)",
-        }}
-      />
+      <span aria-hidden className="krov-rule h-px w-full" />
 
       <VariantSelector
         variants={variants}
@@ -116,7 +109,7 @@ export default function PurchasePanel({
 
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-4">
-          <h2 className="text-[11px] font-medium tracking-[0.28em] uppercase text-black/60">
+          <h2 className="text-[10px] uppercase tracking-[0.28em] text-krov-ash">
             Cantidad
           </h2>
           <QuantityStepper
@@ -132,13 +125,7 @@ export default function PurchasePanel({
             type="button"
             onClick={() => onSetQuantity(minQty)}
             aria-label={`Fijar la cantidad en el mínimo mayorista de ${minQty} unidades`}
-            className="inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-[11px] font-semibold tracking-[0.18em] uppercase transition-colors hover:bg-[rgba(201,169,110,0.14)]"
-            style={{
-              color: "#7a5e2e",
-              border: "1px solid rgba(201,169,110,0.5)",
-              background:
-                "linear-gradient(180deg, rgba(201,169,110,0.08), transparent)",
-            }}
+            className="inline-flex items-center justify-center gap-2 border border-krov-blood/50 bg-krov-blood/[0.07] px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] text-krov-rose transition-colors hover:bg-krov-blood/15"
           >
             Alcanzar mínimo mayorista · {minQty} uds.
           </button>
@@ -147,10 +134,13 @@ export default function PurchasePanel({
 
       <AddToCartButton onAdd={onAddToCart} disabled={outOfStock} />
 
-      <ul className="grid grid-cols-3 gap-3 pt-2">
+      {/* Reassurance, set as a rule of three under the CTA — the last thing read
+          before committing. Hairlines rather than boxes: three bordered tiles
+          under a red button is exactly the template shape this page avoids. */}
+      <ul className="grid grid-cols-3 divide-x divide-krov-smoke border-y border-krov-smoke">
         <Perk title="Original" subtitle="100% auténtico" />
-        <Perk title="Envío rápido" subtitle="Todo el país" />
-        <Perk title="Soporte" subtitle="WhatsApp" />
+        <Perk title="Envío" subtitle="Todo el país" />
+        <Perk title="Asesoría" subtitle="Por WhatsApp" />
       </ul>
     </div>
   );
@@ -158,21 +148,11 @@ export default function PurchasePanel({
 
 function Perk({ title, subtitle }: { title: string; subtitle: string }) {
   return (
-    <li
-      className="text-center px-2 py-3 rounded-xl"
-      style={{
-        border: "1px solid rgba(0,0,0,0.06)",
-        background:
-          "linear-gradient(180deg, rgba(201,169,110,0.05), transparent)",
-      }}
-    >
-      <p
-        className="text-[11px] font-medium tracking-[0.18em] uppercase"
-        style={{ color: "#8a7341" }}
-      >
+    <li className="px-3 py-4 text-center">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-krov-rose">
         {title}
       </p>
-      <p className="text-[11px] text-black/55 mt-1">{subtitle}</p>
+      <p className="mt-1.5 text-[11px] text-krov-dust">{subtitle}</p>
     </li>
   );
 }

@@ -17,7 +17,7 @@ const REASON_STYLES: Record<StockMovementReason, string> = {
   restock: "bg-emerald-500/15 text-emerald-300",
   correction: "bg-purple-500/15 text-purple-300",
   return: "bg-amber-500/15 text-amber-300",
-  transformed_to_decant: "bg-[#c9a96e]/15 text-[#c9a96e]",
+  transformed_to_decant: "bg-krov-blood/15 text-krov-rose",
 };
 
 function formatDate(iso: string): string {
@@ -78,18 +78,18 @@ export default function StockMovementsTable({
 }) {
   if (rows.length === 0) {
     return (
-      <div className="rounded-2xl border border-[#c9a96e]/20 bg-[#1a1a1a] p-12 text-center">
-        <p className="text-[#a5a5a5]">No se encontraron movimientos de stock.</p>
+      <div className="rounded-none border border-krov-smoke bg-krov-graphite p-12 text-center">
+        <p className="text-krov-ash">No se encontraron movimientos de stock.</p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-[#c9a96e]/20 bg-[#1a1a1a]">
+    <div className="overflow-hidden rounded-none border border-krov-smoke bg-krov-graphite">
       {/* Desktop table */}
       <table className="hidden w-full text-left text-sm md:table">
         <thead>
-          <tr className="border-b border-[#c9a96e]/15 text-xs uppercase tracking-wider text-[#a5a5a5]">
+          <tr className="border-b border-krov-smoke/85 text-xs uppercase tracking-wider text-krov-ash">
             <th className="px-5 py-4 font-medium">Fecha</th>
             <th className="px-5 py-4 font-medium">Producto</th>
             <th className="px-5 py-4 font-medium">Variante</th>
@@ -107,20 +107,20 @@ export default function StockMovementsTable({
                 key={row.id}
                 className="border-b border-white/5 transition-colors last:border-0 hover:bg-white/[0.03]"
               >
-                <td className="px-5 py-4 whitespace-nowrap text-[#a5a5a5]">
+                <td className="px-5 py-4 whitespace-nowrap text-krov-ash">
                   {formatDate(row.created_at)}
                 </td>
                 <td className="px-5 py-4">
-                  <span className="font-medium text-[#ececec]">
+                  <span className="font-medium text-krov-bone">
                     {row.product_name ?? "Producto eliminado"}
                   </span>
                   {row.brand_name && (
-                    <span className="block text-xs text-[#a5a5a5]">
+                    <span className="block text-xs text-krov-ash">
                       {row.brand_name}
                     </span>
                   )}
                 </td>
-                <td className="px-5 py-4 text-[#a5a5a5]">{d.unit}</td>
+                <td className="px-5 py-4 text-krov-ash">{d.unit}</td>
                 <td
                   className={`px-5 py-4 text-right font-bold tabular-nums ${
                     d.positive ? "text-emerald-400" : "text-red-400"
@@ -128,8 +128,8 @@ export default function StockMovementsTable({
                 >
                   {d.change}
                 </td>
-                <td className="px-5 py-4 text-right tabular-nums text-[#ececec]">
-                  {d.before} <span className="text-[#a5a5a5]">→</span> {d.after}
+                <td className="px-5 py-4 text-right tabular-nums text-krov-bone">
+                  {d.before} <span className="text-krov-ash">→</span> {d.after}
                 </td>
                 <td className="px-5 py-4">
                   <span
@@ -139,7 +139,7 @@ export default function StockMovementsTable({
                     {REASON_LABELS[row.reason]}
                   </span>
                 </td>
-                <td className="px-5 py-4 text-[#a5a5a5]">
+                <td className="px-5 py-4 text-krov-ash">
                   {row.performed_by_name || "—"}
                 </td>
               </tr>
@@ -156,10 +156,10 @@ export default function StockMovementsTable({
             <div key={row.id} className="p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="font-medium text-[#ececec]">
+                  <p className="font-medium text-krov-bone">
                     {row.product_name ?? "Producto eliminado"}
                   </p>
-                  <p className="text-xs text-[#a5a5a5]">{d.unit}</p>
+                  <p className="text-xs text-krov-ash">{d.unit}</p>
                 </div>
                 <span
                   className={`shrink-0 font-bold tabular-nums ${
@@ -175,10 +175,10 @@ export default function StockMovementsTable({
                 >
                   {REASON_LABELS[row.reason]}
                 </span>
-                <span className="text-[#a5a5a5]">
+                <span className="text-krov-ash">
                   {d.before} → {d.after}
                 </span>
-                <span className="text-[#a5a5a5]">· {formatDate(row.created_at)}</span>
+                <span className="text-krov-ash">· {formatDate(row.created_at)}</span>
               </div>
             </div>
           );
