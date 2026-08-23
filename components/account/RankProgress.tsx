@@ -2,11 +2,7 @@
 
 import { motion } from "framer-motion";
 import { getRankInfo } from "@/lib/rank";
-
-/** Group digits with thousands separators, e.g. 2450 → "2,450". */
-function formatXp(value: number): string {
-  return new Intl.NumberFormat("en-US").format(Math.max(0, Math.floor(value)));
-}
+import { formatXp } from "@/lib/format";
 
 interface RankProgressProps {
   experiencePoints: number;

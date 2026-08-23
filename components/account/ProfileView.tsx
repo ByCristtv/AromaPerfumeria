@@ -9,6 +9,16 @@ import { supabase } from "@/lib/supabase/client";
 import { useAuthUser } from "@/hooks/useAuthUser";
 import Modal from "@/components/ui/Modal";
 import RankProgress from "@/components/account/RankProgress";
+import RankingSettingsCard from "@/components/account/RankingSettingsCard";
+import {
+  Badge,
+  Card,
+  CardHeading,
+  Field,
+  INPUT_CLS,
+  ModalActions,
+  SELECT_CLS,
+} from "@/components/account/profileUi";
 import { formatPrice } from "@/lib/format";
 import { findCanton, getCantones, getProvinces } from "@/lib/cr-geo";
 import {
@@ -150,6 +160,15 @@ export default function ProfileView() {
                 />
               </div>
             </Card>
+
+            {/* Placed directly under the rank card: the leaderboard is what
+                that XP is for, so the opt-in belongs next to it rather than
+                below the shipping details. */}
+            <RankingSettingsCard
+              username={accountData?.profile?.username ?? null}
+              showInRanking={accountData?.profile?.show_in_ranking ?? false}
+              onSaved={refreshAccount}
+            />
 
             <PhoneCard
               userId={user.id}
@@ -609,113 +628,10 @@ function EmptyOrders() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Shared primitives
+// Skeletons
 // ─────────────────────────────────────────────────────────────────────────────
-
-const INPUT_CLS =
-  "w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-krov-blood/60 focus:border-krov-blood/60 disabled:opacity-40";
-
-// Native <select> reuses INPUT_CLS for its (dark) closed control, but the OS
-// renders the open <option> list on its own surface — with the translucent
-// `bg-white/5` above the options came out white-on-white and unreadable. Pin the
-// options to a light background with near-black text (same treatment the
-// checkout address selects already use) so the menu is legible; the closed
-// control keeps the dark modal styling.
-const SELECT_CLS = `${INPUT_CLS} [&>option]:bg-white [&>option]:text-gray-900`;
-
-function Card({ children }: { children: React.ReactNode }) {
-  return (
-    <section className="rounded-2xl border border-krov-smoke bg-black/50 backdrop-blur-sm p-5 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
-      {children}
-    </section>
-  );
-}
-
-function CardHeading({
-  title,
-  caption,
-  action,
-}: {
-  title: string;
-  caption?: string;
-  action?: { label: string; onClick: () => void };
-}) {
-  return (
-    <div className="flex items-baseline justify-between gap-3 mb-3">
-      <div className="flex items-baseline gap-3">
-        <h2
-          className="text-[10px] tracking-[0.25em] uppercase text-white/45"
-        >
-          {title}
-        </h2>
-        {caption && <span className="text-[11px] text-white/25">{caption}</span>}
-      </div>
-      {action && (
-        <button
-          type="button"
-          onClick={action.onClick}
-          className="text-krov-rose text-xs hover:underline shrink-0"
-        >
-          {action.label}
-        </button>
-      )}
-    </div>
-  );
-}
-
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <label className="text-white/50 text-xs mb-1.5 block">{label}</label>
-      {children}
-    </div>
-  );
-}
-
-function ModalActions({
-  onCancel,
-  onSave,
-  saving,
-}: {
-  onCancel: () => void;
-  onSave: () => void;
-  saving: boolean;
-}) {
-  return (
-    <div className="flex gap-3 pt-1">
-      <button
-        type="button"
-        onClick={onCancel}
-        disabled={saving}
-        className="flex-1 rounded-lg border border-white/20 py-2.5 text-sm font-medium text-white/80 transition hover:bg-white/5 disabled:opacity-50"
-      >
-        Cancelar
-      </button>
-      <button
-        type="button"
-        onClick={onSave}
-        disabled={saving}
-        className="flex-1 rounded-lg bg-krov-blood py-2.5 text-sm font-medium text-black transition hover:bg-krov-crimson disabled:opacity-50"
-      >
-        {saving ? "Guardando…" : "Guardar"}
-      </button>
-    </div>
-  );
-}
-
-function Badge({ label }: { label: string }) {
-  return (
-    <span className="inline-block border border-white/15 px-2 py-0.5 text-[10px] tracking-wide uppercase text-white/55">
-      {label}
-    </span>
-  );
-}
+// Card / CardHeading / Field / ModalActions / Badge and the input classes now
+// live in `./profileUi`, shared with RankingSettingsCard.
 
 function ProfileSkeleton() {
   return (

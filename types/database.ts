@@ -715,7 +715,9 @@ export type Database = {
           id: string
           phone: string | null
           role: Database["public"]["Enums"]["user_role"]
+          show_in_ranking: boolean
           updated_at: string
+          username: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -725,7 +727,9 @@ export type Database = {
           id: string
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          show_in_ranking?: boolean
           updated_at?: string
+          username?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -735,7 +739,9 @@ export type Database = {
           id?: string
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          show_in_ranking?: boolean
           updated_at?: string
+          username?: string | null
         }
         Relationships: []
       }
@@ -1047,6 +1053,14 @@ export type Database = {
       deny_order_admin: {
         Args: { p_order_id: string; p_reason: string }
         Returns: Json
+      }
+      get_ranking_top: {
+        Args: { p_limit?: number }
+        Returns: {
+          experience_points: number
+          rank_position: number
+          username: string
+        }[]
       }
       grant_order_xp: { Args: { p_order_id: string }; Returns: Json }
       increase_decant_pool: {

@@ -350,6 +350,14 @@ body > * {
     }
   }
 
+  /* The same rule, drawn and left in place. Marks the current route in the
+     navigation by completing an idiom the nav already has, rather than adding a
+     second visual language for "selected". Must stay after `.krov-underline`:
+     equal specificity, so source order is what lets it win. */
+  .krov-underline-active {
+    background-size: 100% 1px;
+  }
+
   /* Letterspacing that opens on hover — the wordmark's own micro-interaction. */
   .krov-track {
     transition: letter-spacing 600ms var(--ease-krov);

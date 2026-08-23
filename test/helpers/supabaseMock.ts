@@ -23,7 +23,11 @@ export interface SupabaseMockConfig {
   /** Row returned for `.from("wholesale_profiles")...maybeSingle()`. */
   existingApplication?: { application_status: string } | null;
   insertError?: { message: string } | null;
-  updateError?: { message: string } | null;
+  /**
+   * `code` is optional but matters: actions that translate Postgres errors into
+   * user-facing copy (e.g. 23505 → "that username is taken") branch on it.
+   */
+  updateError?: { message: string; code?: string } | null;
   /** Result for `.rpc(...)`. */
   rpc?: (
     name: string,

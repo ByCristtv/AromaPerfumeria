@@ -22,6 +22,8 @@ CREATE TABLE public.profiles (
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   updated_at timestamp with time zone NOT NULL DEFAULT now(),
   experience_points integer NOT NULL DEFAULT 0 CHECK (experience_points >= 0),
+  username text CHECK (username IS NULL OR username ~ '^[A-Za-z0-9][A-Za-z0-9._]{1,18}[A-Za-z0-9]$'),
+  show_in_ranking boolean NOT NULL DEFAULT false CHECK (show_in_ranking = false OR username IS NOT NULL),
   CONSTRAINT profiles_pkey PRIMARY KEY (id),
   CONSTRAINT profiles_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id)
 );
@@ -332,6 +334,8 @@ CREATE TABLE public.profiles (
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   updated_at timestamp with time zone NOT NULL DEFAULT now(),
   experience_points integer NOT NULL DEFAULT 0 CHECK (experience_points >= 0),
+  username text CHECK (username IS NULL OR username ~ '^[A-Za-z0-9][A-Za-z0-9._]{1,18}[A-Za-z0-9]$'),
+  show_in_ranking boolean NOT NULL DEFAULT false CHECK (show_in_ranking = false OR username IS NOT NULL),
   CONSTRAINT profiles_pkey PRIMARY KEY (id),
   CONSTRAINT profiles_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id)
 );

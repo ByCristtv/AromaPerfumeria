@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCartStore } from "@/store/useCartStore";
 import { useAuthUser } from "@/hooks/useAuthUser";
@@ -11,15 +12,29 @@ import KrovLogo from "@/components/brand/KrovLogo";
 const NAV_LINKS = [
   { label: "Inicio", href: "/" },
   { label: "Colección", href: "/products" },
+  { label: "Ranking", href: "/ranking" },
   { label: "Identidad", href: "/about" },
   { label: "Cómo comprar", href: "/howtobuy" },
   { label: "Contacto", href: "/contact" },
 ] as const;
 
+/**
+ * Whether a nav entry represents the page currently being viewed.
+ *
+ * "/" has to match exactly or it would light up on every route; everything else
+ * also matches its subtree, so /products/<slug> still marks "Colección" as
+ * current. One function, used by both the desktop bar and the mobile drawer, so
+ * the two can never disagree about where the user is.
+ */
+function isCurrentRoute(pathname: string, href: string): boolean {
+  return href === "/" ? pathname === "/" : pathname.startsWith(href);
+}
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  const pathname = usePathname();
   const mounted = useIsMounted();
   const isAdmin = useIsAdmin();
   const { isAuthenticated, isLoading: authLoading } = useAuthUser();
@@ -114,12 +129,21 @@ export default function Navbar() {
               <ul className="hidden lg:flex items-center justify-center gap-9">
                 {NAV_LINKS.map((link) => (
                   <li key={link.href}>
-                    <NavLink href={link.href} label={link.label} />
+                    <NavLink
+                      href={link.href}
+                      label={link.label}
+                      active={isCurrentRoute(pathname, link.href)}
+                    />
                   </li>
                 ))}
                 {isAdmin && (
                   <li>
-                    <NavLink href="/admin" label="Administrar" accent />
+                    <NavLink
+                      href="/admin"
+                      label="Administrar"
+                      accent
+                      active={isCurrentRoute(pathname, "/admin")}
+                    />
                   </li>
                 )}
               </ul>
@@ -169,31 +193,49 @@ export default function Navbar() {
         </nav>
 
         {/* ──────── Mobile drawer ──────── */}
+        {/*
+          max-h-160 (40rem), not the previous 128. The collapse animates a
+          max-height, so the cap has to clear the drawer's real height or the
+          last row is simply cut off — six links plus the admin row plus two
+          auth buttons already exceeded 32rem.
+        */}
         <div
           className={`lg:hidden overflow-hidden bg-krov-void transition-[max-height,opacity] duration-500 ease-in-out ${
-            menuOpen ? "max-h-128 opacity-100" : "max-h-0 opacity-0"
+            menuOpen ? "max-h-160 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <div className="px-6 pt-4 pb-9">
             <ul className="flex flex-col">
-              {NAV_LINKS.map((link, i) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="group flex items-center gap-4 border-b border-krov-smoke/70 py-4 text-krov-ash transition-colors duration-200 hover:text-krov-bone"
-                  >
-                    {/* Editorial index numbering — the drawer reads as a
-                        contents page rather than a list of buttons. */}
-                    <span className="w-6 text-[10px] tracking-[0.2em] text-krov-dust transition-colors duration-200 group-hover:text-krov-rose">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="text-xs uppercase tracking-[0.24em]">
-                      {link.label}
-                    </span>
-                  </Link>
-                </li>
-              ))}
+              {NAV_LINKS.map((link, i) => {
+                const active = isCurrentRoute(pathname, link.href);
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      onClick={() => setMenuOpen(false)}
+                      aria-current={active ? "page" : undefined}
+                      className={`group flex items-center gap-4 border-b border-krov-smoke/70 py-4 transition-colors duration-200 hover:text-krov-bone ${
+                        active ? "text-krov-bone" : "text-krov-ash"
+                      }`}
+                    >
+                      {/* Editorial index numbering — the drawer reads as a
+                          contents page rather than a list of buttons. On the
+                          current route the numeral carries the accent, which is
+                          the drawer's equivalent of the desktop underline. */}
+                      <span
+                        className={`w-6 text-[10px] tracking-[0.2em] transition-colors duration-200 group-hover:text-krov-rose ${
+                          active ? "text-krov-rose" : "text-krov-dust"
+                        }`}
+                      >
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="text-xs uppercase tracking-[0.24em]">
+                        {link.label}
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
               {isAdmin && (
                 <li>
                   <Link
@@ -311,16 +353,27 @@ function NavLink({
   href,
   label,
   accent,
+  active,
 }: {
   href: string;
   label: string;
   accent?: boolean;
+  active?: boolean;
 }) {
   return (
     <Link
       href={href}
+      // aria-current is the part that matters for assistive tech; the colour and
+      // the drawn underline are its visual equivalent.
+      aria-current={active ? "page" : undefined}
       className={`krov-underline py-1 text-[10px] uppercase tracking-[0.22em] transition-colors duration-300 ${
-        accent ? "text-krov-rose" : "text-krov-ash hover:text-krov-bone"
+        active ? "krov-underline-active " : ""
+      }${
+        accent
+          ? "text-krov-rose"
+          : active
+            ? "text-krov-bone"
+            : "text-krov-ash hover:text-krov-bone"
       }`}
     >
       {label}

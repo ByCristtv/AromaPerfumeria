@@ -18,3 +18,17 @@ export function formatPrice(
     ...rest,
   });
 }
+
+/**
+ * Format an XP balance with thousands separators, e.g. 12450 → "12,450".
+ *
+ * Grouped with `en-US` on purpose, not the storefront's `es-CR`: XP is a game
+ * score rather than money, and the comma grouping is what makes a five-figure
+ * total scannable at a glance in a leaderboard column. Negatives and fractions
+ * are clamped away — XP is a non-negative integer everywhere it is stored.
+ */
+export function formatXp(value: number): string {
+  return new Intl.NumberFormat("en-US").format(
+    Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0
+  );
+}
