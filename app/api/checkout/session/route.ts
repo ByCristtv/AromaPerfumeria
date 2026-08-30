@@ -4,6 +4,10 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { submitCheckout } from "@/lib/checkout/checkoutService";
 import { CheckoutError } from "@/lib/checkout/errors";
 import { checkoutPayloadSchema } from "@/schemas/checkout";
+import {
+  notifyCustomerOrderConfirmation,
+  notifyNewSinpeOrder,
+} from "@/lib/notifications/orderNotifier";
 
 /**
  * POST /api/checkout/session
@@ -47,10 +51,24 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const admin = createAdminClient();
     const result = await submitCheckout(
-      { supabase: await createClient(), admin: createAdminClient() },
+      { supabase: await createClient(), admin },
       parsed.data
     );
+
+    // SINPE orders are unpaid but must notify NOW: the owner (watch for the
+    // transfer) and the customer (a "payment pending" confirmation). Card orders
+    // are intentionally silent here — both their notifications fire only once the
+    // Onvo webhook confirms payment. All of these are idempotent, so a customer
+    // editing their SINPE order re-hits this without sending duplicate emails.
+    if (result.payment_method === "sinpe") {
+      await Promise.all([
+        notifyNewSinpeOrder(result.order_id, { admin }),
+        notifyCustomerOrderConfirmation(result.order_id, { admin }),
+      ]);
+    }
+
     return NextResponse.json(result);
   } catch (err) {
     if (err instanceof CheckoutError) {

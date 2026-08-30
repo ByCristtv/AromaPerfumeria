@@ -3,6 +3,10 @@ import { getOnvoEnv } from "@/lib/onvo/env";
 import { verifyOnvoWebhookSecret } from "@/lib/onvo/verifyWebhook";
 import type { OnvoWebhookEvent } from "@/lib/onvo/types";
 import { createAdminClient } from "@/lib/supabase/admin";
+import {
+  notifyCustomerOrderConfirmation,
+  notifyOrderPaid,
+} from "@/lib/notifications/orderNotifier";
 
 /**
  * POST /api/webhooks/onvo
@@ -216,6 +220,14 @@ async function handleSucceeded(
   }
 
   console.info("[onvo-webhook] order marked paid", { orderId: order.id });
+
+  // Card payment confirmed → notify the OWNER (new paid order) and the CUSTOMER
+  // ("Confirmed / Paid" confirmation). Both idempotent + never throw, so a
+  // duplicate webhook or a Resend outage can't affect the paid state.
+  await Promise.all([
+    notifyOrderPaid(order.id, { admin }),
+    notifyCustomerOrderConfirmation(order.id, { admin }),
+  ]);
 }
 
 async function handleFailed(

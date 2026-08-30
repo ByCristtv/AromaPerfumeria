@@ -9,17 +9,6 @@ export default function CTAFinal() {
       aria-labelledby="cta-final-title"
       className="relative h-[85vh] min-h-[600px] w-full flex items-center justify-center overflow-hidden"
     >
-      <div className="absolute inset-0">
-        <Image
-          src="/about/cta-final.jpg"
-          alt="Perfume de lujo sobre mármol negro con luces doradas desenfocadas al fondo"
-          fill
-          className="object-cover"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/50" />
-      </div>
-
       <div className="relative z-10 text-center max-w-3xl px-6">
         <p
           className="text-krov-rose tracking-[0.4em] text-xs mb-8 uppercase"
@@ -39,7 +28,7 @@ export default function CTAFinal() {
           className="text-white/80 text-base md:text-lg leading-relaxed mb-12 max-w-2xl mx-auto"
           style={{ fontFamily: serif }}
         >
-          Explora nuestra colección curada y descubre la fragancia que se
+          Explora nuestra colección y descubre la fragancia que se
           convertirá en tu sello personal. En KROV Perfumería te acompañamos
           en cada paso de ese descubrimiento.
         </p>

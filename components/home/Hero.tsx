@@ -123,7 +123,7 @@ export default function Hero() {
             className="flex items-center gap-3 text-[10px] uppercase tracking-[0.42em] text-krov-rose"
           >
             <span className="h-px w-8 bg-krov-blood" aria-hidden />
-            кровь · sangre
+            кровь · Perfumería
           </motion.p>
 
           <motion.h1
@@ -131,17 +131,16 @@ export default function Hero() {
             className="mt-7 text-[2.75rem] leading-[0.95] text-krov-bone sm:text-6xl md:text-[5.25rem]"
             style={{ fontFamily: serif }}
           >
-            Lo que llevás
+            Tu perfume
             <br />
-            <span className="italic text-krov-blush">en la sangre</span>
+            <span className="italic text-krov-blush">a un click</span>
           </motion.h1>
 
           <motion.p
             variants={fadeUp}
             className="mt-8 max-w-md text-[0.95rem] leading-relaxed text-krov-ash md:text-base"
           >
-            Nadie recuerda tu ropa. Recuerdan cómo olías. Una fragancia no se
-            usa: se vuelve parte de vos.
+            Encuentra decants, sets y perfumes originales al mejor precio y acumala puntos de experiencia.
           </motion.p>
 
           <motion.div

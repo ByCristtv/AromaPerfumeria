@@ -5,6 +5,7 @@ import type { PostgrestError } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/types/database";
 import type { AdminOrderInput, AdminOrderResult } from "@/types/adminOrder";
+import { notifyOrderPaid } from "@/lib/notifications/orderNotifier";
 
 /**
  * Server actions for admin order management UI (Phase 7).
@@ -155,6 +156,12 @@ export async function markOrderPaidAction(
   if (error) {
     return rpcError(error, fallbackMessages.markPaid);
   }
+
+  // The order just transitioned to paid — notify the owner (mainly the "SINPE
+  // pending → paid" confirmation). Idempotent and non-throwing: if the Onvo
+  // webhook already sent a paid notification for this order, this is a no-op,
+  // and a Resend failure never affects the mark-paid result.
+  await notifyOrderPaid(orderId);
 
   revalidatePath("/admin/orders");
   revalidatePath(`/admin/orders/${orderId}`);
