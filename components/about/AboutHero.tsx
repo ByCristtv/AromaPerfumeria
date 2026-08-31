@@ -24,7 +24,7 @@ export default function AboutHero() {
         <p
           className="text-krov-rose tracking-[0.4em] text-xs md:text-sm mb-6 uppercase"
         >
-          кровь · sangre · Costa Rica
+          кровь · Costa Rica
         </p>
         <h1
           className="text-4xl md:text-6xl lg:text-7xl text-white leading-tight mb-8"

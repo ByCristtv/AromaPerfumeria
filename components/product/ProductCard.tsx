@@ -113,12 +113,12 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
   };
 
   return (
-    <article className="animate-fadeIn group flex h-full flex-col">
+    <article className="animate-fadeIn group flex h-full flex-col rounded-2xl bg-krov-void/30">
       {/* ── The niche ──────────────────────────────────────────────────────── */}
-      <div className="relative">
+      <div className="relative overflow-hidden rounded-t-xl">
         <Link
           href={`/products/${product.slug}`}
-          className="relative block aspect-4/5 overflow-hidden bg-gradient-to-b from-krov-linen to-krov-linen-deep"
+          className="relative block aspect-4/5 overflow-hidden bg-linear-to-b from-krov-linen to-krov-linen-deep"
           aria-label={`Ver ${product.name}`}
         >
           {/* Skeleton until the image decodes — same plate, one shade darker,
@@ -135,7 +135,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             onLoad={() => setImgLoaded(true)}
-            className={`object-contain p-7 transition-[transform,opacity] duration-700 ease-out group-hover:scale-[1.05] ${
+            className={`object-contain p-7 duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] transition-all ${
               imgLoaded ? "opacity-100" : "opacity-0"
             }`}
           />

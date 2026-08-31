@@ -21,20 +21,15 @@ export default function CatalogHero() {
       />
 
       <div className="relative mx-auto max-w-7xl">
-        <p className="krov-eyebrow">La colección</p>
 
         <h1
           className="mt-6 max-w-3xl text-4xl leading-[1.02] text-krov-bone sm:text-5xl md:text-6xl"
           style={{ fontFamily: serif }}
         >
-          Busca tu perfume
-          <br />
-          <span className="italic text-krov-blush">aquí</span>
+          Explora el
+          
+          <span className="italic text-krov-blush"> catalogo</span>
         </h1>
-
-        <p className="mt-7 max-w-lg text-sm leading-relaxed text-krov-ash">
-          Busca por nombre, marca o usa los filtros para mayor facilidad.
-        </p>
       </div>
     </section>
   );
