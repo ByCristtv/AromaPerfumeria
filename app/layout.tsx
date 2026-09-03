@@ -60,6 +60,10 @@ export const metadata: Metadata = {
   },
   description: SITE.description,
   applicationName: SITE.name,
+  icons: {
+    icon: "/logo.png", // Busca la imagen dentro de la carpeta public/
+    shortcut: "/logo.png",
+  },
 
   // Home page is the canonical root; every other route sets its own.
   alternates: { canonical: "/" },
