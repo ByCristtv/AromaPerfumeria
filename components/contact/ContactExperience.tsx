@@ -12,7 +12,7 @@ export default function ContactExperience() {
     <div className="relative bg-krov-void">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-krov-ink via-krov-void to-krov-void"
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-krov-ink via-krov-void to-krov-void"
       />
 
       <div className="relative">

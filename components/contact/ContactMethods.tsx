@@ -11,7 +11,7 @@ const channels: ContactChannel[] = [
   {
     name: "WhatsApp",
     description:
-      "Chatea directamente con nuestro equipo para una asistencia rápida y personalizada.",
+      "Chatea directamente con nuestro equipo",
     cta: "Iniciar conversación",
     url: CONTACT.whatsapp,
     icon: "/icons/whatsapp.svg",
@@ -19,7 +19,7 @@ const channels: ContactChannel[] = [
   {
     name: "Instagram",
     description:
-      "Descubre lanzamientos, notas exclusivas y contenido detrás de cada fragancia.",
+      "Mira nuestras últimas publicaciones",
     cta: "Seguir cuenta",
     url: CONTACT.instagram,
     icon: "/icons/instagram.svg",
@@ -27,7 +27,7 @@ const channels: ContactChannel[] = [
   {
     name: "Facebook",
     description:
-      "Conoce nuestras promociones, novedades y mantente al día con la comunidad.",
+      "Conoce nuestras actualizaciones y promociones",
     cta: "Seguir cuenta",
     url: CONTACT.facebook,
     icon: "/icons/facebook.svg",

@@ -135,7 +135,7 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             onLoad={() => setImgLoaded(true)}
-            className={`object-contain p-7 duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] transition-all ${
+            className={`object-contain p-7 duration-700 ease-krov group-hover:scale-[1.04] transition-all ${
               imgLoaded ? "opacity-100" : "opacity-0"
             }`}
           />

@@ -3,20 +3,15 @@
 const serif = "var(--font-krov-display), 'Cormorant Garamond', Georgia, serif";
 
 const houses = [
-  "Parfums de Marly",
-  "Creed",
-  "Maison Francis Kurkdjian",
-  "Xerjoff",
-  "Initio Parfums Privés",
-  "Amouage",
-  "Tom Ford",
-  "Dior Privée",
-  "Louis Vuitton",
-  "Jean Paul Gaultier",
-  "Roja Parfums",
-  "Mancera",
-  "Nishane",
-  "BDK Parfums",
+  "Afnan",
+  "Lattafa",
+  "Al Haramain",
+  "Rayhaan",
+  "Ajmal",
+  "Rasasi",
+  "Armaf",
+  "Maison Alhambra",
+
 ];
 
 export default function CasasPerfumistas() {
@@ -38,15 +33,14 @@ export default function CasasPerfumistas() {
           className="text-3xl md:text-5xl text-white leading-tight mb-6"
           style={{ fontFamily: serif }}
         >
-          Las firmas más <span className="italic text-krov-rose">codiciadas</span>
+          Las firmas más <span className="italic text-krov-rose">relevantes</span>
         </h2>
         <p
           className="text-white/65 max-w-2xl mx-auto text-base md:text-lg leading-relaxed"
           style={{ fontFamily: serif }}
         >
-          Trabajamos con las maisons más distinguidas del mundo, desde casas
-          nicho de culto hasta diseñadores legendarios. Cada nombre en nuestro
-          catálogo representa un universo olfativo único.
+          Trabajamos con las maisons más existosas del mundo, 
+          desde las más exclusivas hasta las más accesibles, para ofrecerte una experiencia olfativa única.
         </p>
       </div>
 

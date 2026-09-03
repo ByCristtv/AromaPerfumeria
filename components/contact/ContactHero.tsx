@@ -33,7 +33,6 @@ export default function ContactHero() {
             variants={fadeUp}
             className="mb-7 inline-flex items-center gap-2 rounded-full border border-krov-blood/30 bg-krov-blood/6 px-4 py-2"
           >
-            <Sparkles size={14} className="text-krov-rose" aria-hidden="true" />
             <span
               className="text-xs uppercase tracking-[0.35em] text-krov-rose"
             >
@@ -46,7 +45,7 @@ export default function ContactHero() {
             className="text-4xl leading-tight text-white md:text-6xl lg:text-7xl"
             style={{ fontFamily: serif }}
           >
-            Conversemos
+            Conversamos
             <br />
             <span className="italic text-krov-rose">contigo</span>
           </motion.h1>
@@ -56,9 +55,9 @@ export default function ContactHero() {
             className="mx-auto mt-8 max-w-xl text-base leading-relaxed text-white/65 md:text-lg lg:mx-0"
             style={{ fontFamily: serif }}
           >
-            Estamos aquí para ayudarte a descubrir tu próxima firma olfativa. Ya
+            Estamos aquí para ayudarte a descubrir tu próxima fragancia. Ya
             sea que tengas preguntas sobre productos, pedidos, envíos o
-            recomendaciones, nuestro equipo está listo para asistirte.
+            recomendaciones.
           </motion.p>
 
           <motion.div

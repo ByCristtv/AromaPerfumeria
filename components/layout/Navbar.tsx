@@ -11,7 +11,7 @@ import KrovLogo from "@/components/brand/KrovLogo";
 
 const NAV_LINKS = [
   { label: "Inicio", href: "/" },
-  { label: "Colección", href: "/products" },
+  { label: "Perfumes", href: "/products" },
   { label: "Ranking", href: "/ranking" },
   { label: "Identidad", href: "/about" },
   { label: "Cómo comprar", href: "/howtobuy" },

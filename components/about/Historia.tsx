@@ -28,17 +28,11 @@ export default function Historia() {
             style={{ fontFamily: serif }}
           >
             <p>
-              KROV Perfumería nació de una necesidad y de un sueño: dar acceso
-              en Costa Rica a las fragancias más codiciadas del mundo. Lo que
-              comenzó como una búsqueda personal por casas perfumistas
-              exclusivas se transformó en una curaduría dedicada a quienes
-              entienden el perfume como un arte.
+              KROV Perfumería nació de una necesidad y de un sueño: Dar acceso a 
+              a Costa Rica a una expeiencia nueva y unica en la perfumeria, donde cada uno de nuestros clientes pueda descubrir y explorar el mundo de los perfumes,
+               de una forma personalizada y con un enfoque en la calidad, autenticidad, elegancia y un reconocimiento distintivo para el cliente.
             </p>
-            <p>
-              Cada botella que ofrecemos ha sido seleccionada por su carácter,
-              su historia y la firma de su perfumista. No vendemos productos,
-              acompañamos descubrimientos olfativos.
-            </p>
+           
           </div>
 
           <div className="mt-12 pl-6 border-l border-krov-blood/40">

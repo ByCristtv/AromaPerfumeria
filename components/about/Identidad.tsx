@@ -53,9 +53,9 @@ export default function Identidad() {
               className="text-white text-xl md:text-2xl leading-relaxed italic"
               style={{ fontFamily: serif }}
             >
-              Democratizar la perfumería de lujo en Costa Rica, acercando las
-              creaciones olfativas más exclusivas del mundo a cada amante del
-              perfume.
+              Democratizar la perfumería en Costa Rica, acercando las
+              creaciones olfativas más relevantes del mundo a cada amante del
+              perfume mediante una experiencia de calidad.
             </p>
           </article>
 
@@ -70,7 +70,7 @@ export default function Identidad() {
               style={{ fontFamily: serif }}
             >
               Convertirnos en la perfumería de referencia en Centroamérica,
-              reconocidos por la curaduría, la autenticidad y la excelencia en
+              reconocidos por la autenticidad, excelencia, y originalidad en
               cada experiencia.
             </p>
           </article>

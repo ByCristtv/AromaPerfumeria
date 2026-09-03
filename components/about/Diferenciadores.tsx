@@ -6,7 +6,7 @@ const items = [
       <path d="M12 2l2.39 4.84L20 7.62l-4 3.9.94 5.48L12 14.77 7.06 17l.94-5.48-4-3.9 5.61-.78L12 2z" />
     ),
     title: "100% Originales",
-    desc: "Garantizamos perfumes auténticos importados directamente de casas oficiales y distribuidores certificados.",
+    desc: "Garantizamos fragancias auténticas importadas directamente de casas oficiales y distribuidores certificados.",
   },
   {
     icon: (
@@ -15,18 +15,39 @@ const items = [
         <path d="M8 6h8l-1 16H9L8 6z" />
       </>
     ),
-    title: "Decants Premium",
-    desc: "Atomizadores de 2ml, 5ml y 10ml decantados con jeringas de precisión: prueba antes de invertir en el frasco completo.",
+    title: "Decants de Precisión",
+    desc: "Formatos de 2ml, 5ml y 10ml fraccionados con jeringas de precisión.",
   },
   {
     icon: (
       <>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 7v5l3 2" />
+        <path d="M6 9l6 7 6-7" />
+        <path d="M12 3v13" />
+        <path d="M5 21h14" />
       </>
     ),
-    title: "Experiencia de Lujo",
-    desc: "Cada interacción —empaque, envío y atención— refleja el cuidado que merece una fragancia de alta gama.",
+    title: "Sistema de Rangos & XP",
+    desc: "Suma experiencia con cada compra, escala niveles en tu perfil y desbloquea el estatus que tu colección merece.",
+  },
+  {
+    icon: (
+      <>
+        <path d="M12 15l-2 5l9-11h-7l2-5l-9 11h7z" />
+      </>
+    ),
+    title: "Recompensas por Nivel",
+    desc: "Entre más alto tu rango, mejores tus privilegios por fidelidad.",
+  },
+  {
+    icon: (
+      <>
+        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 1 1 0-4" />
+        <path d="M15 2H9a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z" />
+        <path d="M12 11l2 2l4 -4" />
+      </>
+    ),
+    title: "Ranking Nacional Olfativo",
+    desc: "Compite con los mayores coleccionistas del país. Muestra tu estatus, domina el leaderboard y demuestra de qué está hecha tu repisa.",
   },
   {
     icon: (
@@ -37,26 +58,7 @@ const items = [
       </>
     ),
     title: "Catálogo Curado",
-    desc: "Selección rigurosa de casas nicho y diseñadores de lujo. Calidad sobre cantidad, siempre.",
-  },
-  {
-    icon: (
-      <>
-        <circle cx="12" cy="8" r="4" />
-        <path d="M4 21c0-4 4-7 8-7s8 3 8 7" />
-      </>
-    ),
-    title: "Atención Personalizada",
-    desc: "Te asesoramos para encontrar tu firma olfativa según tu personalidad, ocasión y estación.",
-  },
-  {
-    icon: (
-      <>
-        <path d="M3 7h13l3 4h2v6h-2a2 2 0 1 1-4 0H10a2 2 0 1 1-4 0H3V7z" />
-      </>
-    ),
-    title: "Envíos a Todo Costa Rica",
-    desc: "Entregas seguras a cualquier zona del país con empaque protector y seguimiento en tiempo real.",
+    desc: "Calidad sobre cantidad, siempre.",
   },
 ];
 

@@ -30,18 +30,15 @@ export default function AboutHero() {
           className="text-4xl md:text-6xl lg:text-7xl text-white leading-tight mb-8"
           style={{ fontFamily: serif }}
         >
-          Una fragancia
+          Tu fragancia
           <br />
-          <span className="italic text-krov-blush">no es un accesorio</span>
+          <span className="italic text-krov-blush">no es mas que un accesorio</span>
         </h1>
         <p
           className="text-white/80 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-10"
           style={{ fontFamily: serif }}
         >
-          KROV viene de кровь: sangre. Lo que llevás en la sangre es lo único
-          que nadie más tiene, y un perfume funciona igual — reacciona con tu
-          piel y termina siendo tuyo. Traemos nicho, diseñador y decants
-          originales a Costa Rica para que encuentres el que ya era tuyo.
+          KROV - del ruso кровь: sangre. Encuentra la fragancia perfecta para formar tu identidad y tu ADN olfativo. Traemos perfumeria original en decants, botellas y sets pensados para cada ocasión.
         </p>
         <Link
           href="/products"

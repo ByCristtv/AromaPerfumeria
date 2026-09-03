@@ -36,32 +36,7 @@ export default function HowToBuyHero() {
         >
           Guía de compra · KROV Perfumería
         </p>
-        <h1
-          className="reveal reveal-d2 text-4xl leading-tight text-white md:text-6xl lg:text-7xl"
-          style={{ fontFamily: serif }}
-        >
-          Comprar nunca fue
-          <br />
-          <span className="italic text-krov-rose">tan sencillo</span>
-        </h1>
-        <p
-          className="reveal reveal-d3 mx-auto mt-8 max-w-xl text-base leading-relaxed text-white/65 md:text-lg"
-          style={{ fontFamily: serif }}
-        >
-          Te acompañamos paso a paso para que llevar tu próxima fragancia a casa
-          sea una experiencia fácil de entender.
-        </p>
 
-        <div className="reveal reveal-d4 mt-12 flex items-center justify-center gap-3 text-krov-rose/60">
-          <span className="h-px w-10 bg-krov-blood/40" />
-          {/* motion-safe: the bounce is decorative and loops forever. */}
-          <ChevronDown
-            size={18}
-            className="motion-safe:animate-bounce"
-            aria-hidden="true"
-          />
-          <span className="h-px w-10 bg-krov-blood/40" />
-        </div>
       </div>
     </section>
   );
