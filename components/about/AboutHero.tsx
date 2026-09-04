@@ -32,7 +32,7 @@ export default function AboutHero() {
         >
           Tu fragancia
           <br />
-          <span className="italic text-krov-blush">no es mas que un accesorio</span>
+          <span className="italic text-krov-blush">no es solo un accesorio</span>
         </h1>
         <p
           className="text-white/80 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-10"
